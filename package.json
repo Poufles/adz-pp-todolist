@@ -1,0 +1,41 @@
+{
+  "name": "watodo",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "build": "webpack --config webpack.prod.js",
+    "dev": "webpack serve --config webpack.dev.js"
+  },
+  "keywords": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "JS",
+    "To-do list",
+    "project",
+    "application",
+    "website",
+    "watodo"
+  ],
+  "author": "poufsadev",
+  "license": "ISC",
+  "description": "A tool application that lists, manages, reminds users about their notes, tasks, and projects.",
+  "type": "module",
+  "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
+    "babel-loader": "^10.0.0",
+    "css-loader": "^7.1.2",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.3",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.98.0",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.0",
+    "webpack-merge": "^6.0.1"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "date-fns": "^4.1.0"
+  }
+}

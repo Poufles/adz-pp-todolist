@@ -1,0 +1,11 @@
+# Ignore dist folder
+dist
+
+# Ignore test folder
+test
+
+# Ignore draft folder
+draft
+
+# Ignore node_modules
+node_modules
