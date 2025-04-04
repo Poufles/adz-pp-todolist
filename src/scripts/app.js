@@ -1,1 +1,1 @@
-console.log('Hello new project !');
+window.location.href = '/auth.html';

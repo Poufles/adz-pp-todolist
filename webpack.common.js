@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename);
 export default {
     entry: {
         app: path.resolve(__dirname, "./src/scripts/app.js"),
+        auth: path.resolve(__dirname, "./src/scripts/auth.js")
     },
     output: {
         filename: "[name][contenthash].bundle.js",
@@ -20,6 +21,11 @@ export default {
             filename: "index.html",
             template: "./src/templates/index.html",
             chunks: ["app"]
+        }),
+        new HWPP({
+            filename: "auth.html",
+            template: "./src/templates/auth.html",
+            chunks: ["auth"]
         }),
     ],
     module: {
