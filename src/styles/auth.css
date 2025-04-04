@@ -1,0 +1,66 @@
+@import './main.css';
+
+#page_auth {
+    --ms-padding: 30px;
+    --mh-padding: 30px;
+
+    height: 100dvh;
+}
+
+#page_auth .gate {
+    height: 50%;
+    width: 100dvw;
+    position: relative;
+}
+
+#page_auth .gate#top {
+    border-bottom: solid 2.5px var(--black);
+}
+
+#page_auth .gate#bottom {
+    border-top: solid 2.5px var(--black);
+}
+
+#page_auth #boxes {
+    
+    display: flex;
+    gap: var(--gap-3);
+    position: absolute;
+    top: var(--mh-padding);
+    left: var(--ms-padding);
+}
+
+#page_auth #boxes .design-box {
+    aspect-ratio: 1;
+    background-color: var(--black);
+    width: 50px;
+}
+
+#page_auth #features {
+    cursor: default;
+    font-size: var(--fn-xxlr);
+    transform: translateX(-50%);
+    width: max-content;
+    display: flex;
+    gap: 66px;
+    position: absolute;
+    left: 50%;
+    bottom: var(--mh-padding);
+    opacity: 0.5;
+}
+
+#page_auth #start {
+    font-size: var(--fn-msv);
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    top: 53%;
+    left: 27%;
+}
+
+#page_auth #title {
+    font-size: 96px;
+    line-height: 110%;
+}

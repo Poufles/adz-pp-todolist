@@ -1,20 +1,27 @@
-@import '../button.css';
-
 .simple-button {
     background-color: transparent;
     border: 0;
     width: max-content;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: left;
 }
 
 .simple-button>.arrow {
+    flex-shrink: 1;
+
     width: 0%;
-    margin-right: 0px;
+    max-width: max-content;
+    padding-right: 0px;
     display: flex;
-    transition: 0.2s; /* remove for later */
+    transition: var(--trans-q); /* remove for later */
     overflow: hidden;
+}
+
+.simple-button>.text {
+    flex: 0 0 auto;
+
+    width: max-content;
 }
 
 .simple-button.group>input[type="radio"] {
@@ -23,16 +30,16 @@
 }
 
 .simple-button.clicked>.arrow {
-    margin-right: 10px;
+    padding-right: 10px;
     width: 100%;
 }
 
 .simple-button:hover>.arrow {
-    margin-right: 10px;
+    padding-right: 10px;
     width: 100%;
 }
 
 .simple-button.group:has(input[type="radio"]:checked)>.arrow {
-    margin-right: 10px;
+    padding-right: 10px;
     width: 100%;
 }

@@ -1,5 +1,45 @@
 @import url('https://fonts.cdnfonts.com/css/orbit-4');
+@import './css-reset-jc.css';
 
 :root {
     font-family: 'Orbit', sans-serif;
+    --black: #090911;
+    --primary-color: #FFFBFF;
+    --secondary-color: #FFFDF6;
+    --accent-color-1: #F1FFDA;
+    --accent-color-2: #DEEDC4;
+    --fn-xxsm: 8px;
+    --fn-xsm: 10px;
+    --fn-sm: 12px;
+    --fn-md: 14px;
+    --fn-lr: 16px;
+    --fn-xlr: 20px;
+    --fn-xxlr: 24px;
+    --fn-msv: 36px;
+    --fn-xmsv: 48px;
+    --gap-1: 5px;
+    --gap-2: 7px;
+    --gap-3: 10px;
+    --gap-4: 13px;
+    --gap-5: 15px;
+    --trans-q: 0.2s;
+    --trans-n: 0.5s;
+    --trans-s: 1s;
+}
+
+body {
+    background-color: var(--primary-color);
+}
+
+.btn {
+    cursor: pointer;
+    padding: 0;
+}
+
+.cursor-default {
+    cursor: default;
+}
+
+.select-none::selection {
+    background-color: transparent;
 }

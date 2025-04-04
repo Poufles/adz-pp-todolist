@@ -3,7 +3,7 @@ const template =
     <div class="arrow">
         <span>></span>
     </div>
-    <p class="text">Button</p>
+    <p class="text"></p>
 `;
 
 const groupTemplate =
@@ -13,7 +13,7 @@ const groupTemplate =
         <div class="arrow">
             <span>></span>
         </div>
-        <p class="text">Button</p>
+        <p class="text"></p>
     </label>
 `;
 
@@ -21,9 +21,11 @@ const groupTemplate =
  * Simple button is a component that creates a simple button
  * that has no background color and seemingly ressembles a
  * normal text
+ * @param {string} buttonName - Text to display in the button
+ * @param {string} [groupName] - (Optional) The group name of the button
  * @returns 
  */
-function SimpleButton(groupName = '') {
+function SimpleButton(buttonName, groupName = '') {
     // Creating component
     let component;
 
@@ -54,6 +56,9 @@ function SimpleButton(groupName = '') {
             component.classList.add('clicked');
         });
     };
+
+    const p_name = component.querySelector('.text');
+    p_name.textContent = buttonName;
 
     // Methods
     /**
