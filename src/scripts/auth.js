@@ -5,7 +5,7 @@ import SimpleButton from '../components/buttons/simple-button/simple-button.js';
 
 function Auth() {
     const cont_start = document.querySelector('#start');
-    const cont_action = document.querySelector('#action');
+    const cont_action = cont_start.querySelector('#action');
 
     let btn_new = SimpleButton('new game', 'start');
     let btn_settings = SimpleButton('settings', 'start');
