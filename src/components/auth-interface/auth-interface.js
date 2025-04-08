@@ -1,8 +1,8 @@
 import SVG from '../../scripts/svg.js';
 import SimpleButton from '../buttons/simple-button/simple-button.js';
 
-const template = 
-`
+const template =
+    `
         <div id="upper">
             <div id="actions">
 
@@ -18,8 +18,8 @@ const template =
         </div>
 `;
 
-const template_tip_msg = 
-`
+const template_tip_msg =
+    `
     <span class="tip" id="tip-1">- ctrl + q to cancel/back</span>
     <span class="tip" id="tip-2">- ctrl + r to reset</span>
     <span class="tip" id="tip-3">- enter to proceed/confirm</span>
@@ -28,7 +28,7 @@ const template_tip_msg =
 /**
  * Component module for AuthInterface component
  */
-const AuthInterface = function(){
+const AuthInterface = function () {
     // Creating component
     const component = document.createElement('section');
 
@@ -47,12 +47,12 @@ const AuthInterface = function(){
         InitializeStartElements(component, 'Creating account');
         LoadNewGameElements(component);
     };
-    
+
     const OpenLoadGame = () => {
         InitializeStartElements(component, 'Choosing account');
         LoadLoadGameElements(component);
     };
-    
+
     const OpenSettings = () => {
         InitializeStartElements(component, 'Configuring settings');
         LoadSettingsElements(component);
@@ -79,7 +79,7 @@ function LoadComponentElements(component) {
     a_github.target = 'blank';
     a_instagram.target = 'blank';
     a_twitter.target = 'blank';
-    
+
     a_github.href = 'https://github.com/Poufles';
     a_instagram.href = 'https://www.instagram.com/poufsadev/';
     a_twitter.href = 'https://x.com/Vqliant';
@@ -98,7 +98,16 @@ function LoadComponentElements(component) {
  * @param {HTMLElement} component - the AuthInterface component 
  */
 function LoadNewGameElements(component) {
-    
+    const template =
+    `
+        <div class="input-block" id="block-username">
+            <label for=""></label>
+            <div class="input-box">
+                <p id="arrow">></p>
+                <input type="text" id="">
+            </div>
+        </div>
+    `;
 };
 
 /**
@@ -106,7 +115,7 @@ function LoadNewGameElements(component) {
  * @param {HTMLElement} component - the AuthInterface component 
  */
 function LoadLoadGameElements(component) {
-    
+
 };
 
 /**
@@ -114,7 +123,7 @@ function LoadLoadGameElements(component) {
  * @param {HTMLElement} component - the AuthInterface component 
  */
 function LoadSettingsElements(component) {
-    
+
 };
 
 /**
@@ -126,19 +135,19 @@ function InitializeStartElements(component, statusText) {
     const cont_actions = component.querySelector('#actions');
     const btn_action_cancel = cont_actions.querySelector('#action-cancel');
     const btn_action_reset = cont_actions.querySelector('#action-reset');
-    
+
     if (btn_action_cancel) cont_actions.removeChild(btn_action_cancel);
     if (btn_action_reset) cont_actions.removeChild(btn_action_reset);
-    
+
     const btn_cancel = SimpleButton('Cancel', 'action-cancel');
     const btn_reset = SimpleButton('Reset', 'action-reset');
-    
+
     const span_status = component.querySelector('#status');
     span_status.textContent = statusText;
-    
+
     cont_actions.appendChild(btn_cancel.render());
     cont_actions.appendChild(btn_reset.render());
-    
+
     const cont_lower = component.querySelector('#lower');
     const cont_tip_msg = cont_lower.querySelector('#tip-msg');
 

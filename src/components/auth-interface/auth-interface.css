@@ -11,10 +11,6 @@
     align-items: center;
 }
 
-.auth-interface>#upper>#actions {
-    justify-content: left;
-}
-
 .auth-interface>#upper>#socmed {
     justify-content: right;
 }
@@ -41,7 +37,35 @@
 }
 
 .auth-interface>#lower>#tip-msg {
+    margin-bottom: calc(var(--gap-5) * 2);
     display: flex;
     flex-direction: column;
     opacity: 0.5;
+}
+
+.auth-interface>#lower>.input-block {
+    font-size: var(--fn-xxlr);
+    margin-bottom: var(--gap-3);
+}
+
+.auth-interface>#lower>.input-block>label {
+    cursor: pointer;
+}
+
+.auth-interface>#lower>.input-block>.input-box {
+    display: flex;
+    gap: var(--gap-3);
+    align-items: center;
+}
+
+.auth-interface>#lower>.input-block>.input-box>input {
+    background-color: transparent;
+    border: 0;
+    width: 100%;
+    outline: 0;
+}
+
+.auth-interface>#lower>.input-block>.input-box>input::selection {
+    background-color: var(--black);
+    color: var(--secondary-color);
 }
