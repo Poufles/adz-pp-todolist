@@ -64,10 +64,10 @@
             </div>
         </div>
         <div id="lower">
-            <p id="status-msg">
+            <p class="select-none cursor-default" id="status-msg">
                 Status: <span id="status">Creating account</span>...
             </p>
-            <p id="tip-msg">
+            <p class="select-none cursor-default" id="tip-msg">
                 <span class="tip" id="tip-1">- ctrl + q to cancel/back</span>
                 <span class="tip" id="tip-2">- ctrl + r to reset</span>
                 <span class="tip" id="tip-3">- enter to proceed/confirm</span>
@@ -146,16 +146,105 @@
             </div>
         </div>
         <div id="lower">
-            <p id="status-msg">
+            <p class="select-none cursor-default" id="status-msg">
                 Status: <span id="status">Choosing account</span>...
             </p>
-            <p id="tip-msg">
+            <p class="select-none cursor-default" id="tip-msg">
                 <span class="tip" id="tip-1">- ctrl + q to cancel/back</span>
                 <span class="tip" id="tip-2">- ctrl + r to reset</span>
                 <span class="tip" id="tip-3">- enter to proceed/confirm</span>
             </p>
-            <div class="account-block" id="account-0" dataset="0">
-                
+            <div role="button" class="account-block btn clicked" id="account-0" dataset="0">
+                <p class="select-none" id="account-info">
+                    <span id="username">poufsadev</span> | <span id="level">lv1</span> | <span id="date-of-creation">03/25/2025</span> | tasks: <span id="task-no">2</span> | completed: <span id="completed-task-no">20</span> | due today: <span id="due-today">1</span>
+                </p>
+            </div>
+            <div role="button" class="account-block btn" id="account-1" dataset="1">
+                <p class="select-none" id="account-info">
+                    <span id="username">dummsy</span> | <span id="level">lv10</span> | <span id="date-of-creation">04/15/2025</span> | tasks: <span id="task-no">10</span> | completed: <span id="completed-task-no">123</span> | due today: <span id="due-today">5</span>
+                </p>
+            </div>
+        </div>
+    </section>
+    <section class="comp auth-interface">
+        <div id="upper">
+            <div id="actions">
+                <button type="button" class="comp btn simple-button" id="action-cancel">
+                    <div class="arrow">
+                        <span>></span>
+                    </div>
+                    <p class="text">Cancel</p>
+                </button>
+                <button type="button" class="comp btn simple-button" id="action-reset">
+                    <div class="arrow">
+                        <span>></span>
+                    </div>
+                    <p class="text">Reset</p>
+                </button>
+            </div>
+            <div id="socmed">
+                <p id="author">poufsadev</p>
+                <a href="">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M20 2.5C10.3359 2.5 2.5 10.5313 2.5 20.4453C2.5 28.375 7.51562 35.0938 14.4688 37.4688C15.3438 37.6328 15.6641 37.0781 15.6641 36.6016C15.6641 36.1719 15.6484 35.0469 15.6406 33.5469C10.7734 34.6328 9.74219 31.1406 9.74219 31.1406C8.94531 29.0703 7.79688 28.5156 7.79688 28.5156C6.21094 27.3984 7.91406 27.4219 7.91406 27.4219C9.67188 27.5469 10.5938 29.2734 10.5938 29.2734C12.1562 32.0156 14.6875 31.2266 15.6875 30.7656C15.8438 29.6094 16.2969 28.8125 16.7969 28.3672C12.9141 27.9141 8.82812 26.375 8.82812 19.5C8.82812 17.5391 9.50781 15.9375 10.625 14.6875C10.4453 14.2344 9.84375 12.4062 10.7969 9.9375C10.7969 9.9375 12.2656 9.45312 15.6094 11.7734C17.0078 11.375 18.5 11.1797 19.9922 11.1719C21.4766 11.1797 22.9766 11.375 24.375 11.7734C27.7188 9.45312 29.1797 9.9375 29.1797 9.9375C30.1328 12.4062 29.5312 14.2344 29.3516 14.6875C30.4688 15.9453 31.1484 17.5469 31.1484 19.5C31.1484 26.3906 27.0547 27.9062 23.1562 28.3516C23.7812 28.9062 24.3438 30 24.3438 31.6719C24.3438 34.0703 24.3203 36.0078 24.3203 36.5938C24.3203 37.0703 24.6328 37.6328 25.5234 37.4531C32.4922 35.0859 37.5 28.3672 37.5 20.4453C37.5 10.5313 29.6641 2.5 20 2.5Z"
+                            fill="black" />
+                    </svg>
+                </a>
+                <a href="">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M19.8942 11.7813C14.9559 11.7813 10.8642 15.8025 10.8642 20.8113C10.8642 25.8201 14.8854 29.8413 19.8942 29.8413C24.903 29.8413 28.9242 25.7496 28.9242 20.8113C28.9242 15.873 24.8325 11.7813 19.8942 11.7813ZM19.8942 26.5961C16.7196 26.5961 14.1093 23.9859 14.1093 20.8113C14.1093 17.6367 16.7196 15.0265 19.8942 15.0265C23.0688 15.0265 25.679 17.6367 25.679 20.8113C25.679 23.9859 23.0688 26.5961 19.8942 26.5961Z"
+                            fill="black" />
+                        <path
+                            d="M29.2769 13.6155C30.4068 13.6155 31.3227 12.6996 31.3227 11.5697C31.3227 10.4398 30.4068 9.52381 29.2769 9.52381C28.147 9.52381 27.231 10.4398 27.231 11.5697C27.231 12.6996 28.147 13.6155 29.2769 13.6155Z"
+                            fill="black" />
+                        <path
+                            d="M34.5679 6.27866C32.7337 4.3739 30.1235 3.38624 27.1605 3.38624H12.6279C6.4903 3.38624 2.39859 7.47795 2.39859 13.6155V28.0776C2.39859 31.1111 3.38624 33.7213 5.36155 35.6261C7.26631 37.4603 9.806 38.3774 12.6984 38.3774H27.0899C30.1235 38.3774 32.6631 37.3898 34.4974 35.6261C36.4021 33.7919 37.3898 31.1817 37.3898 28.1481V13.6155C37.3898 10.6526 36.4021 8.11287 34.5679 6.27866ZM34.2857 28.1481C34.2857 30.3351 33.5097 32.0988 32.2399 33.2981C30.97 34.4974 29.2063 35.1323 27.0899 35.1323H12.6984C10.582 35.1323 8.81834 34.4974 7.5485 33.2981C6.27866 32.0282 5.64374 30.2645 5.64374 28.0776V13.6155C5.64374 11.4991 6.27866 9.73545 7.5485 8.46561C8.7478 7.26631 10.582 6.63139 12.6984 6.63139H27.231C29.3474 6.63139 31.1111 7.26631 32.381 8.53615C33.5802 9.806 34.2857 11.5697 34.2857 13.6155V28.1481Z"
+                            fill="black" />
+                    </svg>
+                </a>
+                <a href="">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M20.2567 17.8826L13.4811 8.402H9.86736L18.2605 20.1452L19.317 21.6224L26.5011 31.6826H30.1149L21.3087 19.3598L20.2567 17.8826Z"
+                            fill="black" />
+                        <path
+                            d="M35.2663 1.66667H4.73369C3.03976 1.66667 1.66667 3.03976 1.66667 4.73368V35.2663C1.66667 36.9602 3.03976 38.3333 4.73369 38.3333H35.2663C36.9603 38.3333 38.3333 36.9602 38.3333 35.2663V4.73368C38.3333 3.03976 36.9603 1.66667 35.2663 1.66667ZM25.3923 33.3333L18.1213 22.9783L9.01907 33.3333H6.66667L17.0782 21.4922L6.66667 6.66667H14.6078L21.4913 16.4699L30.116 6.66667H32.4683L22.54 17.9594L33.3333 33.3333H25.3923Z"
+                            fill="black" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div id="lower">
+            <p class="select-none cursor-default" id="status-msg">
+                Status: <span id="status">Configuring settings</span>...
+            </p>
+            <p class="select-none cursor-default" id="tip-msg">
+                <span class="tip" id="tip-1">- ctrl + q to cancel/back</span>
+                <span class="tip" id="tip-2">- ctrl + r to reset</span>
+                <span class="tip" id="tip-3">- enter to proceed/confirm</span>
+            </p>
+            <div class="setting-block">
+                <label class="select-none btn" for="animation">Animation(y/n):<input type="text" name="" id="animation" value="y"></label>
+            </div>
+            <div class="setting-block">
+                <label class="select-none btn" for="dark-mode">Dark mode(y/n):<input type="text" name="" class="input-box" id="dark-mode" value="y"></label>
+            </div>
+            <div class="setting-block">
+                <label class="select-none btn" for="mouse-trail">Mouse trail(y/n):<input type="text" name="" class="input-box" id="mouse-trail" value="y"></label>
+            </div>
+            <div class="setting-block">
+                <label class="select-none btn" for="sounds">Sounds(y/n):<input type="text" name="" class="input-box" id="sounds" value="y"></label>
+                <div class="sound-block">
+                    <label for="background" class="select-none btn">> Background(y/n):<input type="text" name="" class="input-box" id="background" value="y"></label>
+                </div>
+                <div class="sound-block">
+                    <label for="background" class="select-none btn">> Hover(y/n):<input type="text" name="" class="input-box" id="background" value="y"></label>
+                </div>
+                <div class="sound-block">
+                    <label for="background" class="select-none btn">> Click(y/n):<input type="text" name="" class="input-box" id="background" value="y"></label>
+                </div>
             </div>
         </div>
     </section>
