@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../../styles/main.css">
     <link rel="stylesheet" href="../buttons/simple-button/simple-button.css">
     <link rel="stylesheet" href="auth-interface.css">
-    <!-- <script defer type="module" src="dom.js"></script> -->
+    <script defer type="module" src="dom.js"></script>
     <title>Auth Interface</title>
 </head>
 
@@ -78,6 +78,7 @@
                     <p class="cursor-default select-none" id="arrow">></p>
                     <input type="text" id="username">
                 </div>
+                <p class="cursor-default select-none" id="block-tip">- Upto 16 characters and no spaces</p>
             </div>
             <div class="input-block" id="block-password">
                 <label class="select-none" for="password">Enter your desired password:</label>
@@ -85,6 +86,7 @@
                     <p class="cursor-default select-none" id="arrow">></p>
                     <input type="password" id="password">
                 </div>
+                <p class="cursor-default select-none" id="block-tip">- 8 characters or more and no spaces</p>
             </div>
             <div class="input-block" id="block-con-password">
                 <label class="select-none" for="con-password">Please confirm your password:</label>
@@ -92,10 +94,11 @@
                     <p class="cursor-default select-none" id="arrow">></p>
                     <input type="password" id="con-password">
                 </div>
+                <p class="cursor-default select-none" id="block-tip">- Please remember your password</p>
             </div>
         </div>
     </section>
-    <section class="comp auth-interface">
+    <!-- <section class="comp auth-interface">
         <div id="upper">
             <div id="actions">
                 <button type="button" class="comp btn simple-button" id="action-cancel">
@@ -247,7 +250,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 </body>
 
 </html>

@@ -7,15 +7,19 @@ function Auth() {
     const cont_start = document.querySelector('#start');
     const cont_action = cont_start.querySelector('#action');
 
-    let btn_new = SimpleButton('new game', 'start');
-    let btn_settings = SimpleButton('settings', 'start');
-    let btn_load = SimpleButton('load game', 'start');
+    const newGame = SimpleButton('new game', 'new');
+    const loadGame = SimpleButton('load game', 'load');
+    const settings = SimpleButton('settings', 'settings');
 
-    btn_new.render().querySelector('input[type="radio"').checked = true;
+    const btn_new = newGame.render();
+    const btn_load = loadGame.render();
+    const btn_settings = settings.render();
 
-    cont_action.appendChild(btn_new.render());
-    cont_action.appendChild(btn_load.render());
-    cont_action.appendChild(btn_settings.render());
+    btn_new.classList.add('clicked');
+
+    cont_action.appendChild(btn_new);
+    cont_action.appendChild(btn_load);
+    cont_action.appendChild(btn_settings);
 }
 
 Auth();
