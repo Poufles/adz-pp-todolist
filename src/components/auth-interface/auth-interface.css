@@ -43,40 +43,40 @@
     opacity: 0.5;
 }
 
-.auth-interface>#lower>.input-block {
+.auth-interface>#lower .input-block {
     font-size: var(--fn-xxlr);
     margin-bottom: var(--gap-3);
 }
 
-.auth-interface>#lower>.input-block>label {
+.auth-interface>#lower .input-block>label {
     cursor: pointer;
 }
 
-.auth-interface>#lower>.input-block>.input-box
+.auth-interface>#lower .input-block>.input-box
 {
     display: flex;
     gap: var(--gap-3);
     align-items: center;
 }
 
-.auth-interface>#lower>.input-block>.input-box>input {
+.auth-interface>#lower .input-block>.input-box>input {
     background-color: transparent;
     border: 0;
     width: 100%;
     outline: 0;
 }
 
-.auth-interface>#lower>.input-block>#block-tip{
+.auth-interface>#lower .input-block>#block-tip{
     font-size: var(--fn-lr);
     opacity: 0.5;
 }
 
-.auth-interface>#lower>.input-block>.input-box>input::selection {
+.auth-interface>#lower .input-block>.input-box>input::selection {
     background-color: var(--black);
     color: var(--secondary-color);
 }
 
-.auth-interface>#lower>.account-block {
+.auth-interface>#lower .account-block {
     border-left: 0px solid transparent;
     font-size: var(--fn-xxlr);
     margin-bottom: var(--gap-5);
@@ -85,25 +85,29 @@
     transition: var(--trans-q);
 }
 
-.auth-interface>#lower>.account-block:hover {
+.auth-interface>#lower .account-block:hover {
     border-left: 5px solid var(--black);
     padding-left: 10px;
 }
 
-.auth-interface>#lower>.account-block.clicked {
+.auth-interface>#lower .account-block:focus {
+    outline: 0;
+}
+
+.auth-interface>#lower .account-block.clicked {
     border-left: 5px solid var(--black);
     padding-left: 10px;
 }
 
-.auth-interface>#lower>.setting-block {
+.auth-interface>#lower .setting-block {
     margin-bottom: var(--fn-xxlr);
 }
 
-.auth-interface>#lower>.setting-block label {
+.auth-interface>#lower .setting-block label {
     font-size: var(--fn-xxlr);
 }
 
-.auth-interface>#lower>.setting-block label>input {
+.auth-interface>#lower .setting-block label>input {
     background-color: transparent;
     border: 0;
     text-align: center;
@@ -111,15 +115,15 @@
     outline: 0;
 }
 
-.auth-interface>#lower>.setting-block:last-of-type.off>.sound-block {
+.auth-interface>#lower .setting-block:last-of-type.off>.sound-block {
     cursor: not-allowed;
     opacity: 0.5;
 }
 
-.auth-interface>#lower>.setting-block:last-of-type.off>.sound-block * {
+.auth-interface>#lower .setting-block:last-of-type.off>.sound-block * {
     cursor: not-allowed;
 }
 
-.auth-interface>#lower>.setting-block:last-of-type.off>.sound-block input:disabled {
+.auth-interface>#lower .setting-block:last-of-type.off>.sound-block input:disabled {
     color: black
 }

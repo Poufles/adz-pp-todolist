@@ -13,7 +13,7 @@
 
 <body
     style="display: flex; gap:50px; align-items: center; justify-content: center; height: 100dvh;">
-    <section class="comp auth-interface">
+    <!-- <section class="comp auth-interface">
         <div id="upper">
             <div id="actions">
                 <button type="button" class="comp btn simple-button" id="action-cancel">
@@ -72,33 +72,35 @@
                 <span class="tip" id="tip-2">- ctrl + r to reset</span>
                 <span class="tip" id="tip-3">- enter to proceed/confirm</span>
             </p>
-            <div class="input-block" id="block-username">
-                <label class="select-none" for="username">How would you like to be  called:</label>
-                <div class="input-box">
-                    <p class="cursor-default select-none" id="arrow">></p>
-                    <input type="text" id="username">
+            <div id="interface">
+                <div class="input-block block" id="block-username">
+                    <label class="select-none" for="username">How would you like to be  called:</label>
+                    <div class="input-box">
+                        <p class="cursor-default select-none" id="arrow">></p>
+                        <input type="text" id="username">
+                    </div>
+                    <p class="cursor-default select-none" id="block-tip">- Upto 16 characters and no spaces</p>
                 </div>
-                <p class="cursor-default select-none" id="block-tip">- Upto 16 characters and no spaces</p>
-            </div>
-            <div class="input-block" id="block-password">
-                <label class="select-none" for="password">Enter your desired password:</label>
-                <div class="input-box">
-                    <p class="cursor-default select-none" id="arrow">></p>
-                    <input type="password" id="password">
+                <div class="input-block block" id="block-password">
+                    <label class="select-none" for="password">Enter your desired password:</label>
+                    <div class="input-box">
+                        <p class="cursor-default select-none" id="arrow">></p>
+                        <input type="password" id="password">
+                    </div>
+                    <p class="cursor-default select-none" id="block-tip">- 8 characters or more and no spaces</p>
                 </div>
-                <p class="cursor-default select-none" id="block-tip">- 8 characters or more and no spaces</p>
-            </div>
-            <div class="input-block" id="block-con-password">
-                <label class="select-none" for="con-password">Please confirm your password:</label>
-                <div class="input-box">
-                    <p class="cursor-default select-none" id="arrow">></p>
-                    <input type="password" id="con-password">
+                <div class="input-block block" id="block-con-password">
+                    <label class="select-none" for="con-password">Please confirm your password:</label>
+                    <div class="input-box">
+                        <p class="cursor-default select-none" id="arrow">></p>
+                        <input type="password" id="con-password">
+                    </div>
+                    <p class="cursor-default select-none" id="block-tip">- Please remember your password</p>
                 </div>
-                <p class="cursor-default select-none" id="block-tip">- Please remember your password</p>
             </div>
         </div>
-    </section>
-    <!-- <section class="comp auth-interface">
+    </section> -->
+    <section class="comp auth-interface">
         <div id="upper">
             <div id="actions">
                 <button type="button" class="comp btn simple-button" id="action-cancel">
@@ -157,19 +159,21 @@
                 <span class="tip" id="tip-2">- ctrl + r to reset</span>
                 <span class="tip" id="tip-3">- enter to proceed/confirm</span>
             </p>
-            <div role="button" class="account-block btn clicked" id="account-0" dataset="0">
-                <p class="select-none" id="account-info">
-                    <span id="username">poufsadev</span> | <span id="level">lv1</span> | <span id="date-of-creation">03/25/2025</span> | tasks: <span id="task-no">2</span> | completed: <span id="completed-task-no">20</span> | due today: <span id="due-today">1</span>
-                </p>
-            </div>
-            <div role="button" class="account-block btn" id="account-1" dataset="1">
-                <p class="select-none" id="account-info">
-                    <span id="username">dummsy</span> | <span id="level">lv10</span> | <span id="date-of-creation">04/15/2025</span> | tasks: <span id="task-no">10</span> | completed: <span id="completed-task-no">123</span> | due today: <span id="due-today">5</span>
-                </p>
+            <div id="interface">
+                <div role="button" class="block account-block btn clicked" id="account-0" dataset="0">
+                    <p class="select-none" id="account-info">
+                        <span id="username">poufsadev</span> | <span id="level">lv1</span> | <span id="date-of-creation">03/25/2025</span> | tasks: <span id="task-no">2</span> | completed: <span id="completed-task-no">20</span> | due today: <span id="due-today">1</span>
+                    </p>
+                </div>
+                <div role="button" class="account-block btn" id="account-1" dataset="1">
+                    <p class="select-none" id="account-info">
+                        <span id="username">dummsy</span> | <span id="level">lv10</span> | <span id="date-of-creation">04/15/2025</span> | tasks: <span id="task-no">10</span> | completed: <span id="completed-task-no">123</span> | due today: <span id="due-today">5</span>
+                    </p>
+                </div>
             </div>
         </div>
     </section>
-    <section class="comp auth-interface">
+    <!-- <section class="comp auth-interface">
         <div id="upper">
             <div id="actions">
                 <button type="button" class="comp btn simple-button" id="action-cancel">
