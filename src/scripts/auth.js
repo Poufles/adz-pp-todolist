@@ -1,4 +1,4 @@
-import '../styles/auth.css';
+import '../styles/auth/auth.css';
 import '../components/buttons/simple-button/simple-button.css';
 import '../components/auth-interface/auth-interface.css';
 
