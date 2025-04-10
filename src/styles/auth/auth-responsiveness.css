@@ -1,0 +1,138 @@
+@media screen and (max-width: 1520px) {
+    #page_auth #features {
+        font-size: var(--fn-lr);
+        gap: 50px;
+    }
+
+    #page_auth #start {
+        top: 52%
+    }
+
+    #page_auth #start .simple-button {
+        font-size: var(--fn-xxlr);
+    }
+
+    #page_auth #title {
+        font-size: 64px;
+    }
+
+    #page_auth .auth-interface>#lower {
+        height: 500px;
+        width: 450px;
+    }
+
+    #page_auth .auth-interface>#lower>#status-msg {
+        font-size: var(--fn-xlr);
+    }
+
+    #page_auth .auth-interface>#lower>#tip-msg {
+        font-size: var(--fn-sm);
+        margin-bottom: calc(var(--gap-3) * 2);
+    }
+
+    #page_auth .auth-interface>#lower .block {
+        font-size: var(--fn-xlr);
+        margin-bottom: var(--gap-3);
+    }
+
+    #page_auth .auth-interface>#lower .block>#block-tip {
+        font-size: var(--fn-sm);
+        opacity: 0.5;
+    }
+}
+
+@media screen and (max-width: 950px) {
+    #page_auth {
+        min-height: auto;
+        overflow: hidden;
+    }
+
+    #page_auth #start {
+        left: 33%;
+    }
+
+    #page_auth #start.unshown {
+        left: -33%;
+    }
+
+    #page_auth .auth-interface {
+        display: none;
+        left: 150%;
+    }
+
+    #page_auth .auth-interface.shown {
+        left: 50%;
+    }
+
+    #page_auth .auth-interface>#lower {
+        height: 500px;
+        width: 435px;
+    }
+}
+
+/* DO LATER */
+@media screen and (max-width: 630px) {
+    #page_auth #features {
+        display: none;
+        width: 100%;
+        justify-content: space-between;
+        gap: 0;
+    }
+}
+
+@media screen and (max-width: 530px) {
+    #page_auth {
+        --ms-padding: 10px;
+        --mh-padding: 20px;
+
+        min-height: 650px;
+    }
+
+    #page_auth #boxes .design-box {
+        width: 30px;
+    }
+
+    #page_auth #start {
+        top: 53%;
+        left: 40%;
+    }
+
+    #page_auth #title {
+        font-size: var(--fn-xmsv);
+    }
+
+    /**/
+    #page_auth .auth-interface>#upper {
+        font-size: var(--fn-md);
+        height: 20px;
+    }
+
+    .auth-interface>#upper>#socmed>a>svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    #page_auth .auth-interface>#lower {
+        height: 410px;
+        width: 315px;
+    }
+
+    #page_auth .auth-interface>#lower>#status-msg {
+        font-size: var(--fn-md);
+    }
+
+    #page_auth .auth-interface>#lower>#tip-msg {
+        font-size: var(--fn-sm);
+        margin-bottom: calc(var(--gap-3) * 2);
+    }
+
+    #page_auth .auth-interface>#lower .block {
+        font-size: var(--fn-md);
+        margin-bottom: var(--gap-3);
+    }
+
+    #page_auth .auth-interface>#lower .block>#block-tip {
+        font-size: var(--fn-sm);
+        opacity: 0.5;
+    }
+}

@@ -17,6 +17,7 @@
 
 .auth-interface>#upper>#socmed>a>svg {
     aspect-ratio: 1;
+    height: 25px;
     width: 25px;
 }
 
