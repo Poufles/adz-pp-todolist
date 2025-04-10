@@ -66,13 +66,17 @@ const AuthInterface = function () {
         const cont_lower = component.querySelector('#lower');
         if (currentInterface) cont_lower.removeChild(currentInterface);
 
-        InitializeStartElements(component, 'Creating account', {
-            newTipMessage: true,
-            msgArr: [
+        InitializeKeyboardTip(component, 
+            [
                 '- ctrl + q to cancel/back',
                 '- ctrl + x to reset',
                 '- enter to proceed/confirm'
             ]
+        );
+
+        const buttons = InitializeActionButtons(component, {
+            hasCancel: true,
+            hasReset: true
         });
 
         currentInterface = LoadNewGameElements(component);
@@ -89,12 +93,15 @@ const AuthInterface = function () {
         const cont_lower = component.querySelector('#lower');
         if (currentInterface) cont_lower.removeChild(currentInterface);
 
-        InitializeStartElements(component, 'Choosing account', {
-            newTipMessage: true,
-            msgArr: [
+        InitializeKeyboardTip(component, 
+            [
                 '- ctrl + q to cancel/back',
                 '- enter to proceed/confirm'
             ]
+        );
+
+        const buttons = InitializeActionButtons(component, {
+            hasCancel: true
         });
 
         currentInterface = LoadLoadGameElements(component);
@@ -107,13 +114,17 @@ const AuthInterface = function () {
         const cont_lower = component.querySelector('#lower');
         if (currentInterface) cont_lower.removeChild(currentInterface);
 
-        InitializeStartElements(component, 'Configuring settings', {
-            newTipMessage: true,
-            msgArr: [
+        InitializeKeyboardTip(component, 
+            [
                 '- ctrl + q to cancel/back',
                 '- ctrl + x to return default',
                 '- enter to proceed/confirm'
             ]
+        );
+
+        const buttons = InitializeActionButtons(component, {
+            hasCancel: true,
+            hasReset: true
         });
 
         currentInterface = LoadSettingsElements(component);
@@ -165,39 +176,69 @@ function LoadNewGameElements(component) {
     // Change the word type
     const template =
         `
-    <div class="block input-block" id="block-type">
-    <label class="select-none" for="type">Message:</label>
-    <div class="input-box">
-    <p class="cursor-default select-none" id="arrow">></p>
-    <input type="text" id="type">
-    </div>
-    <p class="cursor-default select-none" id="block-tip">- Upto 16 characters and no spaces</p>
-    </div>
+        <div class="block input-block" id="block-type">
+            <label class="select-none" for="type">Message:</label>
+            <div class="input-box">
+                <p class="cursor-default select-none" id="arrow">></p>
+                <input type="text" id="type">
+            </div>
+            <p class="cursor-default select-none" id="block-tip">- Upto 16 characters and no spaces</p>
+        </div>
+    `;
+
+    const template_visibility =
+        `
+        <button role="button" tabindex="0" class="btn visibility select-none">&lt;<span id="slash">/</span>&gt;</button>
     `;
 
     let ctrlHold;
 
     const inputArr = [];
+    const visibilityArr = [];
     const range = document.createRange();
     const cont_interface = document.createElement('div');
     const cont_lower = component.querySelector('#lower');
+    const span_status = cont_lower.querySelector('#status');
 
     const cont_username = range.createContextualFragment(template);
     const cont_password = range.createContextualFragment(template);
     const cont_conpass = range.createContextualFragment(template);
 
+    span_status.textContent = 'Creating account'
     cont_interface.id = 'interface';
 
     // Username block
     const input_username = DefineBlock(cont_username, 'username', 'How would you like to be called:', '- Upto 16 characters and no spaces');
 
     // Password block
-    const input_password = DefineBlock(cont_password, 'password', 'Enter your desired password:', '- 8 characters or more and no spaces')
+    const input_password = DefineBlock(cont_password, 'password', 'Enter your desired password:', '- 8 characters or more and no spaces');
+    const cont_block_password = cont_password.querySelector('#block-password');
+    const cont_input_pass = cont_block_password.querySelector('.input-box');
+    const password_visibility_fragment = range.createContextualFragment(template_visibility);
+    const btn_password_visibility = password_visibility_fragment.querySelector('button');
+
+    cont_block_password.insertBefore(btn_password_visibility, cont_input_pass);
     input_password.setAttribute('type', 'password');
 
     // Confirm password block
     const input_conpass = DefineBlock(cont_conpass, 'conpass', 'Please re-enter your password:', '- Please remember your password');
+    const cont_block_conpass = cont_conpass.querySelector('#block-conpass');
+    const cont_box_conpass = cont_block_conpass.querySelector('.input-box');
+    const conpass_visibility_fragment = range.createContextualFragment(template_visibility);
+    const btn_conpass_visibility = conpass_visibility_fragment.querySelector('button');
+
+    cont_block_conpass.insertBefore(btn_conpass_visibility, cont_box_conpass);
     input_conpass.setAttribute('type', 'password');
+
+    // Store passwords visibility in array
+    visibilityArr.push({
+        button: btn_password_visibility,
+        input: input_password
+    });
+    visibilityArr.push({
+        button: btn_conpass_visibility,
+        input: input_conpass
+    });
 
     // Store input in array (for interactivity)
     inputArr.push(input_username);
@@ -211,6 +252,29 @@ function LoadNewGameElements(component) {
 
     cont_lower.appendChild(cont_interface);
     input_username.focus();
+
+    // Listener for password visibility
+    for (let visibility of visibilityArr) {
+        const button = visibility.button;
+        const input = visibility.input;
+        const span = button.querySelector('span#slash');
+
+        button.addEventListener('click', () => {
+            if (span.textContent === '/') span.textContent = 'o';
+            else span.textContent = '/';
+
+            if (input.type === 'password') input.type = 'text';
+            else input.type = 'password';
+        });
+
+        button.addEventListener('mousedown', () => {
+            span.style.opacity = '1';
+        });
+
+        button.addEventListener('mouseleave', () => {
+            span.style.removeProperty('opacity');
+        });
+    };
 
     // Listeners for input
     for (let input of inputArr) {
@@ -325,7 +389,9 @@ function LoadLoadGameElements(component) {
     const range = document.createRange();
     const cont_interface = document.createElement('div');
     const cont_lower = component.querySelector('#lower');
+    const span_status = cont_lower.querySelector('#status');
 
+    span_status.textContent = 'Choosing account';
     cont_interface.id = 'interface';
 
     // Make a loop here later (CHANGE)
@@ -355,7 +421,7 @@ function LoadLoadGameElements(component) {
     cont_account.addEventListener('mouseenter', () => {
         for (let index = 0; index < accArr.length; index++) {
             const acc = accArr[index];
-    
+
             console.log(acc);
             if (acc.classList.contains('clicked')) {
                 acc.classList.remove('clicked');
@@ -405,7 +471,7 @@ function LoadLoadGameElements(component) {
     a.addEventListener('mouseenter', () => {
         for (let index = 0; index < accArr.length; index++) {
             const acc = accArr[index];
-    
+
             console.log(acc);
             if (acc.classList.contains('clicked')) {
                 acc.classList.remove('clicked');
@@ -442,14 +508,14 @@ function LoadSettingsElements(component) {
     // Change "type" to proper block name
     const template =
         `
-        <div class="setting-block">
+        <div class="setting-block" id="block-type">
             <label class="select-none btn" for="type"><span id="type"></span>:<input type="text" name="" id="type" value="y"></label>
         </div>
         `;
-    
+
     const template_sound =
         `
-        <div class="sound-block">
+        <div class="sound-block" id="block-type">
             <label class="select-none btn" for="type">> <span id="type"></span>:<input type="text" name="" id="type" value="y"></label>
         </div>
         `;
@@ -458,6 +524,7 @@ function LoadSettingsElements(component) {
     const range = document.createRange();
     const cont_interface = document.createElement('div');
     const cont_lower = component.querySelector('#lower');
+    const span_status = cont_lower.querySelector('#status');
 
     const cont_animation = range.createContextualFragment(template);
     const cont_dark = range.createContextualFragment(template);
@@ -467,6 +534,7 @@ function LoadSettingsElements(component) {
     const cont_hover = range.createContextualFragment(template_sound);
     const cont_click = range.createContextualFragment(template_sound);
 
+    span_status.textContent = 'Configuring settings';
     cont_interface.id = 'interface';
 
     // Animation block
@@ -505,7 +573,7 @@ function LoadSettingsElements(component) {
     cont_sound_setting.appendChild(cont_background);
     cont_sound_setting.appendChild(cont_hover);
     cont_sound_setting.appendChild(cont_click);
-    
+
     // Append block in interface
     cont_interface.appendChild(cont_animation);
     cont_interface.appendChild(cont_dark);
@@ -513,6 +581,23 @@ function LoadSettingsElements(component) {
     cont_interface.appendChild(cont_sound);
 
     cont_lower.appendChild(cont_interface);
+
+    // Listeners for input
+    for (let setting of settingArr) {
+        // Listener when an input receives focus and has a value
+        setting.addEventListener('focus', () => {
+            const settingLength = setting.value.length;
+
+            requestAnimationFrame(() => {
+                setting.setSelectionRange(settingLength, settingLength);
+            });
+        });
+    };
+
+    // Listener for changing input focus
+    ArrowKeyListener(cont_interface, settingArr);
+
+    input_animation.focus();
 
     return cont_interface;
 };
@@ -530,6 +615,7 @@ function DefineSettingBlock(blockTemplate, blockType, blockMessage, blockDefault
     const span = cont_block.querySelector('span');
     const input = cont_block.querySelector('input');
 
+    cont_block.id = `block-${blockType}`;
     label.htmlFor = blockType;
     span.textContent = blockMessage;
     input.id = blockType;
@@ -579,64 +665,74 @@ function ArrowKeyListener(currentInterface, objArr) {
 };
 
 /**
- * Initialize certain elements for each start actions
- * @param {HTMLElement} component - Auth Interface component
- * @param {string} statusText - Text for the status message
- * @param {Object} newTipMessage - Boolean
- * @param {Object} msgArr - Array containing texts
+ * Creates action buttons for the Auth Interface component
+ * @param {HTMLElement} component - The Auth Interface component
+ * @param {Object} options - An object accepting boolean values for the properties: hasCancel and hasReset. 
+ * @returns An object containing properties: buttonCancel and buttonReset
  */
-function InitializeStartElements(component, statusText, { newTipMessage = false, msgArr = [] }) {
+function InitializeActionButtons(component, { hasCancel = false, hasReset = false } = {}) {
     const cont_actions = component.querySelector('#actions');
     const btn_action_cancel = cont_actions.querySelector('#action-cancel');
     const btn_action_reset = cont_actions.querySelector('#action-reset');
 
+    let btn_cancel, btn_reset;
+
+    // Reset buttons
     if (btn_action_cancel) cont_actions.removeChild(btn_action_cancel);
     if (btn_action_reset) cont_actions.removeChild(btn_action_reset);
 
-    const btn_cancel = SimpleButton('Cancel', 'action-cancel');
-    const btn_reset = SimpleButton('Reset', 'action-reset');
+    // Create requested buttons
+    if (hasCancel) btn_cancel = SimpleButton('Cancel', 'action-cancel');
+    if (hasReset) btn_reset = SimpleButton('Reset', 'action-reset');
 
-    const span_status = component.querySelector('#status');
-    span_status.textContent = statusText;
+    // Append buttons
+    if (btn_cancel) cont_actions.appendChild(btn_cancel.render());
+    if (btn_reset) cont_actions.appendChild(btn_reset.render());
 
-    cont_actions.appendChild(btn_cancel.render());
-    cont_actions.appendChild(btn_reset.render());
-
-    const cont_lower = component.querySelector('#lower');
-
-    if (newTipMessage) {
-        const template =
-            `
-            <span class="tip" id="tip-1">- ctrl + q to cancel/back</span>
-        `;
-
-        const range = document.createRange();
-        let p_tip_msg = component.querySelector('#tip-msg');
-
-        if (!p_tip_msg) {
-            p_tip_msg = document.createElement('p')
-            p_tip_msg.classList.add('select-none', 'cursor-default');
-            p_tip_msg.setAttribute('id', 'tip-msg');
-        } else {
-            const tips = p_tip_msg.querySelectorAll('span.tip');
-
-            tips.forEach(tip => {
-                p_tip_msg.removeChild(tip);
-            });
-        };
-
-        for (let index = 0; index < msgArr.length; index++) {
-            const fragment = range.createContextualFragment(template);
-            const span_tip = fragment.querySelector('span.tip');
-
-            span_tip.id = `tip-${index + 1}`;
-            span_tip.textContent = msgArr[index];
-
-            p_tip_msg.appendChild(span_tip);
-        };
-
-        cont_lower.appendChild(p_tip_msg);
+    return {
+        buttonCancel: btn_action_cancel || undefined,
+        buttonReset: btn_action_reset || undefined
     };
+};
+
+/**
+ * Initialize certain elements for each start actions
+ * @param {HTMLElement} component - Auth Interface component
+ * @param {Object} msgArr - Array containing texts
+ */
+function InitializeKeyboardTip(component, msgArr = []) {
+    const template =
+    `
+    <span class="tip" id="tip-1">- ctrl + q to cancel/back</span>
+    `;
+    
+    const range = document.createRange();
+    const cont_lower = component.querySelector('#lower');
+    let p_tip_msg = component.querySelector('#tip-msg');
+
+    if (!p_tip_msg) {
+        p_tip_msg = document.createElement('p')
+        p_tip_msg.classList.add('select-none', 'cursor-default');
+        p_tip_msg.setAttribute('id', 'tip-msg');
+    } else {
+        const tips = p_tip_msg.querySelectorAll('span.tip');
+
+        tips.forEach(tip => {
+            p_tip_msg.removeChild(tip);
+        });
+    };
+
+    for (let index = 0; index < msgArr.length; index++) {
+        const fragment = range.createContextualFragment(template);
+        const span_tip = fragment.querySelector('span.tip');
+
+        span_tip.id = `tip-${index + 1}`;
+        span_tip.textContent = msgArr[index];
+
+        p_tip_msg.appendChild(span_tip);
+    };
+
+    cont_lower.appendChild(p_tip_msg);
 };
 
 export default AuthInterface;
