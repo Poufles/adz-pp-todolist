@@ -24,7 +24,7 @@ export default {
         }),
         new HWPP({
             filename: "auth.html",
-            template: "./src/templates/auth.html",
+            template: "./src/templates/auth/auth.html",
             chunks: ["auth"]
         }),
     ],

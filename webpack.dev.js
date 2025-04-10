@@ -10,7 +10,7 @@ export default merge(common, {
     mode: 'development',
     devtool: "source-map",
     devServer: {
-        watchFiles: [ "./src/templates/*.html", "./src/styles/*.css", "./src/scripts/*.js" ],
+        watchFiles: [ "./src/templates/index.html", "./src/templates/**/*.html", "./src/styles/*.css", "./src/styles/**/*.css", "./src/scripts/*.js" ],
         static: {
             directory: path.resolve(__dirname, "dist")
         },

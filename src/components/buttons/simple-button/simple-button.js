@@ -6,56 +6,24 @@ const template =
     <p class="text"></p>
 `;
 
-const groupTemplate =
-    `
-    <label role="button" class="comp btn simple-button group">
-        <input type="radio" name="" id="">
-        <div class="arrow">
-            <span>></span>
-        </div>
-        <p class="text"></p>
-    </label>
-`;
-
 /**
  * Simple button is a component that creates a simple button
  * that has no background color and seemingly ressembles a
  * normal text
  * @param {string} buttonName - Text to display in the button
- * @param {string} [groupName] - (Optional) The group name of the button
+ * @param {string} buttonId - (Optional) Button's ID
  * @returns 
  */
-function SimpleButton(buttonName, groupName = '') {
+function SimpleButton(buttonName, buttonId = '') {
     // Creating component
     let component;
+    let checkStatus = false;
 
-    // Verify if button is meant for a specific group or not
-    if (groupName !== '') {
-        component = document.createElement('label');
+    component = document.createElement('button');
 
-        component.classList.add('comp', 'btn', 'simple-button', 'group');
-        component.innerHTML = groupTemplate;
-
-        const checkbox = component.querySelector('input[type="radio"]');
-
-        checkbox.setAttribute('name', groupName);
-
-        // Add animation
-        component.addEventListener('mouseenter', () => {
-            component.classList.add('clicked');
-            checkbox.checked = true;
-        });
-    } else {
-        component = document.createElement('button');
-
-        component.classList.add('comp', 'btn', 'simple-button');
-        component.innerHTML = template;
-        
-        // Add animation
-        component.addEventListener('click', () => {
-            component.classList.add('clicked');
-        });
-    };
+    component.classList.add('comp', 'btn', 'simple-button');
+    component.setAttribute('id', buttonId);
+    component.innerHTML = template;
 
     const p_name = component.querySelector('.text');
     p_name.textContent = buttonName;
@@ -73,9 +41,34 @@ function SimpleButton(buttonName, groupName = '') {
      */
     const unrender = (parentNode) => { parentNode.removeChild(component) };
 
+    /**
+     * Retrieves button check status
+     * @returns boolean
+     */
+    const isChecked = () => checkStatus;
+
+    /**
+     * Checks the button
+     */
+    const check = () => {
+        component.classList.add('clicked');
+        checkStatus = component.classList.contains('clicked');
+    };
+
+    /**
+     * Unchecks the button
+     */
+    const uncheck = () => {
+        component.classList.remove('clicked');
+        checkStatus = component.classList.contains('clicked');
+    }
+
     return {
         render,
-        unrender
+        unrender,
+        isChecked,
+        check,
+        uncheck
     };
 };
 

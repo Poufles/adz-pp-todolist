@@ -1,10 +1,17 @@
-@import './main.css';
+@import '../main.css';
+
+html {
+    overflow-x: hidden;
+}
 
 #page_auth {
     --ms-padding: 30px;
     --mh-padding: 30px;
 
     height: 100dvh;
+    width: 100dvw;
+    min-height: 720px;
+    position: relative;
 }
 
 #page_auth .gate {
@@ -22,7 +29,6 @@
 }
 
 #page_auth #boxes {
-    
     display: flex;
     gap: var(--gap-3);
     position: absolute;
@@ -58,9 +64,18 @@
     position: absolute;
     top: 53%;
     left: 27%;
+    transition: var(--trans-q);
 }
 
 #page_auth #title {
     font-size: 96px;
     line-height: 110%;
+}
+
+#page_auth .auth-interface {
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 70%;
+    transition: var(--trans-q);
 }

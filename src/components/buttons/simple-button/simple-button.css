@@ -24,22 +24,12 @@
     width: max-content;
 }
 
-.simple-button.group>input[type="radio"] {
-    position: absolute;
-    display: none;
-}
-
 .simple-button.clicked>.arrow {
     padding-right: 10px;
     width: 100%;
 }
 
 .simple-button:hover>.arrow {
-    padding-right: 10px;
-    width: 100%;
-}
-
-.simple-button.group:has(input[type="radio"]:checked)>.arrow {
     padding-right: 10px;
     width: 100%;
 }
