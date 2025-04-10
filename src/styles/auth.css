@@ -64,3 +64,10 @@
     font-size: 96px;
     line-height: 110%;
 }
+
+#page_auth .auth-interface {
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 70%;
+}

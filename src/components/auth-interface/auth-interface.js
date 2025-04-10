@@ -79,6 +79,17 @@ const AuthInterface = function () {
             hasReset: true
         });
 
+        const btn_cancel = buttons.buttonCancel.render();
+        const btn_reset = buttons.buttonReset.render();
+
+        btn_cancel.addEventListener('click', () => {
+            console.log('Cancel');
+        });
+
+        btn_reset.addEventListener('click', () => {
+            
+        });
+
         currentInterface = LoadNewGameElements(component);
     };
 
@@ -668,7 +679,7 @@ function ArrowKeyListener(currentInterface, objArr) {
  * Creates action buttons for the Auth Interface component
  * @param {HTMLElement} component - The Auth Interface component
  * @param {Object} options - An object accepting boolean values for the properties: hasCancel and hasReset. 
- * @returns An object containing properties: buttonCancel and buttonReset
+ * @returns An object containing properties: buttonCancel and buttonReset, which both are part of the SimpleButton object
  */
 function InitializeActionButtons(component, { hasCancel = false, hasReset = false } = {}) {
     const cont_actions = component.querySelector('#actions');
@@ -690,8 +701,8 @@ function InitializeActionButtons(component, { hasCancel = false, hasReset = fals
     if (btn_reset) cont_actions.appendChild(btn_reset.render());
 
     return {
-        buttonCancel: btn_action_cancel || undefined,
-        buttonReset: btn_action_reset || undefined
+        buttonCancel: btn_cancel || undefined,
+        buttonReset: btn_reset || undefined
     };
 };
 
