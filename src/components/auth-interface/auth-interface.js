@@ -93,7 +93,6 @@ const AuthInterface = function () {
             newTipMessage: true,
             msgArr: [
                 '- ctrl + q to cancel/back',
-                '- ctrl + x to reset',
                 '- enter to proceed/confirm'
             ]
         });
@@ -117,7 +116,7 @@ const AuthInterface = function () {
             ]
         });
 
-        LoadSettingsElements(component);
+        currentInterface = LoadSettingsElements(component);
     };
 
     return {
@@ -327,11 +326,7 @@ function LoadLoadGameElements(component) {
     const cont_interface = document.createElement('div');
     const cont_lower = component.querySelector('#lower');
 
-    const cont_tip_msg = component.querySelector('#tip-msg');
-    const span_tip = component.querySelector('#tip-2');
-    
     cont_interface.id = 'interface';
-    cont_tip_msg.removeChild(span_tip);
 
     // Make a loop here later (CHANGE)
     // Retrieve elements to change
@@ -444,9 +439,104 @@ function LoadLoadGameElements(component) {
  * @param {HTMLElement} component - the AuthInterface component 
  */
 function LoadSettingsElements(component) {
+    // Change "type" to proper block name
+    const template =
+        `
+        <div class="setting-block">
+            <label class="select-none btn" for="type"><span id="type"></span>:<input type="text" name="" id="type" value="y"></label>
+        </div>
+        `;
     
+    const template_sound =
+        `
+        <div class="sound-block">
+            <label class="select-none btn" for="type">> <span id="type"></span>:<input type="text" name="" id="type" value="y"></label>
+        </div>
+        `;
+
+    const settingArr = [];
+    const range = document.createRange();
+    const cont_interface = document.createElement('div');
+    const cont_lower = component.querySelector('#lower');
+
+    const cont_animation = range.createContextualFragment(template);
+    const cont_dark = range.createContextualFragment(template);
+    const cont_mouse = range.createContextualFragment(template);
+    const cont_sound = range.createContextualFragment(template);
+    const cont_background = range.createContextualFragment(template_sound);
+    const cont_hover = range.createContextualFragment(template_sound);
+    const cont_click = range.createContextualFragment(template_sound);
+
+    cont_interface.id = 'interface';
+
+    // Animation block
+    const input_animation = DefineSettingBlock(cont_animation, 'animation', 'Animation(y/n)', 'y');
+
+    // Animation block
+    const input_dark = DefineSettingBlock(cont_dark, 'dark-mode', 'Dark mode(y/n)', 'y');
+
+    // Animation block
+    const input_mouse = DefineSettingBlock(cont_mouse, 'mouse-trail', 'Mouse trail(y/n)', 'y');
+
+    // Animation block
+    const input_sound = DefineSettingBlock(cont_sound, 'sounds', 'Sounds(y/n)', 'y');
+
+    // Animation block
+    const input_background = DefineSettingBlock(cont_background, 'background', 'Background(y/n)', 'y');
+
+    // Animation block
+    const input_hover = DefineSettingBlock(cont_hover, 'hover', 'Hover(y/n)', 'y');
+
+    // Animation block
+    const input_click = DefineSettingBlock(cont_click, 'click', 'Click(y/n)', 'y');
+
+    // Insert input in array
+    settingArr.push(input_animation);
+    settingArr.push(input_dark);
+    settingArr.push(input_mouse);
+    settingArr.push(input_sound);
+    settingArr.push(input_background);
+    settingArr.push(input_hover);
+    settingArr.push(input_click);
+
+    // Append sound settings 
+    const cont_sound_setting = cont_sound.querySelector('.setting-block');
+
+    cont_sound_setting.appendChild(cont_background);
+    cont_sound_setting.appendChild(cont_hover);
+    cont_sound_setting.appendChild(cont_click);
+    
+    // Append block in interface
+    cont_interface.appendChild(cont_animation);
+    cont_interface.appendChild(cont_dark);
+    cont_interface.appendChild(cont_mouse);
+    cont_interface.appendChild(cont_sound);
+
+    cont_lower.appendChild(cont_interface);
+
+    return cont_interface;
 };
 
+/**
+ * Defines the setting block
+ * @param {HTMLElement} blockTemplate - The block template 
+ * @param {String} blockType - The block type
+ * @param {String} blockMessage - The text/message for the template to show
+ * @param {String} blockDefault - The value to show in the input text;
+ */
+function DefineSettingBlock(blockTemplate, blockType, blockMessage, blockDefault) {
+    const cont_block = blockTemplate.querySelector('div');
+    const label = cont_block.querySelector('label');
+    const span = cont_block.querySelector('span');
+    const input = cont_block.querySelector('input');
+
+    label.htmlFor = blockType;
+    span.textContent = blockMessage;
+    input.id = blockType;
+    input.value = blockDefault;
+
+    return input;
+};
 
 /**
  * Adds arrow key listener for the interface
@@ -513,7 +603,6 @@ function InitializeStartElements(component, statusText, { newTipMessage = false,
     cont_actions.appendChild(btn_reset.render());
 
     const cont_lower = component.querySelector('#lower');
-    const cont_interface = cont_lower.querySelector('#interface');
 
     if (newTipMessage) {
         const template =

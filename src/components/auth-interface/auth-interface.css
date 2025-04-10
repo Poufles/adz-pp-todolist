@@ -52,6 +52,20 @@
     cursor: pointer;
 }
 
+.auth-interface>#lower .input-block button.visibility {
+    background-color: transparent;
+    border: 0;
+}
+
+.auth-interface>#lower .input-block button.visibility>#slash {
+    height: 100%;
+    transition: var(--trans-q);
+}
+
+.auth-interface>#lower .input-block button.visibility:hover>#slash {
+    opacity: 0.2;
+}
+
 .auth-interface>#lower .input-block>.input-box
 {
     display: flex;

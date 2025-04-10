@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="../../styles/main.css">
     <link rel="stylesheet" href="../buttons/simple-button/simple-button.css">
     <link rel="stylesheet" href="auth-interface.css">
-    <script defer type="module" src="dom.js"></script>
+    <!-- <script defer type="module" src="dom.js"></script> -->
     <title>Auth Interface</title>
 </head>
 
 <body
     style="display: flex; gap:50px; align-items: center; justify-content: center; height: 100dvh;">
-    <!-- <section class="comp auth-interface">
+    <section class="comp auth-interface">
         <div id="upper">
             <div id="actions">
                 <button type="button" class="comp btn simple-button" id="action-cancel">
@@ -83,6 +83,7 @@
                 </div>
                 <div class="input-block block" id="block-password">
                     <label class="select-none" for="password">Enter your desired password:</label>
+                    <button role="button" tabindex="0" class="btn visibility select-none">&lt;<span id="slash">/</span>&gt;</button>
                     <div class="input-box">
                         <p class="cursor-default select-none" id="arrow">></p>
                         <input type="password" id="password">
@@ -91,6 +92,7 @@
                 </div>
                 <div class="input-block block" id="block-con-password">
                     <label class="select-none" for="con-password">Please confirm your password:</label>
+                    <button role="button" tabindex="0" class="btn visibility select-none">&lt;<span id="slash">/</span>&gt;</button>
                     <div class="input-box">
                         <p class="cursor-default select-none" id="arrow">></p>
                         <input type="password" id="con-password">
@@ -99,8 +101,8 @@
                 </div>
             </div>
         </div>
-    </section> -->
-    <section class="comp auth-interface">
+    </section>
+    <!-- <section class="comp auth-interface">
         <div id="upper">
             <div id="actions">
                 <button type="button" class="comp btn simple-button" id="action-cancel">
@@ -108,12 +110,6 @@
                         <span>></span>
                     </div>
                     <p class="text">Cancel</p>
-                </button>
-                <button type="button" class="comp btn simple-button" id="action-reset">
-                    <div class="arrow">
-                        <span>></span>
-                    </div>
-                    <p class="text">Reset</p>
                 </button>
             </div>
             <div id="socmed">
@@ -156,7 +152,6 @@
             </p>
             <p class="select-none cursor-default" id="tip-msg">
                 <span class="tip" id="tip-1">- ctrl + q to cancel/back</span>
-                <span class="tip" id="tip-2">- ctrl + r to reset</span>
                 <span class="tip" id="tip-3">- enter to proceed/confirm</span>
             </p>
             <div id="interface">
@@ -172,7 +167,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
     <!-- <section class="comp auth-interface">
         <div id="upper">
             <div id="actions">
@@ -247,10 +242,10 @@
                     <label for="background" class="select-none btn">> Background(y/n):<input type="text" name="" class="input-box" id="background" value="y"></label>
                 </div>
                 <div class="sound-block">
-                    <label for="background" class="select-none btn">> Hover(y/n):<input type="text" name="" class="input-box" id="background" value="y"></label>
+                    <label for="hover" class="select-none btn">> Hover(y/n):<input type="text" name="" class="input-box" id="hover" value="y"></label>
                 </div>
                 <div class="sound-block">
-                    <label for="background" class="select-none btn">> Click(y/n):<input type="text" name="" class="input-box" id="background" value="y"></label>
+                    <label for="click" class="select-none btn">> Click(y/n):<input type="text" name="" class="input-box" id="click" value="y"></label>
                 </div>
             </div>
         </div>
