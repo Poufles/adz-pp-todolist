@@ -1,1 +1,5 @@
-window.location.href = '/auth.html';
+function App() {
+    window.location.href = '/auth.html';
+};
+
+App();

@@ -44,26 +44,29 @@
     opacity: 0.5;
 }
 
+.auth-interface>#lower .block {
+    margin-bottom: var(--gap-5);
+}
+
 .auth-interface>#lower .input-block {
     font-size: var(--fn-xxlr);
-    margin-bottom: var(--gap-3);
 }
 
 .auth-interface>#lower .input-block>label {
     cursor: pointer;
 }
 
-.auth-interface>#lower .input-block button.visibility {
+.auth-interface>#lower button.visibility {
     background-color: transparent;
     border: 0;
 }
 
-.auth-interface>#lower .input-block button.visibility>#slash {
+.auth-interface>#lower button.visibility>#slash {
     height: 100%;
     transition: var(--trans-q);
 }
 
-.auth-interface>#lower .input-block button.visibility:hover>#slash {
+.auth-interface>#lower button.visibility:hover>#slash {
     opacity: 0.2;
 }
 
@@ -94,7 +97,6 @@
 .auth-interface>#lower .account-block {
     border-left: 0px solid transparent;
     font-size: var(--fn-xxlr);
-    margin-bottom: var(--gap-5);
     padding-bottom: 8px;
     padding-left: 0px;
     transition: var(--trans-q);
@@ -115,7 +117,7 @@
 }
 
 .auth-interface>#lower .setting-block {
-    margin-bottom: var(--fn-xxlr);
+    margin-bottom: var(--fn-lr);
 }
 
 .auth-interface>#lower .setting-block label {
@@ -141,4 +143,18 @@
 
 .auth-interface>#lower .setting-block:last-of-type.off>.sound-block input:disabled {
     color: black
+}
+
+.auth-interface>#lower .confirm-block {
+    font-size: var(--fn-xxlr);
+}
+
+.auth-interface>#lower .confirm-block input#password:disabled {
+    color: var(--black);
+}
+
+.auth-interface>#lower .confirm-block input {
+    background-color: transparent;
+    border: 0;
+    outline: none;
 }

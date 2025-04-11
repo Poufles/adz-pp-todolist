@@ -1,3 +1,5 @@
+import AccountHandler from '../../scripts/account-handler.js';
+import StorageHandler from '../../scripts/storage-handler.js';
 import SVG from '../../scripts/svg.js';
 import SimpleButton from '../buttons/simple-button/simple-button.js';
 
@@ -61,15 +63,17 @@ const AuthInterface = function () {
 
     /**
      * Creates new game interface
+     * @returns A promise in boolean
      */
-    const OpenNewGame = () => {
+
+    const OpenNewGame = async () => {
         const cont_lower = component.querySelector('#lower');
         if (currentInterface) cont_lower.removeChild(currentInterface);
 
-        InitializeKeyboardTip(component, 
+        InitializeKeyboardTip(component,
             [
-                '- ctrl + q to cancel/back',
-                '- ctrl + x to reset',
+                '- ctrl + alt + q to cancel',
+                '- ctrl + alt + r to reset',
                 '- enter to proceed/confirm'
             ]
         );
@@ -79,22 +83,151 @@ const AuthInterface = function () {
             hasReset: true
         });
 
-        const btn_cancel = buttons.buttonCancel.render();
-        const btn_reset = buttons.buttonReset.render();
+        const newGameElement = LoadNewGameElements(component);
+        const inputArr = newGameElement.inputArr;
 
-        btn_cancel.addEventListener('click', () => {
-            console.log('Cancel');
+        currentInterface = newGameElement.elementInterface;
+
+        return new Promise((resolve) => {
+            let ctrlHold, altHold;
+            const arrLength = inputArr.length;
+
+            const btn_cancel = buttons.buttonCancel.render();
+            const btn_reset = buttons.buttonReset.render();
+
+            // CHANGE LATER
+            btn_cancel.addEventListener('click', () => {
+                for (let index = 0; index < arrLength; index++) {
+                    const input = inputArr[index];
+
+                    if (input.value) {
+                        if (confirm('Are you sure you want to cancel ?')) {
+                            reinitialize();
+                            resolve(true);
+
+                            return;
+                        };
+
+                        return;
+                    };
+                };
+
+                reinitialize();
+                resolve(true);
+            });
+
+            // CHANGE LATER
+            btn_reset.addEventListener('click', () => {
+                for (let index = 0; index < arrLength; index++) {
+                    const input = inputArr[index];
+
+                    if (input.value) {
+                        if (confirm('Are you sure you want to reset ?')) {
+                            inputArr[0].value = '';
+                            inputArr[1].value = '';
+                            inputArr[2].value = '';
+
+                            return;
+                        };
+
+                        break;
+                    };
+                };
+            });
+
+            currentInterface.addEventListener('keyup', (e) => {
+                if (ctrlHold && e.key === 'Control') {
+                    altHold = false;
+
+                    return;
+                };
+
+                if (altHold && e.key === 'Alt') {
+                    altHold = false;
+
+                    return;
+                };
+            });
+
+            currentInterface.addEventListener('keydown', async (e) => {
+                let inputInFocus;
+
+                for (let index = 0; index < arrLength; index++) {
+                    if (inputArr[index].matches(':focus')) {
+                        inputInFocus = index;
+                        break;
+                    };
+                };
+
+                if (e.key === 'Control' && !ctrlHold) {
+                    ctrlHold = true; return;
+                };
+
+                if (e.key === 'Alt' && !altHold) {
+                    altHold = true; return;
+                };
+
+                if (e.key.toLowerCase() === 'q' && ctrlHold && altHold) {
+                    AuthInterface.reinitialize();
+                    resolve(true);
+
+                    return;
+                };
+
+                if (e.key.toLowerCase() === 'r' && ctrlHold && altHold) {
+                    let hasInput = false;
+
+                    for (let index = 0; index < arrLength; index++) {
+                        let input = inputArr[index];
+
+                        if (input.value !== '') {
+                            hasInput = true;
+                            break;
+                        };
+                    };
+
+                    if (hasInput) {
+                        if (confirm('Reset account creation?')) {
+                            for (let input of inputArr) {
+                                input.value = '';
+                            };
+
+                            inputArr[0].focus();
+                            return;
+                        };
+                    };
+                };
+
+                if (e.key === 'Enter' && inputArr[inputInFocus].value !== '') {
+                    let inputComplete = true;
+
+                    for (let index = 0; index < arrLength; index++) {
+                        let input = inputArr[index];
+
+                        if (input.value === '') {
+                            inputComplete = false;
+                            break;
+                        };
+                    };
+
+                    if (inputComplete || inputInFocus + 1 === arrLength) {
+                        console.log('new account created');
+
+                        const username = inputArr[0].value; // Username
+                        const password = inputArr[2].value; // Confirm password
+
+                        AccountHandler.register(username, password);
+                        reinitialize();                        
+                        resolve(true); 
+
+                        return;
+                    };
+
+                    inputArr[inputInFocus + 1].focus();
+                    return;
+                };
+            });
         });
-
-        btn_reset.addEventListener('click', () => {
-            
-        });
-
-        currentInterface = LoadNewGameElements(component);
-    };
-
-    const isNewGameInputComplete = () => {
-
     };
 
     /**
@@ -104,9 +237,9 @@ const AuthInterface = function () {
         const cont_lower = component.querySelector('#lower');
         if (currentInterface) cont_lower.removeChild(currentInterface);
 
-        InitializeKeyboardTip(component, 
+        InitializeKeyboardTip(component,
             [
-                '- ctrl + q to cancel/back',
+                '- ctrl + alt + q to cancel',
                 '- enter to proceed/confirm'
             ]
         );
@@ -125,10 +258,10 @@ const AuthInterface = function () {
         const cont_lower = component.querySelector('#lower');
         if (currentInterface) cont_lower.removeChild(currentInterface);
 
-        InitializeKeyboardTip(component, 
+        InitializeKeyboardTip(component,
             [
-                '- ctrl + q to cancel/back',
-                '- ctrl + x to return default',
+                '- ctrl + alt + q to cancel',
+                '- ctrl + alt + r to return default',
                 '- enter to proceed/confirm'
             ]
         );
@@ -145,7 +278,6 @@ const AuthInterface = function () {
         render,
         reinitialize,
         OpenNewGame,
-        isNewGameInputComplete,
         OpenLoadGame,
         OpenSettings
     }
@@ -201,8 +333,6 @@ function LoadNewGameElements(component) {
         `
         <button role="button" tabindex="0" class="btn visibility select-none">&lt;<span id="slash">/</span>&gt;</button>
     `;
-
-    let ctrlHold;
 
     const inputArr = [];
     const visibilityArr = [];
@@ -307,55 +437,13 @@ function LoadNewGameElements(component) {
         if (inputLength > 16 || input_value[inputLength - 1] === ' ') input_username.value = input_value.slice(0, inputLength - 1);
     });
 
-    cont_interface.addEventListener('keyup', (e) => {
-        if (ctrlHold && e.key === 'Control') {
-            ctrlHold = false; return;
-        };
-    });
-
     // Listeners to change current input focus
     ArrowKeyListener(cont_interface, inputArr);
 
-    cont_interface.addEventListener('keydown', (e) => {
-        let inputInFocus;
-        const arrLength = inputArr.length;
-
-        for (let index = 0; index < arrLength; index++) {
-            if (inputArr[index].matches(':focus')) {
-                inputInFocus = index;
-                break;
-            };
-        };
-
-        if (e.key === 'Control' && !ctrlHold) {
-            ctrlHold = true; return;
-        };
-
-        if (e.key.toLowerCase() === 'q' && ctrlHold) {
-            AuthInterface.reinitialize(); return;
-        };
-
-        if (e.key.toLowerCase() === 'x' && ctrlHold) {
-            for (let input of inputArr) {
-                console.log(input);
-                input.value = '';
-            };
-
-            inputArr[0].focus();
-            return;
-        };
-
-        if (e.key === 'Enter' && inputArr[inputInFocus].value !== '') {
-            if (inputInFocus + 1 === arrLength) {
-                return;
-            };
-
-            inputArr[inputInFocus + 1].focus();
-            return;
-        };
-    });
-
-    return cont_interface;
+    return {
+        elementInterface: cont_interface,
+        inputArr
+    };
 };
 
 /**
@@ -433,7 +521,6 @@ function LoadLoadGameElements(component) {
         for (let index = 0; index < accArr.length; index++) {
             const acc = accArr[index];
 
-            console.log(acc);
             if (acc.classList.contains('clicked')) {
                 acc.classList.remove('clicked');
                 break;
@@ -483,7 +570,6 @@ function LoadLoadGameElements(component) {
         for (let index = 0; index < accArr.length; index++) {
             const acc = accArr[index];
 
-            console.log(acc);
             if (acc.classList.contains('clicked')) {
                 acc.classList.remove('clicked');
                 break;
@@ -713,10 +799,10 @@ function InitializeActionButtons(component, { hasCancel = false, hasReset = fals
  */
 function InitializeKeyboardTip(component, msgArr = []) {
     const template =
-    `
+        `
     <span class="tip" id="tip-1">- ctrl + q to cancel/back</span>
     `;
-    
+
     const range = document.createRange();
     const cont_lower = component.querySelector('#lower');
     let p_tip_msg = component.querySelector('#tip-msg');
