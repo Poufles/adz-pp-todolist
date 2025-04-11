@@ -43,6 +43,7 @@ const AccountHandler = function() {
             sticky: [],
             project: [],
             archive: [],
+            completedcount: 0,
             lastsession: 'n/a',
             insession: false
         };

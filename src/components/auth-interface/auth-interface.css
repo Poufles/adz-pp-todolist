@@ -31,6 +31,11 @@
     height: 700px;
     width: 600px;
     padding: var(--gap-5);
+    overflow-y: auto;
+}
+
+.auth-interface>#lower::-webkit-scrollbar {
+    width: 0px;
 }
 
 .auth-interface>#lower>#status-msg {
@@ -143,18 +148,4 @@
 
 .auth-interface>#lower .setting-block:last-of-type.off>.sound-block input:disabled {
     color: black
-}
-
-.auth-interface>#lower .confirm-block {
-    font-size: var(--fn-xxlr);
-}
-
-.auth-interface>#lower .confirm-block input#password:disabled {
-    color: var(--black);
-}
-
-.auth-interface>#lower .confirm-block input {
-    background-color: transparent;
-    border: 0;
-    outline: none;
 }
