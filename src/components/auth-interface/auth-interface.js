@@ -198,9 +198,11 @@ const AuthInterface = function () {
                     };
                 };
 
+                // For input field focus with enter key 
                 if (e.key === 'Enter' && inputArr[inputInFocus].value !== '') {
                     let inputComplete = true;
 
+                    // Verifies if all input fields have value
                     for (let index = 0; index < arrLength; index++) {
                         let input = inputArr[index];
 
@@ -210,19 +212,23 @@ const AuthInterface = function () {
                         };
                     };
 
+                    // Checks if all inputs are complete or if the focus is on the final input field in order to register a new account
                     if (inputComplete || inputInFocus + 1 === arrLength) {
-                        console.log('new account created');
-
                         const username = inputArr[0].value; // Username
                         const password = inputArr[2].value; // Confirm password
 
-                        AccountHandler.register(username, password);
-                        reinitialize();                        
-                        resolve(true); 
+                        if (AccountHandler.register(username, password)) {
+                            console.log('Account successfully created !');
+                            reinitialize();                        
+                            resolve(true); 
+                        } else {
+                            console.log('Already existing account !');
+                        };
 
                         return;
                     };
 
+                    // Head to the next input field
                     inputArr[inputInFocus + 1].focus();
                     return;
                 };

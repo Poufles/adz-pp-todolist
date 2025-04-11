@@ -59,14 +59,18 @@ const StorageHandler = function () {
      */
     const UpdateStorage = (options = { isLogin: false, isLogout: false, isRegister: false }) => {
         if (options.isRegister) {
-            const accountsInStorage = appStorage.app.account;
-            
+            // Stringify app local storage
+            const appStorageString = JSON.stringify(appStorage);
+
+            // Set update to local storage browser
+            localStorage.setItem('storage-watodo', appStorageString);
+
             return;
         };
 
         if (options.isLogout) {
             // Remove session storage on browser
-            sessionStorage.removeItem('t-watodo-session');
+            sessionStorage.removeItem('storage-watodo-session');
             // Reinitialise runtime session storage
             appSessionStorage = undefined;
 
@@ -74,7 +78,7 @@ const StorageHandler = function () {
             const appStorageString = JSON.stringify(appStorage);
 
             // Set update
-            localStorage.setItem('t-watodo', appStorageString);
+            localStorage.setItem('storage-watodo', appStorageString);
 
             return;
         };
@@ -100,13 +104,13 @@ const StorageHandler = function () {
         const appSessionString = JSON.stringify(appSessionStorage);
 
         // Set update to session storage browser 
-        sessionStorage.setItem('t-watodo-session', appSessionString);
+        sessionStorage.setItem('storage-watodo-session', appSessionString);
 
         // Stringify app local storage
         const appStorageString = JSON.stringify(appStorage);
 
         // Set update to local storage browser
-        localStorage.setItem('t-watodo', appStorageString);
+        localStorage.setItem('storage-watodo', appStorageString);
     };
 
     return {

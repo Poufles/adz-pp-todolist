@@ -1,5 +1,5 @@
-import DateHandler from "./date-handler";
-import StorageHandler from "./storage-handler";
+import DateHandler from "./date-handler.js";
+import StorageHandler from "./storage-handler.js";
 
 const AccountHandler = function() {
     /**
@@ -8,11 +8,25 @@ const AccountHandler = function() {
      * @param {String} password - New account's password 
      */
     const register = (username, password) => {
+        let isSuccessful;
+
+        const storage = StorageHandler.GetStorage();
+        const accountStorage = storage.app.account;
+
+        for (let index = 0; index < accountStorage.length; index++) {
+            const account = accountStorage[index];
+
+            if (account.username === username) {
+                isSuccessful = false;
+                return isSuccessful;
+            };
+        };
+
         const template = {
             username: '',
             password: '',
             level: 1,
-            dateofcreation: 'mm/dd/yyyy',
+            dateofcreation: '',
             preference: {
                 animation: true,
                 darkmode: true,
@@ -29,23 +43,22 @@ const AccountHandler = function() {
             sticky: [],
             project: [],
             archive: [],
-            lastsession: 'hh/mm/ss @ dd/mm/yyyy',
+            lastsession: 'n/a',
             insession: false
         };
 
         const date = DateHandler.currentDate();
-        const time = DateHandler.currentTime();
 
         template.username = username;
         template.password = password;
         template.dateofcreation = date;
-        template.lastsession = `${time} @ ${date}`;
 
-        const storage = StorageHandler.GetStorage();
-        const accountStorage = storage.app.account;
+        accountStorage.push(template);
+        StorageHandler.UpdateStorage({ isRegister: true });
 
-        console.log(accountStorage);
-        console.log(template);
+        isSuccessful = true;
+
+        return isSuccessful;
     };
 
     const login = () => {
