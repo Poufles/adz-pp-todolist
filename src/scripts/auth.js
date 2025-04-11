@@ -1,7 +1,9 @@
 import '../styles/auth/auth.css';
+import '../styles/auth/auth-responsiveness.css';
 import '../components/buttons/simple-button/simple-button.css';
 import '../components/auth-interface/auth-interface.css';
 
+import StorageHandler from './storage-handler.js';
 import SimpleButton from '../components/buttons/simple-button/simple-button.js';
 import AuthInterface from '../components/auth-interface/auth-interface.js';
 
@@ -14,6 +16,7 @@ function Auth() {
     const loadGame = SimpleButton('load game', 'load');
     const settings = SimpleButton('settings', 'settings');
 
+    const cont_interface = AuthInterface.render(); 
     const btn_new = newGame.render();
     const btn_load = loadGame.render();
     const btn_settings = settings.render();
@@ -22,15 +25,20 @@ function Auth() {
     cont_action.appendChild(btn_load);
     cont_action.appendChild(btn_settings);
 
-    body.appendChild(AuthInterface.render());
+    body.appendChild(cont_interface);
 
-    btn_new.addEventListener('click', (e) => {
+    btn_new.addEventListener('click', async (e) => {
         if (loadGame.isChecked()) loadGame.uncheck();
         if (settings.isChecked()) settings.uncheck();
-    
+
         if (!newGame.isChecked()) {
             newGame.check();
-            AuthInterface.OpenNewGame();
+
+            let resolved = await AuthInterface.OpenNewGame();
+
+            if (resolved) {
+                newGame.uncheck();
+            };
         };
     });
 
@@ -53,6 +61,6 @@ function Auth() {
             AuthInterface.OpenSettings();
         };
     });
-}
+};
 
 Auth();
