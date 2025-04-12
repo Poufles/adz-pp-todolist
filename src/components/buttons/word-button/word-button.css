@@ -20,9 +20,9 @@
     left: calc(100% + 10px);
 }
 
-.word-button:focus .arrow,
-.word-button:hover .arrow,
-.word-button.selected .arrow {
+.word-button:not(.clicked):focus .arrow,
+.word-button:not(.clicked):hover .arrow,
+.word-button:not(.clicked).selected .arrow {
     opacity: 1;
     animation: arrow_blink 1s infinite 1s;
 }
