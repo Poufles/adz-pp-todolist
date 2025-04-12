@@ -35,7 +35,7 @@ const AccountHandler = function() {
                     all: true,
                     background: true,
                     click: true,
-                    type: true
+                    keyboard: true
                 },
             },
             collectibles: [],
@@ -43,6 +43,7 @@ const AccountHandler = function() {
             sticky: [],
             project: [],
             archive: [],
+            completedcount: 0,
             lastsession: 'n/a',
             insession: false
         };

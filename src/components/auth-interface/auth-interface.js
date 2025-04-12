@@ -1,4 +1,5 @@
 import AccountHandler from '../../scripts/account-handler.js';
+import DateHandler from '../../scripts/date-handler.js';
 import StorageHandler from '../../scripts/storage-handler.js';
 import SVG from '../../scripts/svg.js';
 import SimpleButton from '../buttons/simple-button/simple-button.js';
@@ -63,7 +64,7 @@ const AuthInterface = function () {
 
     /**
      * Creates new game interface
-     * @returns A promise in boolean
+     * @returns A promise in string: "cancel" or "registered".
      */
 
     const OpenNewGame = async () => {
@@ -88,6 +89,24 @@ const AuthInterface = function () {
 
         currentInterface = newGameElement.elementInterface;
 
+        function Cancel() {
+            for (let index = 0; index < inputArr.length; index++) {
+                const input = inputArr[index];
+
+                if (input.value) {
+                    if (confirm('Are you sure you want to cancel ?')) {
+                        reinitialize();
+
+                        return true;
+                    };
+
+                    return false;
+                };
+            };
+
+            reinitialize(); return true;
+        };
+
         return new Promise((resolve) => {
             let ctrlHold, altHold;
             const arrLength = inputArr.length;
@@ -96,44 +115,37 @@ const AuthInterface = function () {
             const btn_reset = buttons.buttonReset.render();
 
             // CHANGE LATER
-            btn_cancel.addEventListener('click', () => {
-                for (let index = 0; index < arrLength; index++) {
-                    const input = inputArr[index];
+            if (btn_cancel) {
+                btn_cancel.addEventListener('click', () => {
+                    const isCanceled = Cancel();
 
-                    if (input.value) {
-                        if (confirm('Are you sure you want to cancel ?')) {
-                            reinitialize();
-                            resolve(true);
-
-                            return;
-                        };
-
+                    if (isCanceled) {
+                        resolve('cancel');
                         return;
                     };
-                };
-
-                reinitialize();
-                resolve(true);
-            });
+                });
+            };
 
             // CHANGE LATER
-            btn_reset.addEventListener('click', () => {
-                for (let index = 0; index < arrLength; index++) {
-                    const input = inputArr[index];
+            if (btn_reset) {
+                btn_reset.addEventListener('click', () => {
+                    for (let index = 0; index < arrLength; index++) {
+                        const input = inputArr[index];
 
-                    if (input.value) {
-                        if (confirm('Are you sure you want to reset ?')) {
-                            inputArr[0].value = '';
-                            inputArr[1].value = '';
-                            inputArr[2].value = '';
+                        if (input.value) {
+                            if (confirm('Are you sure you want to reset ?')) {
+                                inputArr[0].value = '';
+                                inputArr[1].value = '';
+                                inputArr[2].value = '';
 
-                            return;
+                                return;
+                            };
+
+                            break;
                         };
-
-                        break;
                     };
-                };
-            });
+                });
+            };
 
             currentInterface.addEventListener('keyup', (e) => {
                 if (ctrlHold && e.key === 'Control') {
@@ -159,6 +171,15 @@ const AuthInterface = function () {
                     };
                 };
 
+                console.log(e.key);
+                if (e.key === 'Backspace') {
+                    console.log('Back');
+                    const input = inputArr[inputInFocus];
+
+                    input.value = input.value === 'y' ? 'n' : 'y';
+                    return;
+                }
+
                 if (e.key === 'Control' && !ctrlHold) {
                     ctrlHold = true; return;
                 };
@@ -168,10 +189,12 @@ const AuthInterface = function () {
                 };
 
                 if (e.key.toLowerCase() === 'q' && ctrlHold && altHold) {
-                    AuthInterface.reinitialize();
-                    resolve(true);
+                    const isCanceled = Cancel();
 
-                    return;
+                    if (isCanceled) {
+                        resolve('cancel');
+                        return;
+                    };
                 };
 
                 if (e.key.toLowerCase() === 'r' && ctrlHold && altHold) {
@@ -219,8 +242,8 @@ const AuthInterface = function () {
 
                         if (AccountHandler.register(username, password)) {
                             console.log('Account successfully created !');
-                            reinitialize();                        
-                            resolve(true); 
+                            reinitialize();
+                            resolve('registered');
                         } else {
                             console.log('Already existing account !');
                         };
@@ -255,12 +278,67 @@ const AuthInterface = function () {
         });
 
         currentInterface = LoadLoadGameElements(component);
+
+        return new Promise((resolve) => {
+            let ctrlHold, altHold;
+
+            const btn_cancel = buttons.buttonCancel.render();
+
+            if (btn_cancel) {
+                btn_cancel.addEventListener('click', () => {
+                    reinitialize();
+                    resolve('cancel');
+
+                    return;
+                });
+            };
+
+            currentInterface.addEventListener('keyup', (e) => {
+                if (ctrlHold && e.key === 'Control') {
+                    altHold = false;
+
+                    return;
+                };
+
+                if (altHold && e.key === 'Alt') {
+                    altHold = false;
+
+                    return;
+                };
+            });
+
+            currentInterface.addEventListener('keydown', async (e) => {
+                if (e.key === 'Control' && !ctrlHold) {
+                    ctrlHold = true; return;
+                };
+
+                if (e.key === 'Alt' && !altHold) {
+                    altHold = true; return;
+                };
+
+                if (e.key.toLowerCase() === 'q' && ctrlHold && altHold) {
+                    reinitialize();
+                    resolve('cancel');
+
+                    return;
+                };
+
+                if (e.key === 'Enter') {
+                    console.log('Logged in !');
+                    const account = currentInterface.querySelector('.clicked');
+
+                    console.log(account);
+
+                    return;
+                };
+            });
+        });
     };
 
     /**
      * Creates setting interface
      */
-    const OpenSettings = () => {
+    const OpenSettings = async () => {
         const cont_lower = component.querySelector('#lower');
         if (currentInterface) cont_lower.removeChild(currentInterface);
 
@@ -268,7 +346,7 @@ const AuthInterface = function () {
             [
                 '- ctrl + alt + q to cancel',
                 '- ctrl + alt + r to return default',
-                '- enter to proceed/confirm'
+                '- enter to save'
             ]
         );
 
@@ -277,7 +355,123 @@ const AuthInterface = function () {
             hasReset: true
         });
 
-        currentInterface = LoadSettingsElements(component);
+        const settingElement = LoadSettingsElements(component);
+        const inputArr = settingElement.inputArr;
+
+        currentInterface = settingElement.elementInterface;
+
+        const storage = StorageHandler.GetStorage();
+        const setting = storage.app.setting;
+
+        function ResetDefaultSettings() {
+            for (let index = 0; index < inputArr.length; index++) {
+                const input = inputArr[index];
+                input.value = 'y';
+            };
+
+            setting.animation = true;
+            setting.darkmode = true;
+            setting.mousetrail = true;
+            setting.sound.all = true;
+            setting.sound.background = true;
+            setting.sound.click = true;
+            setting.sound.keyboard = true;
+            setting.animation = false;
+            setting.animation = true;
+
+            StorageHandler.UpdateStorage({ isRegister: true });
+        };
+
+        return new Promise((resolve) => {
+            let ctrlHold, altHold;
+
+            const btn_cancel = buttons.buttonCancel.render();
+            const btn_reset = buttons.buttonReset.render();
+
+            if (btn_cancel) {
+                btn_cancel.addEventListener('click', () => {
+                    reinitialize();
+                    resolve('cancel');
+
+                    return;
+                });
+            };
+
+            if (btn_reset) {
+                btn_reset.addEventListener('click', () => {
+                    ResetDefaultSettings();
+                });
+            };
+
+            currentInterface.addEventListener('keyup', (e) => {
+                if (ctrlHold && e.key === 'Control') {
+                    altHold = false;
+
+                    return;
+                };
+
+                if (altHold && e.key === 'Alt') {
+                    altHold = false;
+
+                    return;
+                };
+            });
+
+            currentInterface.addEventListener('keydown', async (e) => {
+                if (e.key === 'Control' && !ctrlHold) {
+                    ctrlHold = true; return;
+                };
+
+                if (e.key === 'Alt' && !altHold) {
+                    altHold = true; return;
+                };
+
+                if (e.key.toLowerCase() === 'q' && ctrlHold && altHold) {
+                    reinitialize();
+                    resolve('cancel');
+
+                    return;
+                };
+
+                if (e.key.toLowerCase() === 'r' && ctrlHold && altHold) {
+                    ResetDefaultSettings(); return;
+                };
+
+                if (e.key === 'Enter') {
+                    for (let index = 0; index < inputArr.length; index++) {
+                        const input = inputArr[index];
+                        const inputID = input.id;
+                        const inputValue = input.value;
+
+                        if (inputID === 'sound') {
+                            setting.sound.all = inputValue === 'y' ? true : false;
+                            continue;
+                        };
+
+                        if (inputID === 'background') {
+                            setting.sound.background = inputValue === 'y' ? true : false;
+                            continue;
+                        };
+
+                        if (inputID === 'click') {
+                            setting.sound.click = inputValue === 'y' ? true : false;
+                            continue;
+                        };
+
+                        if (inputID === 'keyboard') {
+                            setting.sound.keyboard = inputValue === 'y' ? true : false;
+                            continue;
+                        };
+
+                        setting[input.id] = inputValue === 'y' ? true : false;
+                    };
+
+                    StorageHandler.UpdateStorage({ isRegister: true });
+
+                    return;
+                };
+            });
+        });
     };
 
     return {
@@ -490,113 +684,98 @@ function LoadLoadGameElements(component) {
         </div>
     `;
 
-    const accArr = [];
+    const storage = StorageHandler.GetStorage();
+    const accountStorage = storage.app.account;
     const range = document.createRange();
-    const cont_interface = document.createElement('div');
     const cont_lower = component.querySelector('#lower');
+    const cont_interface = document.createElement('div');
+
+    cont_interface.id = 'interface';
+    // CHANGE LATER
+    // Add something else if theres no account
+    if (accountStorage.length === 0) {
+        console.log('No accounts');
+        console.log(cont_interface);
+        cont_lower.appendChild(cont_interface);
+
+        return cont_interface;
+    };
+    // Add something else if theres no account
+
+    const accArr = [];
     const span_status = cont_lower.querySelector('#status');
 
     span_status.textContent = 'Choosing account';
-    cont_interface.id = 'interface';
 
     // Make a loop here later (CHANGE)
-    // Retrieve elements to change
-    const account_block = range.createContextualFragment(template);
-    const cont_account = account_block.querySelector('.account-block');
-    const username = cont_account.querySelector('#username');
-    const level = cont_account.querySelector('#level');
-    const date_of_creation = cont_account.querySelector('#date-of-creation');
-    const tasks = cont_account.querySelector('#task-no');
-    const completed = cont_account.querySelector('#completed-task-no');
-    const due = cont_account.querySelector('#due-today-no');
+    for (let index = 0; index < accountStorage.length; index++) {
+        const account = accountStorage[index];
 
-    // Change elements' attributes (CHANGE)
-    cont_account.dataset.account = `1`;
-    cont_account.id = `account-1`;
-    username.textContent = `poufsadev`;
-    level.textContent = `lv1`;
-    date_of_creation.textContent = `03/25/2025`;
-    tasks.textContent = `5`;
-    completed.textContent = `10`;
-    due.textContent = `2`;
+        // Retrieve elements to change
+        const account_block = range.createContextualFragment(template);
+        const cont_account = account_block.querySelector('.account-block');
+        const username = cont_account.querySelector('#username');
+        const level = cont_account.querySelector('#level');
+        const date_of_creation = cont_account.querySelector('#date-of-creation');
+        const tasks = cont_account.querySelector('#task-no');
+        const completed = cont_account.querySelector('#completed-task-no');
+        const due = cont_account.querySelector('#due-today-no');
 
-    accArr.push(cont_account);
-    cont_interface.appendChild(cont_account);
+        let dueCount = 0;
+        let accountTodos = account.todo.length;
 
-    cont_account.addEventListener('mouseenter', () => {
-        for (let index = 0; index < accArr.length; index++) {
-            const acc = accArr[index];
+        for (let index = 0; index < accountTodos; index++) {
+            const accountTodo = account.todo[index];
+            const isDueToday = DateHandler.timeDifference(accountTodo.deadline);
 
-            if (acc.classList.contains('clicked')) {
-                acc.classList.remove('clicked');
-                break;
+            if (isDueToday) dueCount++;
+        };
+
+        // Change elements' attributes (CHANGE)
+        cont_account.dataset.account = index;
+        cont_account.id = `account-${index}`;
+        username.textContent = account.username;
+        level.textContent = account.level;
+        date_of_creation.textContent = account.dateofcreation;
+        tasks.textContent = accountTodos;
+        completed.textContent = account.completedcount;
+        due.textContent = accountTodos;
+
+        accArr.push(cont_account);
+        cont_interface.appendChild(cont_account);
+
+        cont_account.addEventListener('mouseenter', () => {
+            for (let index = 0; index < accArr.length; index++) {
+                const acc = accArr[index];
+
+                if (acc.classList.contains('clicked')) {
+                    acc.classList.remove('clicked');
+                    break;
+                };
             };
-        };
 
-        cont_account.classList.add('clicked');
-        cont_account.focus();
-    });
+            cont_account.classList.add('clicked');
+            cont_account.focus();
+        });
 
-    cont_account.addEventListener('focus', () => {
-        for (let index = 0; index < accArr.length; index++) {
-            const acc = accArr[index];
+        cont_account.addEventListener('focus', () => {
+            for (let index = 0; index < accArr.length; index++) {
+                const acc = accArr[index];
 
-            if (acc.classList.contains('clicked')) acc.classList.remove('clicked');
-        };
-
-        cont_account.classList.add('clicked');
-    });
-
-    cont_account.addEventListener('blur', (e) => {
-        cont_account.classList.remove('clicked');
-    });
-
-    const acb = range.createContextualFragment(template);
-    const a = acb.querySelector('.account-block');
-    const b = a.querySelector('#username');
-    const c = a.querySelector('#level');
-    const d = a.querySelector('#date-of-creation');
-    const e = a.querySelector('#task-no');
-    const f = a.querySelector('#completed-task-no');
-    const g = a.querySelector('#due-today-no');
-
-    a.dataset.account = `2`;
-    a.id = `account-2`;
-    b.textContent = `userhere`;
-    c.textContent = `lv10`;
-    d.textContent = `03/31/2025`;
-    e.textContent = `2`;
-    f.textContent = `57`;
-    g.textContent = `1`;
-
-    accArr.push(a);
-    cont_interface.appendChild(a);
-
-    a.addEventListener('mouseenter', () => {
-        for (let index = 0; index < accArr.length; index++) {
-            const acc = accArr[index];
-
-            if (acc.classList.contains('clicked')) {
-                acc.classList.remove('clicked');
-                break;
+                if (acc.classList.contains('clicked')) acc.classList.remove('clicked');
             };
-        };
 
-        a.classList.add('clicked');
-        a.focus();
-    });
+            cont_account.classList.add('clicked');
+        });
 
-    a.addEventListener('focus', () => {
-        a.classList.add('clicked');
-    });
-
-    a.addEventListener('blur', () => {
-        a.classList.remove('clicked');
-    });
-    // Make a loop here later
+        cont_account.addEventListener('blur', (e) => {
+            cont_account.classList.remove('clicked');
+        });
+    };
 
     cont_lower.appendChild(cont_interface);
-    cont_account.focus();
+
+    if (cont_interface.firstChild) cont_interface.firstChild.focus();
 
     ArrowKeyListener(cont_interface, accArr);
 
@@ -623,6 +802,7 @@ function LoadSettingsElements(component) {
         </div>
         `;
 
+    const setting = StorageHandler.GetStorage().app.setting;
     const settingArr = [];
     const range = document.createRange();
     const cont_interface = document.createElement('div');
@@ -641,25 +821,25 @@ function LoadSettingsElements(component) {
     cont_interface.id = 'interface';
 
     // Animation block
-    const input_animation = DefineSettingBlock(cont_animation, 'animation', 'Animation(y/n)', 'y');
+    const input_animation = DefineSettingBlock(cont_animation, 'animation', 'Animation(y/n)', setting.animation);
 
     // Animation block
-    const input_dark = DefineSettingBlock(cont_dark, 'dark-mode', 'Dark mode(y/n)', 'y');
+    const input_dark = DefineSettingBlock(cont_dark, 'darkmode', 'Dark mode(y/n)', setting.darkmode);
 
     // Animation block
-    const input_mouse = DefineSettingBlock(cont_mouse, 'mouse-trail', 'Mouse trail(y/n)', 'y');
+    const input_mouse = DefineSettingBlock(cont_mouse, 'mousetrail', 'Mouse trail(y/n)', setting.mousetrail);
 
     // Animation block
-    const input_sound = DefineSettingBlock(cont_sound, 'sounds', 'Sounds(y/n)', 'y');
+    const input_sound = DefineSettingBlock(cont_sound, 'sound', 'Sounds(y/n)', setting.sound.all);
 
     // Animation block
-    const input_background = DefineSettingBlock(cont_background, 'background', 'Background(y/n)', 'y');
+    const input_background = DefineSettingBlock(cont_background, 'background', 'Background(y/n)', setting.sound.background);
 
     // Animation block
-    const input_hover = DefineSettingBlock(cont_hover, 'hover', 'Hover(y/n)', 'y');
+    const input_hover = DefineSettingBlock(cont_hover, 'keyboard', 'Keyboard(y/n)', setting.sound.keyboard);
 
     // Animation block
-    const input_click = DefineSettingBlock(cont_click, 'click', 'Click(y/n)', 'y');
+    const input_click = DefineSettingBlock(cont_click, 'click', 'Click(y/n)', setting.sound.click);
 
     // Insert input in array
     settingArr.push(input_animation);
@@ -697,12 +877,36 @@ function LoadSettingsElements(component) {
         });
     };
 
+    for (let setting of settingArr) {
+        setting.addEventListener('keydown', (e) => {
+            e.preventDefault();
+
+            if (e.key.toLowerCase() === 'y') {
+                setting.value = 'y'; return;
+            };
+
+            if (e.key.toLowerCase() === 'n') {
+                setting.value = 'n'; return;
+            };
+
+            if (e.key === 'Backspace') {
+                console.log('Back');
+
+                setting.value = setting.value === 'y' ? 'n' : 'y';
+                return;
+            };
+        });
+    };
+
     // Listener for changing input focus
     ArrowKeyListener(cont_interface, settingArr);
 
     input_animation.focus();
 
-    return cont_interface;
+    return {
+        elementInterface: cont_interface,
+        inputArr: settingArr
+    };
 };
 
 /**
@@ -710,9 +914,9 @@ function LoadSettingsElements(component) {
  * @param {HTMLElement} blockTemplate - The block template 
  * @param {String} blockType - The block type
  * @param {String} blockMessage - The text/message for the template to show
- * @param {String} blockDefault - The value to show in the input text;
+ * @param {Boolean} blockValue - The value of the block to be translated into y or n
  */
-function DefineSettingBlock(blockTemplate, blockType, blockMessage, blockDefault) {
+function DefineSettingBlock(blockTemplate, blockType, blockMessage, blockValue) {
     const cont_block = blockTemplate.querySelector('div');
     const label = cont_block.querySelector('label');
     const span = cont_block.querySelector('span');
@@ -722,7 +926,7 @@ function DefineSettingBlock(blockTemplate, blockType, blockMessage, blockDefault
     label.htmlFor = blockType;
     span.textContent = blockMessage;
     input.id = blockType;
-    input.value = blockDefault;
+    input.value = blockValue ? 'y' : 'n';
 
     return input;
 };
