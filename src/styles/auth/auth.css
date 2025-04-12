@@ -67,7 +67,7 @@ html {
     transition: var(--trans-q);
 }
 
-#page_auth #title {
+#page_auth #start>#title {
     font-size: 96px;
     line-height: 110%;
 }

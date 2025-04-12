@@ -12,7 +12,7 @@
         font-size: var(--fn-xxlr);
     }
 
-    #page_auth #title {
+    #page_auth #start>#title {
         font-size: 64px;
     }
 
@@ -97,7 +97,7 @@
         left: 40%;
     }
 
-    #page_auth #title {
+    #page_auth #start>#title {
         font-size: var(--fn-xmsv);
     }
 

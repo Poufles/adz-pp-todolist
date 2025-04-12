@@ -19,7 +19,7 @@ function WordButton(text, id = '', isAlt = false) {
             </span>
         </button>
     `;
-    
+
     const templateAlt =
         `
         <button type="button" class="comp word-button btn">
@@ -36,26 +36,28 @@ function WordButton(text, id = '', isAlt = false) {
     if (isAlt) {
         htmlButtonTemplate = templateAlt
         classList.push('alt')
-    };
+    } else {
+        htmlButtonTemplate = template;
+    }
 
     const button = Button({
         id,
         classList,
         htmlButtonTemplate,
-        onCreate: (component) => {
-            let selectedStatus = false;
-
+        onCreate: (component, selectedStatus) => {
             // Listeners
             component.addEventListener('mousedown', (e) => {
                 e.stopPropagation();
             });
 
             component.addEventListener('mouseenter', () => {
-                selectedStatus = true; component.classList.add('selected');
+                selectedStatus = true;
+                component.classList.add('selected');
             });
 
             component.addEventListener('mouseleave', () => {
-                selectedStatus = false; component.classList.remove('selected');
+                selectedStatus = false;
+                component.classList.remove('selected');
             });
         }
     });

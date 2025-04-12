@@ -13,12 +13,15 @@ export default function Button({ id, classList = [], htmlButtonTemplate, onCreat
     if (classList.length != 0) classList.forEach(cls => component.classList.add(cls));
 
     let checkStatus = false;
+    let selectedStatus = false;
 
     const render = () => component;
 
     const unrender = parentNode => parentNode.removeChild(component);
 
     const isChecked = () => checkStatus;
+
+    const isSelected = () => selectedStatus;
 
     const check = () => {
         component.classList.add('clicked');
@@ -30,14 +33,26 @@ export default function Button({ id, classList = [], htmlButtonTemplate, onCreat
         checkStatus = false;
     };
 
-    if (onCreate) onCreate(component); 
+    const select = () => {
+        selectedStatus = true;
+        component.classList.add('selected');
+    };
+    const deselect = () => {
+        selectedStatus = false;
+        component.classList.remove('selected');
+    };
+
+    if (onCreate) onCreate(component, selectedStatus); 
 
     return {
         render,
         unrender,
         isChecked,
+        isSelected,
         check,
         uncheck,
+        select,
+        deselect,
         component 
     };
 };

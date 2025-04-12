@@ -32,6 +32,7 @@
     width: 600px;
     padding: var(--gap-5);
     overflow-y: auto;
+    position: relative;
 }
 
 .auth-interface>#lower::-webkit-scrollbar {
@@ -148,4 +149,10 @@
 
 .auth-interface>#lower .setting-block:last-of-type.off>.sound-block input:disabled {
     color: black
+}
+
+.auth-interface>#lower .message-box {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
 }

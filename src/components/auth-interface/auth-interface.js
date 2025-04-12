@@ -3,8 +3,13 @@ import DateHandler from '../../scripts/date-handler.js';
 import StorageHandler from '../../scripts/storage-handler.js';
 import SVG from '../../scripts/svg.js';
 import SimpleButton from '../buttons/simple-button/simple-button.js';
+import { InformMessageBox } from '../message-box/message-box.js';
 
-const template =
+/**
+ * Component module for AuthInterface component
+ */
+const AuthInterface = function () {
+    const template =
     `
         <div id="upper">
             <div id="actions">
@@ -19,12 +24,8 @@ const template =
                 Status: <span id="status">Waiting input</span>...
             </p>
         </div>
-`;
+    `;
 
-/**
- * Component module for AuthInterface component
- */
-const AuthInterface = function () {
     let currentInterface;
     // Creating component
     const component = document.createElement('section');
@@ -689,23 +690,22 @@ function LoadLoadGameElements(component) {
     const range = document.createRange();
     const cont_lower = component.querySelector('#lower');
     const cont_interface = document.createElement('div');
+    const span_status = cont_lower.querySelector('#status');
 
     cont_interface.id = 'interface';
-    // CHANGE LATER
-    // Add something else if theres no account
+    span_status.textContent = 'Choosing account';
+
     if (accountStorage.length === 0) {
-        console.log('No accounts');
-        console.log(cont_interface);
+        const messageBox = InformMessageBox('No accounts!', 'Unfortunately, there were no accounts found.');
+        const cont_msgBox = messageBox.render();
+
+        cont_interface.appendChild(cont_msgBox);
         cont_lower.appendChild(cont_interface);
 
         return cont_interface;
     };
-    // Add something else if theres no account
 
     const accArr = [];
-    const span_status = cont_lower.querySelector('#status');
-
-    span_status.textContent = 'Choosing account';
 
     // Make a loop here later (CHANGE)
     for (let index = 0; index < accountStorage.length; index++) {
