@@ -2,7 +2,21 @@ const StorageHandler = function () {
     let appStorage;
     let appSessionStorage;
 
-    const storageTemplate = { app: { account: [], collectible: [] } };
+    const storageTemplate = {
+        app: {
+            account: [], collectible: [], setting: {
+                animation: true,
+                darkmode: true,
+                mousetrail: true,
+                sound: {
+                    all: true,
+                    background: true,
+                    click: true,
+                    keyboard: true
+                },
+            }
+        },
+    };
     const LOCALSTORAGE = localStorage.getItem('storage-watodo');
     const SESSIONSTORAGE = sessionStorage.getItem('storage-watodo-session');
 

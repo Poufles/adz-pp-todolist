@@ -58,16 +58,25 @@ function Auth() {
             if (resolved === 'cancel') {
                 loadGame.uncheck();
             };
+
+            if (resolved === 'login') {
+
+            };
         };
     });
     
-    btn_settings.addEventListener('click', (e) => {
+    btn_settings.addEventListener('click', async (e) => {
         if (loadGame.isChecked()) loadGame.uncheck();
         if (newGame.isChecked()) newGame.uncheck();
     
         if (!settings.isChecked()) {
             settings.check();
-            AuthInterface.OpenSettings();
+
+            let resolved = await AuthInterface.OpenSettings();
+
+            if (resolved === 'cancel') {
+                settings.uncheck();
+            };
         };
     });
 };

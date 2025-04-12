@@ -35,7 +35,7 @@ const AccountHandler = function() {
                     all: true,
                     background: true,
                     click: true,
-                    type: true
+                    keyboard: true
                 },
             },
             collectibles: [],
