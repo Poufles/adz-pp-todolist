@@ -10,7 +10,7 @@ import { InformMessageBox } from '../message-box/message-box.js';
  */
 const AuthInterface = function () {
     const template =
-    `
+        `
         <div id="upper">
             <div id="actions">
 
@@ -172,12 +172,13 @@ const AuthInterface = function () {
                     };
                 };
 
-                console.log(e.key);
                 if (e.key === 'Backspace') {
-                    console.log('Back');
                     const input = inputArr[inputInFocus];
 
-                    input.value = input.value === 'y' ? 'n' : 'y';
+                    if (input.value === '' && inputInFocus - 1 < 0) return;
+
+                    if (input.value === '') inputArr[inputInFocus - 1].focus();
+
                     return;
                 }
 
@@ -224,6 +225,30 @@ const AuthInterface = function () {
 
                 // For input field focus with enter key 
                 if (e.key === 'Enter' && inputArr[inputInFocus].value !== '') {
+                    let username = inputArr[0].value; // Username
+                    let password = inputArr[1].value; // Password
+                    let conpass = inputArr[2].value; // Confirm password
+
+                    // Verifies username's existance
+                    if (AccountHandler.isUsernameExist(username)) {
+                        const messageBox = InformMessageBox("Existing username!", "Username already exists. Please choose another username.");
+
+                        messageBox.render(currentInterface);
+
+                        username = '';
+
+                        return;
+                    };
+
+                    // Verifies password length
+                    if (password !== '' && password.length < 8) {
+                        const messageBox = InformMessageBox("Weak password!", "Password should be at least 8 characters");
+
+                        messageBox.render(currentInterface);
+
+                        return;
+                    };
+
                     let inputComplete = true;
 
                     // Verifies if all input fields have value
@@ -238,15 +263,30 @@ const AuthInterface = function () {
 
                     // Checks if all inputs are complete or if the focus is on the final input field in order to register a new account
                     if (inputComplete || inputInFocus + 1 === arrLength) {
-                        const username = inputArr[0].value; // Username
-                        const password = inputArr[2].value; // Confirm password
+                        if (password !== conpass) {
+                            const messageBox = InformMessageBox("", "Passwords do not match!");
 
+                            messageBox.render(currentInterface);
+
+                            return;
+                        };
+
+                        // Checks if the 
                         if (AccountHandler.register(username, password)) {
-                            console.log('Account successfully created !');
-                            reinitialize();
-                            resolve('registered');
+                            const messageBox = InformMessageBox('Successful', 'Your account has successfully been created!');
+
+                            messageBox.render(currentInterface);
+
+                            const action = await messageBox.modal(false);
+
+                            if (action === 'close' || action === 'confirm') {
+                                reinitialize();
+                                resolve('registered');
+                            };
                         } else {
-                            console.log('Already existing account !');
+                            const messageBox = InformMessageBox("Error!", "An error has occured. Please try again.");
+
+                            messageBox.render(currentInterface);
                         };
 
                         return;
@@ -699,6 +739,7 @@ function LoadLoadGameElements(component) {
         const messageBox = InformMessageBox('No accounts!', 'Unfortunately, there were no accounts found.');
         const cont_msgBox = messageBox.render();
 
+        messageBox.render(cont_interface);
         cont_interface.appendChild(cont_msgBox);
         cont_lower.appendChild(cont_interface);
 
@@ -809,7 +850,6 @@ function LoadSettingsElements(component) {
     const cont_lower = component.querySelector('#lower');
     const span_status = cont_lower.querySelector('#status');
 
-    const cont_animation = range.createContextualFragment(template);
     const cont_dark = range.createContextualFragment(template);
     const cont_mouse = range.createContextualFragment(template);
     const cont_sound = range.createContextualFragment(template);
@@ -819,9 +859,6 @@ function LoadSettingsElements(component) {
 
     span_status.textContent = 'Configuring settings';
     cont_interface.id = 'interface';
-
-    // Animation block
-    const input_animation = DefineSettingBlock(cont_animation, 'animation', 'Animation(y/n)', setting.animation);
 
     // Animation block
     const input_dark = DefineSettingBlock(cont_dark, 'darkmode', 'Dark mode(y/n)', setting.darkmode);
@@ -842,7 +879,6 @@ function LoadSettingsElements(component) {
     const input_click = DefineSettingBlock(cont_click, 'click', 'Click(y/n)', setting.sound.click);
 
     // Insert input in array
-    settingArr.push(input_animation);
     settingArr.push(input_dark);
     settingArr.push(input_mouse);
     settingArr.push(input_sound);
@@ -858,7 +894,6 @@ function LoadSettingsElements(component) {
     cont_sound_setting.appendChild(cont_click);
 
     // Append block in interface
-    cont_interface.appendChild(cont_animation);
     cont_interface.appendChild(cont_dark);
     cont_interface.appendChild(cont_mouse);
     cont_interface.appendChild(cont_sound);
@@ -901,7 +936,7 @@ function LoadSettingsElements(component) {
     // Listener for changing input focus
     ArrowKeyListener(cont_interface, settingArr);
 
-    input_animation.focus();
+    input_dark.focus();
 
     return {
         elementInterface: cont_interface,

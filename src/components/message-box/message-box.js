@@ -18,14 +18,17 @@ function MessageBox({ title, text, htmlTemplate, onCreate }) {
     if (onCreate) onCreate(component);
 
     const cont_titlebar_action = cont_titlebar.querySelector('#actions')
-    const closeButton = WordButton('close');
+    const closeButton = WordButton({
+        text: 'close',
+        cls: ['close']
+    });
     const btn_close = closeButton.render();
-
-    cont_titlebar_action.appendChild(btn_close);
-
+    
     let isGrabbing = false;
     let offsetX = 0;
     let offsetY = 0;
+
+    cont_titlebar_action.appendChild(btn_close);
 
     cont_titlebar.addEventListener('mousedown', (e) => {
         e.stopPropagation();
@@ -34,6 +37,13 @@ function MessageBox({ title, text, htmlTemplate, onCreate }) {
         offsetX = e.clientX - component.offsetLeft;
         offsetY = e.clientY - component.offsetTop;
         cont_titlebar.classList.add('grabbing');
+    });
+
+    cont_titlebar.addEventListener('mouseleave', (e) => {
+        e.stopPropagation();
+
+        isGrabbing = false;
+        cont_titlebar.classList.remove('grabbing');
     });
 
     cont_titlebar.addEventListener('mousemove', (e) => {
@@ -45,15 +55,9 @@ function MessageBox({ title, text, htmlTemplate, onCreate }) {
         component.style.top = `${e.clientY - offsetY}px`;
     });
 
-    cont_titlebar.addEventListener('mouseleave', (e) => {
-        e.stopPropagation();
-    
-        isGrabbing = false;
-        cont_titlebar.classList.remove('grabbing');
-    });
-
     cont_titlebar.addEventListener('mouseup', (e) => {
         e.stopPropagation();
+        document.body.style.userSelect = "";
 
         isGrabbing = false;
         cont_titlebar.classList.remove('grabbing');
@@ -61,25 +65,89 @@ function MessageBox({ title, text, htmlTemplate, onCreate }) {
 
     btn_close.addEventListener('click', (e) => {
         e.stopPropagation();
-
-        const parent = component.parentElement;
-
-        parent.removeChild(component);
+        unrender();
     });
 
-    const render = () => component;
+    /**
+     * Retrieves the component if there is no argument. Renders the component otherwise. 
+     * @param {HTMLElement} parent - The parent to where the component must be appended 
+     * @returns The component itself
+     */
+    const render = (parent) => {
+        if (!parent) return component;
+
+        parent.appendChild(component);
+
+        setTimeout(() => {
+            component.classList.add('animate');
+            component.classList.add('opening');
+            setTimeout(() => {
+                component.classList.remove('animate');
+            }, 200);
+        }, 0);
+    };
+
+    /**
+     * Removes the component from its parent automatically
+     */
+    const unrender = () => {
+        const parent = component.parentElement;
+
+        component.classList.add('animate');
+        component.classList.remove('opening');
+        component.classList.add('closing');
+        setTimeout(() => {
+            component.classList.remove('animate');
+        }, 200);
+
+        setTimeout(() => {
+            if (parent) parent.removeChild(component);
+        }, 200);
+    };
+
+    /**
+     * Renders the message box as a modal.
+     * @param {boolean} hasBackground - (Optional) Adds a background on the modal to hinder other actions.
+     * @returns 
+     */
+    const modal = async (hasBackground = true) => {
+        return new Promise((resolve) => {
+            const btn_confirm = component.querySelector('#window #actions #confirm');
+            const btn_cancel = component.querySelector('#window #actions #cancel');
+
+            if (btn_close) {
+                btn_close.addEventListener('click', () => {
+                    resolve('close');
+                });
+            };
+
+            if (btn_confirm) {
+                btn_confirm.addEventListener('click', () => {
+                    resolve('confirm');
+                });
+            };
+            
+            if (btn_cancel) {
+                btn_confirm.addEventListener('click', () => {
+                    resolve('cancel');
+                });
+            };
+        })
+    };
 
     return {
-        render
+        render,
+        unrender,
+        modal
     };
 };
 
 /**
  * Creates a confirm message box
- * @param {HTMLElement} component 
- * @param {String} template
+ * @param {string} title - The title message on the title bar to be shown
+ * @param {string} text - The message to be shown inside the window
  */
-export function ConfirmMessageBox(title, text) {
+export async function ConfirmMessageBox(title, text) {
     const template =
         `
         <div class="comp message-box confirm select-none">
@@ -115,8 +183,10 @@ export function ConfirmMessageBox(title, text) {
 };
 
 /**
- * Creates a inform message box
- * @param {HTMLElement} component 
+ * Creates a inform message box.
+ * @param {string} title - The title message on the title bar to be shown
+ * @param {string} text - The message to be shown inside the window
+ * @returns An InformMessageBox object
  */
 export function InformMessageBox(title, text) {
     const template =
@@ -140,23 +210,26 @@ export function InformMessageBox(title, text) {
     `;
 
     const messageBox = MessageBox({
-        title,
-        text,
-        htmlTemplate: template,
-        onCreate: (component) => {
-            const confirmButton = WordButton('O.K.', 'confirm', true);
+        title: title || 'Message!',
+        text: text || 'Information message',
+        htmlTemplate: template
+    });
 
-            const cont_window_action = component.querySelector('#window #actions');
-            const btn_confirm = confirmButton.render();
+    const cont_msgBox = messageBox.render();
+    const cont_window_action = cont_msgBox.querySelector('#window #actions');
+    const confirmButton = WordButton({
+        text: 'O.K.',
+        id: 'confirm',
+        isAlt: true
+    });
 
-            cont_window_action.appendChild(btn_confirm);
+    const btn_confirm = confirmButton.render();
 
-            btn_confirm.addEventListener('click', (e) => {
-                const parent = component.parentElement;
+    cont_window_action.appendChild(btn_confirm);
 
-                parent.removeChild(component);
-            });
-        }
+    btn_confirm.addEventListener('click', (e) => {
+        e.stopPropagation();
+        messageBox.unrender();
     });
 
     return messageBox;
