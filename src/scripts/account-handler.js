@@ -64,6 +64,22 @@ const AccountHandler = function() {
      */
     const login = (username, password) => {
         let isSuccessful = false;
+
+        const storage = StorageHandler.GetStorage();
+        const accountStorage = storage.app.account;
+
+        for (let index = 0; index < accountStorage.length; index++) {
+            const account = accountStorage[index];
+            const accountUsername = account.username;
+            const accountPassword = account.password;
+            
+            if (accountUsername === username) {
+                if (accountPassword === password) {
+                    isSuccessful = true;
+                    break;
+                };
+            };
+        };
         
         return isSuccessful;
     };

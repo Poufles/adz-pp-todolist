@@ -27,6 +27,7 @@ const AuthInterface = function () {
     `;
 
     let currentInterface;
+    let previousInterface;
     // Creating component
     const component = document.createElement('section');
 
@@ -67,7 +68,6 @@ const AuthInterface = function () {
      * Creates new game interface
      * @returns A promise in string: "cancel" or "registered".
      */
-
     const OpenNewGame = async () => {
         const cont_lower = component.querySelector('#lower');
         if (currentInterface) cont_lower.removeChild(currentInterface);
@@ -115,7 +115,6 @@ const AuthInterface = function () {
             const btn_cancel = buttons.buttonCancel.render();
             const btn_reset = buttons.buttonReset.render();
 
-            // CHANGE LATER
             if (btn_cancel) {
                 btn_cancel.addEventListener('click', () => {
                     const isCanceled = Cancel();
@@ -127,7 +126,6 @@ const AuthInterface = function () {
                 });
             };
 
-            // CHANGE LATER
             if (btn_reset) {
                 btn_reset.addEventListener('click', () => {
                     for (let index = 0; index < arrLength; index++) {
@@ -327,6 +325,15 @@ const AuthInterface = function () {
 
             if (btn_cancel) {
                 btn_cancel.addEventListener('click', () => {
+                    if (previousInterface) {
+                        cont_lower.removeChild(currentInterface);
+                        currentInterface = previousInterface;
+                        cont_lower.appendChild(currentInterface);
+                        previousInterface = undefined;
+                        
+                        return;
+                    };
+
                     reinitialize();
                     resolve('cancel');
 
@@ -358,6 +365,15 @@ const AuthInterface = function () {
                 };
 
                 if (e.key.toLowerCase() === 'q' && ctrlHold && altHold) {
+                    if (previousInterface) {
+                        cont_lower.removeChild(currentInterface);
+                        currentInterface = previousInterface;
+                        cont_lower.appendChild(currentInterface);
+                        previousInterface = undefined;
+                        
+                        return;
+                    };
+
                     reinitialize();
                     resolve('cancel');
 
@@ -365,12 +381,70 @@ const AuthInterface = function () {
                 };
 
                 if (e.key === 'Enter') {
-                    console.log('Logged in !');
-                    const account = currentInterface.querySelector('.clicked');
+                    const cont_account = currentInterface.querySelector('.clicked');
+                    const username = cont_account.querySelector('#username').textContent;
 
-                    console.log(account);
+                    previousInterface = currentInterface;
 
+                    const auth = await OpenAuthenticate(username);
+
+                    if (auth === 'cancel') {
+                        cont_lower.removeChild(currentInterface);
+                        currentInterface = previousInterface;
+                        cont_lower.appendChild(currentInterface);
+                        previousInterface = undefined;
+                        
+                        return;
+                    };
+
+                    if (auth === 'success') {
+                        reinitialize();
+                        resolve('login');
+                    };
+                };
+            });
+        });
+    };
+
+    /**
+     * Renders authenticate interface when user is logging in
+     * @param {string} username - User's username
+     */
+    function OpenAuthenticate(username) {
+        const cont_lower = component.querySelector('#lower');
+        if (currentInterface) cont_lower.removeChild(currentInterface);
+
+        currentInterface = LoadAuthenticate(component);
+
+        return new Promise((resolve) => {
+            let ctrlHold, altHold;
+    
+            currentInterface.addEventListener('keydown', async (e) => {
+                if (e.key === 'Control' && !ctrlHold) {
+                    ctrlHold = true; return;
+                };
+    
+                if (e.key === 'Alt' && !altHold) {
+                    altHold = true; return;
+                };
+    
+                if (e.key.toLowerCase() === 'q' && ctrlHold && altHold) {
+                    resolve('cancel');
                     return;
+                };
+    
+                if (e.key === 'Enter') {
+                    const password = component.querySelector('#password').value;
+
+                    const isSuccess = AccountHandler.login(username, password);
+
+                    if (isSuccess) {
+                        resolve('success');
+                    } else {
+                        const messageBox = InformMessageBox('Error!', 'You have entered a wrong password. Please try again.');
+
+                        messageBox.render(cont_lower);
+                    };
                 };
             });
         });
@@ -687,6 +761,53 @@ function LoadNewGameElements(component) {
     };
 };
 
+
+function LoadAuthenticate(component) {
+    // Change the word type
+    const template =
+        `
+        <div class="block input-block" id="block-type">
+            <label class="select-none" for="type">Message:</label>
+            <div class="input-box">
+                <p class="cursor-default select-none" id="arrow">></p>
+                <input type="text" id="type">
+            </div>
+            <p class="cursor-default select-none" id="block-tip">- Upto 16 characters and no spaces</p>
+        </div>
+    `;
+
+    const template_visibility =
+        `
+        <button role="button" tabindex="0" class="btn visibility select-none">&lt;<span id="slash">/</span>&gt;</button>
+    `;
+
+    const range = document.createRange();
+    const cont_interface = document.createElement('div');
+    const cont_lower = component.querySelector('#lower');
+    const span_status = cont_lower.querySelector('#status');
+
+    const cont_password = range.createContextualFragment(template);
+
+    span_status.textContent = 'Authenticating'
+    cont_interface.id = 'interface';
+
+    const input_password = DefineBlock(cont_password, 'password', 'Enter your password:',);
+    const cont_block_password = cont_password.querySelector('#block-password');
+    const cont_input_pass = cont_block_password.querySelector('.input-box');
+    const password_visibility_fragment = range.createContextualFragment(template_visibility);
+    const btn_password_visibility = password_visibility_fragment.querySelector('button');
+
+    cont_block_password.insertBefore(btn_password_visibility, cont_input_pass);
+    input_password.setAttribute('type', 'password');
+
+    cont_interface.appendChild(cont_block_password);
+    cont_lower.appendChild(cont_interface);
+
+    input_password.focus();
+
+    return cont_interface;
+};
+
 /**
  * Defines the block for the new game elements
  * @param {HTMLElement} blockTemplate - The block template to modify 
@@ -925,8 +1046,6 @@ function LoadSettingsElements(component) {
             };
 
             if (e.key === 'Backspace') {
-                console.log('Back');
-
                 setting.value = setting.value === 'y' ? 'n' : 'y';
                 return;
             };

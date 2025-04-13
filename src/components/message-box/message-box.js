@@ -106,6 +106,19 @@ function MessageBox({ title, text, htmlTemplate, onCreate }) {
     };
 
     /**
+     * Shows the opening animation of the component. Usually used when render() didn't have an argument. 
+     */
+    const openingAnimation = () => {
+        setTimeout(() => {
+            component.classList.add('animate');
+            component.classList.add('opening');
+            setTimeout(() => {
+                component.classList.remove('animate');
+            }, 200);
+        }, 0);
+    };
+
+    /**
      * Renders the message box as a modal.
      * @param {boolean} hasBackground - (Optional) Adds a background on the modal to hinder other actions.
      * @returns 
@@ -138,7 +151,8 @@ function MessageBox({ title, text, htmlTemplate, onCreate }) {
     return {
         render,
         unrender,
-        modal
+        modal,
+        openingAnimation
     };
 };
 
