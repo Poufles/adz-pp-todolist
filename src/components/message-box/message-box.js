@@ -1,8 +1,8 @@
 import WordButton from '../buttons/word-button/word-button.js';
 
 /**
- * 
- * @returns 
+ * Creates a base message box
+ * @returns MessageBox object
  */
 function MessageBox({ title, text, htmlTemplate, onCreate }) {
     const range = document.createRange();
@@ -64,6 +64,8 @@ function MessageBox({ title, text, htmlTemplate, onCreate }) {
     });
 
     btn_close.addEventListener('click', (e) => {
+        if (component.classList.contains('modal')) return;
+
         e.stopPropagation();
         unrender();
     });
@@ -78,13 +80,7 @@ function MessageBox({ title, text, htmlTemplate, onCreate }) {
 
         parent.appendChild(component);
 
-        setTimeout(() => {
-            component.classList.add('animate');
-            component.classList.add('opening');
-            setTimeout(() => {
-                component.classList.remove('animate');
-            }, 200);
-        }, 0);
+        openingAnimation();
     };
 
     /**
@@ -120,28 +116,36 @@ function MessageBox({ title, text, htmlTemplate, onCreate }) {
 
     /**
      * Renders the message box as a modal.
-     * @param {boolean} hasBackground - (Optional) Adds a background on the modal to hinder other actions.
+     * @param {HTMLElement} parent - (Optional) The parent element of the element to where it must be appended. If no parent, it would otherwise create a background to which it would be appended
      * @returns 
      */
-    const modal = async (hasBackground = true) => {
+    const modal = async (parent) => {
+        component.classList.add('modal');
+        parent.appendChild(component);
+
+        openingAnimation();
+
         return new Promise((resolve) => {
             const btn_confirm = component.querySelector('#window #actions #confirm');
             const btn_cancel = component.querySelector('#window #actions #cancel');
 
             if (btn_close) {
                 btn_close.addEventListener('click', () => {
+                    unrender();
                     resolve('close');
                 });
             };
-
+            
             if (btn_confirm) {
                 btn_confirm.addEventListener('click', () => {
+                    unrender();
                     resolve('confirm');
                 });
             };
             
             if (btn_cancel) {
-                btn_confirm.addEventListener('click', () => {
+                btn_cancel.addEventListener('click', () => {
+                    unrender();
                     resolve('cancel');
                 });
             };
@@ -160,8 +164,9 @@ function MessageBox({ title, text, htmlTemplate, onCreate }) {
  * Creates a confirm message box
  * @param {string} title - The title message on the title bar to be shown
  * @param {string} text - The message to be shown inside the window
+ * @param {string} customConfirm - (Optional) A text string to be shown for the confirm button.
  */
-export async function ConfirmMessageBox(title, text) {
+export function ConfirmMessageBox(title, text, customConfirm = 'yes') {
     const template =
         `
         <div class="comp message-box confirm select-none">
@@ -186,12 +191,26 @@ export async function ConfirmMessageBox(title, text) {
         title,
         text,
         htmlTemplate: template,
-        onCreate: (component) => {
-
-        }
     });
 
-    console.log(messageBox);
+    const cont_msgBox = messageBox.render();
+    const cont_window_action = cont_msgBox.querySelector('#window #actions');
+    const confirmButton = WordButton({
+        text: customConfirm,
+        id: 'confirm',
+        isAlt: true
+    });
+    const cancelButton = WordButton({
+        text: 'cancel',
+        id: 'cancel',
+        isAlt: true
+    });
+
+    const btn_confirm = confirmButton.render();
+    const btn_cancel = cancelButton.render();
+
+    cont_window_action.appendChild(btn_confirm);
+    cont_window_action.appendChild(btn_cancel);
 
     return messageBox;
 };
@@ -242,6 +261,8 @@ export function InformMessageBox(title, text) {
     cont_window_action.appendChild(btn_confirm);
 
     btn_confirm.addEventListener('click', (e) => {
+        if (cont_msgBox.classList.contains('modal')) return;
+
         e.stopPropagation();
         messageBox.unrender();
     });

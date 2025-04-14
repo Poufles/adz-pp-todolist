@@ -3,7 +3,7 @@ import DateHandler from '../../scripts/date-handler.js';
 import StorageHandler from '../../scripts/storage-handler.js';
 import SVG from '../../scripts/svg.js';
 import SimpleButton from '../buttons/simple-button/simple-button.js';
-import { InformMessageBox } from '../message-box/message-box.js';
+import { ConfirmMessageBox, InformMessageBox } from '../message-box/message-box.js';
 
 /**
  * Component module for AuthInterface component
@@ -65,6 +65,26 @@ const AuthInterface = function () {
     };
 
     /**
+     * Checks if the component has an active modal
+     * @returns A boolean value.
+     */
+    const hasActiveModal = () => {
+        let isModalExist = false;
+
+        if (component) {
+            let messageBox = component.querySelector('.message-box');
+            
+            if (messageBox) {
+                isModalExist = true; return isModalExist;
+            };
+            
+            return isModalExist;
+        }
+
+        return isModalExist
+    };
+
+    /**
      * Creates new game interface
      * @returns A promise in string: "cancel" or "registered".
      */
@@ -90,22 +110,55 @@ const AuthInterface = function () {
 
         currentInterface = newGameElement.elementInterface;
 
-        function Cancel() {
+        async function Cancel() {
+            if (hasActiveModal()) return;
+
             for (let index = 0; index < inputArr.length; index++) {
                 const input = inputArr[index];
 
                 if (input.value) {
-                    if (confirm('Are you sure you want to cancel ?')) {
+                    const messageBox = ConfirmMessageBox('Cancel creation?', 'Are you sure you want to cancel?');
+
+                    const isCancel = await messageBox.modal(currentInterface);
+
+                    if (isCancel === 'confirm') {
                         reinitialize();
 
                         return true;
                     };
 
+                    inputArr[0].focus();
                     return false;
                 };
             };
 
             reinitialize(); return true;
+        };
+
+        async function Reset() {
+            if (hasActiveModal()) return;
+
+            for (let index = 0; index < inputArr.length; index++) {
+                const input = inputArr[index];
+
+                if (input.value) {
+                    const messageBox = ConfirmMessageBox('Reset?', 'Are you sure you want to reset?', 'reset');
+
+                    const isReset = await messageBox.modal(currentInterface);
+
+                    if (isReset === 'confirm') {
+                        inputArr[0].value = '';
+                        inputArr[1].value = '';
+                        inputArr[2].value = '';
+
+                        inputArr[0].focus();
+                        return;
+                    };
+
+                    inputArr[0].focus();
+                    return;
+                };
+            };
         };
 
         return new Promise((resolve) => {
@@ -116,8 +169,8 @@ const AuthInterface = function () {
             const btn_reset = buttons.buttonReset.render();
 
             if (btn_cancel) {
-                btn_cancel.addEventListener('click', () => {
-                    const isCanceled = Cancel();
+                btn_cancel.addEventListener('click', async () => {
+                    const isCanceled = await Cancel();
 
                     if (isCanceled) {
                         resolve('cancel');
@@ -127,22 +180,8 @@ const AuthInterface = function () {
             };
 
             if (btn_reset) {
-                btn_reset.addEventListener('click', () => {
-                    for (let index = 0; index < arrLength; index++) {
-                        const input = inputArr[index];
-
-                        if (input.value) {
-                            if (confirm('Are you sure you want to reset ?')) {
-                                inputArr[0].value = '';
-                                inputArr[1].value = '';
-                                inputArr[2].value = '';
-
-                                return;
-                            };
-
-                            break;
-                        };
-                    };
+                btn_reset.addEventListener('click', async () => {
+                    await Reset();
                 });
             };
 
@@ -189,7 +228,7 @@ const AuthInterface = function () {
                 };
 
                 if (e.key.toLowerCase() === 'q' && ctrlHold && altHold) {
-                    const isCanceled = Cancel();
+                    const isCanceled = await Cancel();
 
                     if (isCanceled) {
                         resolve('cancel');
@@ -198,31 +237,13 @@ const AuthInterface = function () {
                 };
 
                 if (e.key.toLowerCase() === 'r' && ctrlHold && altHold) {
-                    let hasInput = false;
-
-                    for (let index = 0; index < arrLength; index++) {
-                        let input = inputArr[index];
-
-                        if (input.value !== '') {
-                            hasInput = true;
-                            break;
-                        };
-                    };
-
-                    if (hasInput) {
-                        if (confirm('Reset account creation?')) {
-                            for (let input of inputArr) {
-                                input.value = '';
-                            };
-
-                            inputArr[0].focus();
-                            return;
-                        };
-                    };
+                    await Reset();
                 };
 
                 // For input field focus with enter key 
                 if (e.key === 'Enter' && inputArr[inputInFocus].value !== '') {
+                    if (hasActiveModal()) return;
+
                     let username = inputArr[0].value; // Username
                     let password = inputArr[1].value; // Password
                     let conpass = inputArr[2].value; // Confirm password
@@ -275,9 +296,7 @@ const AuthInterface = function () {
                         if (isRegistered) {
                             const messageBox = InformMessageBox('Successful', 'Your account has successfully been created!');
 
-                            messageBox.render(currentInterface);
-
-                            const action = await messageBox.modal(false);
+                            const action = await messageBox.modal(currentInterface);
 
                             if (action === 'close' || action === 'confirm') {
                                 reinitialize();
@@ -318,7 +337,32 @@ const AuthInterface = function () {
             hasCancel: true
         });
 
-        currentInterface = LoadLoadGameElements(component);
+        const loadGameElement = LoadLoadGameElements(component);
+        const inputArr = loadGameElement.inputArr;
+
+        currentInterface = loadGameElement.elementInterface;
+
+        async function IsAuthenticated(input) {
+            const username = input.querySelector('#username').textContent;
+            
+            previousInterface = currentInterface;
+
+            const auth = await OpenAuthenticate(username);
+            
+            if (auth === 'cancel') {
+                cont_lower.removeChild(currentInterface);
+                currentInterface = previousInterface;
+                cont_lower.appendChild(currentInterface);
+                previousInterface = undefined;
+
+                return;
+            };
+
+            if (auth === 'success') {
+                reinitialize();
+                return 'login';
+            };
+        };
 
         return new Promise((resolve) => {
             let ctrlHold, altHold;
@@ -342,6 +386,14 @@ const AuthInterface = function () {
                     return;
                 });
             };
+
+            inputArr.forEach((input) => {
+                input.addEventListener('click', async () => {
+                    const isLoggedIn = await IsAuthenticated(input);
+
+                    if (isLoggedIn === 'login') resolve('login');
+                });
+            });
 
             currentInterface.addEventListener('keyup', (e) => {
                 if (ctrlHold && e.key === 'Control') {
@@ -384,25 +436,10 @@ const AuthInterface = function () {
 
                 if (e.key === 'Enter') {
                     const cont_account = currentInterface.querySelector('.clicked');
-                    const username = cont_account.querySelector('#username').textContent;
 
-                    previousInterface = currentInterface;
+                    const isLoggedIn = await IsAuthenticated(cont_account);
 
-                    const auth = await OpenAuthenticate(username);
-
-                    if (auth === 'cancel') {
-                        cont_lower.removeChild(currentInterface);
-                        currentInterface = previousInterface;
-                        cont_lower.appendChild(currentInterface);
-                        previousInterface = undefined;
-
-                        return;
-                    };
-
-                    if (auth === 'success') {
-                        reinitialize();
-                        resolve('login');
-                    };
+                    if (isLoggedIn === 'login') resolve('login');
                 };
             });
         });
@@ -589,6 +626,7 @@ const AuthInterface = function () {
 
     return {
         render,
+        hasActiveModal,
         reinitialize,
         OpenNewGame,
         OpenLoadGame,
@@ -838,7 +876,7 @@ function PasswordVisibility(button, input) {
         } else {
             input.type = 'password';
             input.focus();
-        } 
+        }
     });
 
     button.addEventListener('mousedown', () => {
@@ -960,7 +998,10 @@ function LoadLoadGameElements(component) {
 
     ArrowKeyListener(cont_interface, accArr);
 
-    return cont_interface;
+    return {
+        elementInterface: cont_interface,
+        inputArr: accArr
+    }; 
 };
 
 /**
