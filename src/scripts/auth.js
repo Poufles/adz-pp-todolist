@@ -30,6 +30,7 @@ function Auth() {
     body.appendChild(cont_interface);
 
     btn_new.addEventListener('click', async (e) => {
+        if (AuthInterface.hasActiveModal()) return;
         if (loadGame.isChecked()) loadGame.uncheck();
         if (settings.isChecked()) settings.uncheck();
 
@@ -49,6 +50,7 @@ function Auth() {
     });
 
     btn_load.addEventListener('click', async (e) => {
+        if (AuthInterface.hasActiveModal()) return;
         if (newGame.isChecked()) newGame.uncheck();
         if (settings.isChecked()) settings.uncheck();
     
@@ -62,12 +64,14 @@ function Auth() {
             };
 
             if (resolved === 'login') {
-
+                loadGame.uncheck();
+                console.log('Logged in!');
             };
         };
     });
     
     btn_settings.addEventListener('click', async (e) => {
+        if (AuthInterface.hasActiveModal()) return;
         if (loadGame.isChecked()) loadGame.uncheck();
         if (newGame.isChecked()) newGame.uncheck();
     

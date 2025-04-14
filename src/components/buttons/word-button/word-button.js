@@ -9,12 +9,13 @@ import Button from "../button.js";
  * @param {boolean} isAlt - (Optional) Boolean value to change the position of the arrow in the button
  * @returns 
  */
-function WordButton(text, id = '', isAlt = false) {
+// function WordButton(text, id = '', cls = [], isAlt = false) {
+function WordButton({ text, id = '', cls = [], isAlt = false } = {}) {
     const template =
         `
         <button type="button" class="comp word-button btn">
             <span class="arrow">&gt;</span>
-            <span class="action" id="action-name">
+            <span class="action" id="">
                 button
             </span>
         </button>
@@ -23,7 +24,7 @@ function WordButton(text, id = '', isAlt = false) {
     const templateAlt =
         `
         <button type="button" class="comp word-button btn">
-            <span class="action" id="action-name">
+            <span class="action" id="">
             button
             </span>
             <span class="arrow">&lt;</span>
@@ -39,6 +40,8 @@ function WordButton(text, id = '', isAlt = false) {
     } else {
         htmlButtonTemplate = template;
     }
+
+    cls.forEach(item => classList.push(item));
 
     const button = Button({
         id,

@@ -5,9 +5,7 @@ const StorageHandler = function () {
     const storageTemplate = {
         app: {
             account: [], collectible: [], setting: {
-                animation: true,
                 darkmode: true,
-                mousetrail: true,
                 sound: {
                     all: true,
                     background: true,

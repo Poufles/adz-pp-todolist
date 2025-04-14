@@ -110,12 +110,6 @@
                     </div>
                     <p class="text">Cancel</p>
                 </button>
-                <button type="button" class="comp btn simple-button" id="action-reset">
-                    <div class="arrow">
-                        <span>></span>
-                    </div>
-                    <p class="text">Reset</p>
-                </button>
             </div>
             <div id="socmed">
                 <p id="author">poufsadev</p>
@@ -153,35 +147,19 @@
         </div>
         <div id="lower">
             <p class="select-none cursor-default" id="status-msg">
-                Status: <span id="status">Creating account</span>...
+                Status: <span id="status">Authenticating</span>...
             </p>
             <p class="select-none cursor-default" id="tip-msg">
-                <span class="tip" id="tip-1">- ctrl + q to cancel/back</span>
-                <span class="tip" id="tip-2">- ctrl + r to reset</span>
-                <span class="tip" id="tip-3">- enter to proceed/confirm</span>
+                <span class="tip" id="tip-1">- ctrl + q to cancel</span>
+                <span class="tip" id="tip-2">- enter to proceed/confirm</span>
             </p>
             <div id="interface">
-                <div class="confirm-block block select-none cursor-default" id="">
-                    <div class="block">
-                        <p class="select-none" id="confirm-msg">
-                            Please confirm the following are correct(y/n):
-                        </p>
+                <div class="input-block block" id="block-username">
+                    <label class="select-none" for="username">Please enter your password</label>
+                    <div class="input-box">
+                        <p class="cursor-default select-none" id="arrow">></p>
+                        <input type="text" id="username">
                     </div>
-                    <div class="block">
-                        <p class="select-none" id="confirm-acc-detail">
-                            <span id="username">poufsadev</span> | <span id="level">lv1</span> | <span
-                                id="date-of-creation">03/25/2025</span> | tasks: <span id="task-no">0</span> | completed: <span
-                                id="completed-task-no">0</span> | due today: <span id="due-today-no">0</span>
-                        </p>
-                    </div>
-                    <div class="block" id="block-password">
-                        <p id="msg-password">password <button role="button" tabindex="0" class="btn visibility select-none">&lt;<span id="slash">/</span>&gt;</button> :
-                            <input disabled type="password" name="" class="select-none" id="password" value="password">
-                        </p>
-                    </div>
-                    <label for="confirmation">
-                        &gt; <input type="text" name="" id="confirmation">
-                    </label>
                 </div>
             </div>
         </div>

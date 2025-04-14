@@ -10,7 +10,7 @@ export default function Button({ id, classList = [], htmlButtonTemplate, onCreat
 
     if (id) component.id = id;
     
-    if (classList.length != 0) classList.forEach(cls => component.classList.add(cls));
+    classList.forEach(cls => component.classList.add(cls));
 
     let checkStatus = false;
     let selectedStatus = false;
