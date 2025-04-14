@@ -270,7 +270,9 @@ const AuthInterface = function () {
                         };
 
                         // Checks if the 
-                        if (AccountHandler.register(username, password)) {
+                        const isRegistered = await AccountHandler.register(username, password)
+
+                        if (isRegistered) {
                             const messageBox = InformMessageBox('Successful', 'Your account has successfully been created!');
 
                             messageBox.render(currentInterface);
@@ -330,7 +332,7 @@ const AuthInterface = function () {
                         currentInterface = previousInterface;
                         cont_lower.appendChild(currentInterface);
                         previousInterface = undefined;
-                        
+
                         return;
                     };
 
@@ -370,7 +372,7 @@ const AuthInterface = function () {
                         currentInterface = previousInterface;
                         cont_lower.appendChild(currentInterface);
                         previousInterface = undefined;
-                        
+
                         return;
                     };
 
@@ -393,7 +395,7 @@ const AuthInterface = function () {
                         currentInterface = previousInterface;
                         cont_lower.appendChild(currentInterface);
                         previousInterface = undefined;
-                        
+
                         return;
                     };
 
@@ -418,25 +420,25 @@ const AuthInterface = function () {
 
         return new Promise((resolve) => {
             let ctrlHold, altHold;
-    
+
             currentInterface.addEventListener('keydown', async (e) => {
                 if (e.key === 'Control' && !ctrlHold) {
                     ctrlHold = true; return;
                 };
-    
+
                 if (e.key === 'Alt' && !altHold) {
                     altHold = true; return;
                 };
-    
+
                 if (e.key.toLowerCase() === 'q' && ctrlHold && altHold) {
                     resolve('cancel');
                     return;
                 };
-    
+
                 if (e.key === 'Enter') {
                     const password = component.querySelector('#password').value;
 
-                    const isSuccess = AccountHandler.login(username, password);
+                    const isSuccess = await AccountHandler.login(username, password);
 
                     if (isSuccess) {
                         resolve('success');
@@ -484,15 +486,11 @@ const AuthInterface = function () {
                 input.value = 'y';
             };
 
-            setting.animation = true;
             setting.darkmode = true;
-            setting.mousetrail = true;
             setting.sound.all = true;
             setting.sound.background = true;
             setting.sound.click = true;
             setting.sound.keyboard = true;
-            setting.animation = false;
-            setting.animation = true;
 
             StorageHandler.UpdateStorage({ isRegister: true });
         };
@@ -713,23 +711,8 @@ function LoadNewGameElements(component) {
     for (let visibility of visibilityArr) {
         const button = visibility.button;
         const input = visibility.input;
-        const span = button.querySelector('span#slash');
 
-        button.addEventListener('click', () => {
-            if (span.textContent === '/') span.textContent = 'o';
-            else span.textContent = '/';
-
-            if (input.type === 'password') input.type = 'text';
-            else input.type = 'password';
-        });
-
-        button.addEventListener('mousedown', () => {
-            span.style.opacity = '1';
-        });
-
-        button.addEventListener('mouseleave', () => {
-            span.style.removeProperty('opacity');
-        });
+        PasswordVisibility(button, input);
     };
 
     // Listeners for input
@@ -761,7 +744,11 @@ function LoadNewGameElements(component) {
     };
 };
 
-
+/**
+ * Loads the authenticate elements
+ * @param {HTMLElement} component - The AuthInterface component
+ * @returns The Authenticate interface
+ */
 function LoadAuthenticate(component) {
     // Change the word type
     const template =
@@ -805,6 +792,8 @@ function LoadAuthenticate(component) {
 
     input_password.focus();
 
+    PasswordVisibility(btn_password_visibility, input_password);
+
     return cont_interface;
 };
 
@@ -829,6 +818,36 @@ function DefineBlock(blockTemplate, blockType, blockMessage, blockTip = '') {
     tip.textContent = blockTip;
 
     return input;
+};
+
+/**
+ * Adds visibility option for the password
+ * @param {HTMLElement} button - The button element for password visibility.
+ * @param {HTMLElement} input - The input element of the password. 
+ */
+function PasswordVisibility(button, input) {
+    const span = button.querySelector('span#slash');
+
+    button.addEventListener('click', () => {
+        if (span.textContent === '/') span.textContent = 'o';
+        else span.textContent = '/';
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            input.focus();
+        } else {
+            input.type = 'password';
+            input.focus();
+        } 
+    });
+
+    button.addEventListener('mousedown', () => {
+        span.style.opacity = '1';
+    });
+
+    button.addEventListener('mouseleave', () => {
+        span.style.removeProperty('opacity');
+    });
 };
 
 /**
@@ -972,7 +991,6 @@ function LoadSettingsElements(component) {
     const span_status = cont_lower.querySelector('#status');
 
     const cont_dark = range.createContextualFragment(template);
-    const cont_mouse = range.createContextualFragment(template);
     const cont_sound = range.createContextualFragment(template);
     const cont_background = range.createContextualFragment(template_sound);
     const cont_hover = range.createContextualFragment(template_sound);
@@ -981,30 +999,26 @@ function LoadSettingsElements(component) {
     span_status.textContent = 'Configuring settings';
     cont_interface.id = 'interface';
 
-    // Animation block
+    // Dark mode block
     const input_dark = DefineSettingBlock(cont_dark, 'darkmode', 'Dark mode(y/n)', setting.darkmode);
 
-    // Animation block
-    const input_mouse = DefineSettingBlock(cont_mouse, 'mousetrail', 'Mouse trail(y/n)', setting.mousetrail);
-
-    // Animation block
+    // Sound block
     const input_sound = DefineSettingBlock(cont_sound, 'sound', 'Sounds(y/n)', setting.sound.all);
 
-    // Animation block
+    // Background sound block
     const input_background = DefineSettingBlock(cont_background, 'background', 'Background(y/n)', setting.sound.background);
 
-    // Animation block
-    const input_hover = DefineSettingBlock(cont_hover, 'keyboard', 'Keyboard(y/n)', setting.sound.keyboard);
+    // Keyboard sound block
+    const input_keyboard = DefineSettingBlock(cont_hover, 'keyboard', 'Keyboard(y/n)', setting.sound.keyboard);
 
-    // Animation block
+    // Mouse click sound block
     const input_click = DefineSettingBlock(cont_click, 'click', 'Click(y/n)', setting.sound.click);
 
     // Insert input in array
     settingArr.push(input_dark);
-    settingArr.push(input_mouse);
     settingArr.push(input_sound);
     settingArr.push(input_background);
-    settingArr.push(input_hover);
+    settingArr.push(input_keyboard);
     settingArr.push(input_click);
 
     // Append sound settings 
@@ -1016,7 +1030,6 @@ function LoadSettingsElements(component) {
 
     // Append block in interface
     cont_interface.appendChild(cont_dark);
-    cont_interface.appendChild(cont_mouse);
     cont_interface.appendChild(cont_sound);
 
     cont_lower.appendChild(cont_interface);

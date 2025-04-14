@@ -6,7 +6,6 @@ const StorageHandler = function () {
         app: {
             account: [], collectible: [], setting: {
                 darkmode: true,
-                mousetrail: true,
                 sound: {
                     all: true,
                     background: true,

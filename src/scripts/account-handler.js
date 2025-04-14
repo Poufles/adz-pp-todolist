@@ -1,4 +1,5 @@
 import DateHandler from "./date-handler.js";
+import Encryption from "./encryption.js";
 import StorageHandler from "./storage-handler.js";
 
 const AccountHandler = function() {
@@ -8,13 +9,15 @@ const AccountHandler = function() {
      * @param {String} password - New account's password.
      * @returns A boolean value to indicate if the register is successful or not.
      */
-    const register = (username, password) => {
+    const register = async (username, password) => {
         let isSuccessful = false;
 
         const storage = StorageHandler.GetStorage();
         const accountStorage = storage.app.account;
 
         if (isUsernameExist(username)) return isSuccessful;
+
+        const hashedPassword = await Encryption.hashPassword(password);
 
         const template = {
             username: '',
@@ -45,7 +48,7 @@ const AccountHandler = function() {
         const date = DateHandler.currentDate();
 
         template.username = username;
-        template.password = password;
+        template.password = hashedPassword;
         template.dateofcreation = date;
 
         accountStorage.push(template);
@@ -62,7 +65,7 @@ const AccountHandler = function() {
      * @param {*} password - Account's password.
      * @returns A boolean value to indicate if the register is successful or not.
      */
-    const login = (username, password) => {
+    const login = async (username, password) => {
         let isSuccessful = false;
 
         const storage = StorageHandler.GetStorage();
@@ -74,7 +77,9 @@ const AccountHandler = function() {
             const accountPassword = account.password;
             
             if (accountUsername === username) {
-                if (accountPassword === password) {
+                const isValid = await Encryption.verifyPassword(password, accountPassword);
+
+                if (isValid) {
                     isSuccessful = true;
                     break;
                 };
