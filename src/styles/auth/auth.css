@@ -1,7 +1,7 @@
 @import '../main.css';
 
 html {
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 #page_auth {
@@ -15,6 +15,7 @@ html {
 }
 
 #page_auth .gate {
+    background-color: var(--primary-color);
     height: 50%;
     width: 100dvw;
     position: relative;

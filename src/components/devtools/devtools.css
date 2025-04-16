@@ -1,0 +1,54 @@
+.wrapper:has(#devtools) {
+    display: none;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 99;
+}
+
+.wrapper.show:has(#devtools) {
+    display: block;
+}
+
+#devtools {
+    position: relative;
+}
+
+#devtools>#actions {
+    background-color: var(--secondary-color);
+    border: 2px solid var(--black);
+    color: var(--black);
+    padding: 7px 28px;
+}
+
+#devtools:has(#tools.open)>#actions {
+    border-bottom: 0;
+}
+
+#devtools>#tools {
+    display: none;
+}
+
+#devtools>#tools.open {
+    --box-padding: 15px;
+
+    background-color: var(--secondary-color);
+    border: 2px solid var(--black);
+    padding: var(--box-padding);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    position: absolute;
+    top: calc(100% - 2px);
+    left: 0;
+    z-index: -1;
+}
+
+#devtools>#tools button {
+    background-color: var(--black);
+    border: 0;
+    color: var(--secondary-color);
+    width: 100%;
+    padding: 2px 18px;
+}
