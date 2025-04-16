@@ -1,0 +1,46 @@
+#page_auth.exit-animation-out, 
+#page_auth.exit-animation-in {
+    z-index: 50;
+}
+
+#page_auth.exit-animation-out .gate {
+    transition: var(--trans-n) ease-out var(--trans-s);
+}
+
+#page_auth.exit-animation-out #top {
+    transform: translateY(-100%);
+}
+
+#page_auth.exit-animation-out #bottom {
+    transform: translateY(100%);
+}
+
+#page_auth.exit-animation-out #start {
+    left: -30%;
+    transition: var(--trans-s) ease-out;
+}
+
+#page_auth.exit-animation-out .auth-interface {
+    left: 130%;
+    transition: var(--trans-s) ease-out;
+}
+
+#page_auth.exit-animation-in .gate {
+    transition: var(--trans-n) ease-in;
+}
+
+#page_auth.exit-animation-in #top {
+    transform: translateY(0);
+}
+
+#page_auth.exit-animation-in #bottom {
+    transform: translateY(0);
+}
+
+#page_auth.exit-animation-in #start {
+    transition: var(--trans-s) ease-in var(--trans-n);
+}
+
+#page_auth.exit-animation-in .auth-interface {
+    transition: var(--trans-s) ease-in var(--trans-n);
+}

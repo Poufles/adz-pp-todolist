@@ -33,3 +33,13 @@
     padding-right: 10px;
     width: 100%;
 }
+
+.simple-button:disabled {
+    color: var(--black);
+    cursor: default;
+}
+
+.simple-button:disabled:hover>.arrow {
+    width: 0%;
+    padding-right: 0px;
+}
