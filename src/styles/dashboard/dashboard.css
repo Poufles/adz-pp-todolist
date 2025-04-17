@@ -5,6 +5,7 @@
 
 #page_dashboard {
     position: relative;
+    overflow: hidden;
 }
 
 #page_dashboard>.container {

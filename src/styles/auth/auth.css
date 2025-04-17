@@ -1,9 +1,3 @@
-@import '../main.css';
-
-html {
-    overflow: hidden;
-}
-
 #page_auth {
     --ms-padding: 30px;
     --mh-padding: 30px;
