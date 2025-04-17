@@ -5,6 +5,7 @@
 
 #page_dashboard {
     position: relative;
+    overflow: hidden;
 }
 
 #page_dashboard>.container {
@@ -18,7 +19,8 @@
     display: flex;
     flex-direction: column;
     transform: scale(0.8);
-    transition: var(--trans-s);
+    transition-property: transform;
+    transition-duration: var(--trans-s);
     transition-delay: 1.05s;
 }
 
@@ -30,9 +32,15 @@
     padding-top: var(--mh-padding);
     padding-bottom: 20px;
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: 
+        'left middle right'
+    ;
+}
+
+#page_dashboard #misc-info #user-profile {
+    grid-area: left;
 }
 
 #page_dashboard #misc-info #user-profile #user-block {
@@ -57,8 +65,7 @@
 }
 
 #page_dashboard #misc-info #task-stats {
-    flex-basis: 100%;
-    flex-grow: 1;
+    grid-area: middle;
 
     display: flex;
     gap: 20px;
@@ -132,10 +139,13 @@
 }
 
 #page_dashboard #misc-info #clock {
-    flex-shrink: 0;
+    grid-area: right;
+
+    place-content: center;
 }
 
 #page_dashboard #main-interface {
+    --box-padding: 20px;
     flex-grow: 1;
 
     background-color: var(--secondary-color);
@@ -145,8 +155,63 @@
     border: 2px solid var(--black);
     width: 100%;
     height: 880px;
-    padding: 20px;
+    padding: var(--box-padding);
+    display: flex;
+    justify-content: space-between;
+    gap: 70px;
+    position: relative;
 }
+
+/* CHANGE LATER */
+@media screen and (min-width: 1170px) {
+    #page_dashboard #main-interface nav {
+        flex-shrink: 0;
+
+        background-color: blue;
+        height: 100px;
+        display: none;
+    }
+}
+/* CHANGE LATER */
+
+#page_dashboard #main-interface #todo-type-stats {
+    background-color: var(--secondary-color);
+    border: 2px solid var(--black);
+    width: 100%;
+    max-width: max-content;
+    padding: 10px 30px;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    bottom: var(--box-padding);
+    z-index: 10;
+}
+
+#page_dashboard #main-interface #left-panel,
+#page_dashboard #main-interface #right-panel {
+    flex-shrink: 0;
+
+    width: 350px;
+}
+
+/* CHANGE LATER */
+#page_dashboard #main-interface #left-panel {
+    background-color: blue;
+}
+
+#page_dashboard #main-interface #middle-panel {
+    flex-basis: 100%;
+    flex-shrink: 1;
+}
+
+#page_dashboard #main-interface #right-panel {
+    background-color: green;
+}
+/* CHANGE LATER */
 
 #page_dashboard footer {
     padding-top: 40px;

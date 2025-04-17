@@ -27,6 +27,11 @@
     --trans-s: 1s;
 }
 
+html {
+    height: 100dvh;
+    overflow: auto;
+}
+
 body {
     background-color: var(--primary-color);
 }
