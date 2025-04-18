@@ -42,6 +42,10 @@ export default function Button({ id, classList = [], htmlButtonTemplate, onCreat
         component.classList.remove('selected');
     };
 
+    const enable = () => component.disabled = 'false';
+
+    const disable = () => component.disabled = 'true';
+
     if (onCreate) onCreate(component, selectedStatus); 
 
     return {
@@ -53,6 +57,8 @@ export default function Button({ id, classList = [], htmlButtonTemplate, onCreat
         uncheck,
         select,
         deselect,
+        enable,
+        disable,
         component 
     };
 };

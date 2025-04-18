@@ -1,3 +1,4 @@
+import '../styles/main.css';
 import '../styles/auth/auth.css';
 import '../styles/auth/auth-responsiveness.css';
 import '../components/buttons/simple-button/simple-button.css';
@@ -5,7 +6,6 @@ import '../components/auth-interface/auth-interface.css';
 import '../components/message-box/message-box.css';
 import '../components/buttons/word-button/word-button.css'
 
-import StorageHandler from './storage-handler.js';
 import SimpleButton from '../components/buttons/simple-button/simple-button.js';
 import AuthInterface from '../components/auth-interface/auth-interface.js';
 
