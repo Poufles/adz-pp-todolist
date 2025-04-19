@@ -86,7 +86,7 @@
             <div class="input-wrapper">
                 <span class="arrow typing">&gt;</span>
                 <div class="time-format">
-                    <input type="number" name="" id="hour-ten" value="0"><input type="number" name="" id="hour-one" value="2">:<input type="number" name="" id="minute-ten" value="3"><input type="number" name="" id="minute-one" value="0"> | <input type="number" name="" id="month-ten" value="0"><input type="number" name="" id="month-one" value="7">/<input type="number" name="" id="day-ten" value="1"><input type="number" name="" id="day-one" value="5">/<input type="number" name="" id="year-mille" value="2"><input type="number" name="" id="year-cent" value="0"><input type="number" name="" id="year-ten" value="2"><input type="number" name="" id="year-one" value="6">
+                    <input type="number" name="" id="hour-ten" value="0"><input type="number" name="" id="hour-one" value="2">:<input type="number" name="" id="minute-ten" value="3"><input type="number" name="" id="minute-one" value="0"><input class="btn" type="button" id="meridian" value="am"> | <input type="number" name="" id="month-ten" value="0"><input type="number" name="" id="month-one" value="7">/<input type="number" name="" id="day-ten" value="1"><input type="number" name="" id="day-one" value="5">/<input type="number" name="" id="year-mille" value="2"><input type="number" name="" id="year-cent" value="0"><input type="number" name="" id="year-ten" value="2"><input type="number" name="" id="year-one" value="6">
                 </div>
             </div>
             <div class="hint cursor-default select-none">
@@ -147,6 +147,16 @@
                 clickable: true
             }
         });
+        
+        const timeBlock = InputBlock({
+            title: 'Time block',
+            inputType: 'time',
+            hint: {
+                hasHint: true,
+                title: 'format',
+                message: 'hh:mma | mm/dd/yyyy',
+            }
+        });
 
         const suggestion_one = WordButton({
             text: 'Kalabayo',
@@ -161,6 +171,7 @@
         simpleBox.addContent(oneBlock);
         simpleBox.addContent(multiBlock);
         simpleBox.addContent(clickablesBlock);
+        simpleBox.addContent(timeBlock);
     </script>
 </body>
 

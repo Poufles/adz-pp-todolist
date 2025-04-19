@@ -9,6 +9,12 @@
     font-size: var(--fn-sm);
     opacity: 0.5;
     text-transform: lowercase;
+    user-select: none;
+}
+
+.input-block label .optional.required {
+    color: red;
+    opacity: 0.75;
 }
 
 .input-block .hint.hidden {
@@ -35,6 +41,7 @@
 
 .input-block.time-liner .time-format input {
     border-bottom: 1px solid var(--black);
+    caret-color: transparent;
     width: 1.1ch;
     padding: 0;
     overflow: hidden;
@@ -56,6 +63,21 @@
   -moz-appearance: textfield;
 }
 
+.input-block.time-liner .time-format #meridian {
+    border-bottom: 1px solid var(--black);
+    width: 100%;
+}
+
+.input-block.time-liner .time-format input:focus {
+    background-color: var(--black);
+    color: var(--secondary-color); /* CHANGE LATER */
+    animation: input_blink 1s infinite;
+}
+
+.input-block.time-liner .time-format #meridian.clicked {
+    background-color: var(--black);
+}
+
 .input-block .input-wrapper input,
 .input-block .input-wrapper textarea {
     flex-grow: 1;
@@ -74,7 +96,7 @@
 .input-block .input-wrapper input::selection,
 .input-block .input-wrapper textarea::selection {
     background-color: var(--black);
-    color: var(--bg-color); /* --bg-color is given from JS */
+    color: var(--bg-color);
 }
 
 .input-block .input-wrapper:has(input:focus) .arrow,
@@ -95,5 +117,13 @@
     } 51%, 100% {
         opacity: 0;
         visibility: hidden;
+    }
+}
+
+@keyframes input_blink {
+    0%, 50% {
+        border-bottom: 1px solid var(--black);
+    } 51%, 100% {
+        border-bottom: 1px solid transparent;
     }
 }
