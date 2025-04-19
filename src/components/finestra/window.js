@@ -13,6 +13,7 @@ import WordButton from '../buttons/word-button/word-button.js';
  *  componentButtonsArr: Array,
  *  render: (parent: HTMLElement) => void,
  *  unrender: () => void,
+ *  addContent: (parent: HTMLElement) => void,
  *  enable: () => void,
  *  disable: () => void
  * }}
@@ -25,8 +26,9 @@ function Finestra({
     titleButtonText = 'close',
 } = {}) {
 
-    let componentObject, actionsObject;
+    let componentObject;
     const componentButtonsArr = [];
+    const contentItemsArr = [];
 
     if (!isExpandable) {
         componentObject = GetUnexpandableComponent(titleButtonText);
@@ -49,7 +51,7 @@ function Finestra({
     span_title.textContent = windowTitle;
 
     if (hasActions) {
-        actionsObject = GetActionsComponent();
+        const actionsObject = GetActionsComponent();
 
         const section_content = component.querySelector('section#content');
 
@@ -69,12 +71,33 @@ function Finestra({
     };
 
     const unrender = () => {
-        parent = component.parentElement;
+        const parent = component.parentElement;
 
         if (parent && parent.contains(component)) {
             parent.removeChild(component); return;
         };
     };
+
+    const addContent = (object) => {
+        if (Object.hasOwn(object, 'render')) {
+            const section_content = component.querySelector('section#content');
+            const cont_content = component.querySelector('.content-container');
+
+            object.render(cont_content);
+            contentItemsArr.push(object);
+        } else {
+            console.log(`Object element has no render()`);
+        };
+    };
+
+    // const removeContent = (element) => {
+    //     if (Object.hasOwn(element, 'unrender')) {
+    //         element.unrender();
+    //         contentItemsArr.splice(element);
+    //     } else {
+    //         console.log(`Object element has no render()`);
+    //     };
+    // };
 
     const enable = () => {
         for (let button of componentButtonsArr) {
@@ -101,6 +124,7 @@ function Finestra({
         componentButtonsArr,
         render,
         unrender,
+        addContent,
         enable,
         disable
     };

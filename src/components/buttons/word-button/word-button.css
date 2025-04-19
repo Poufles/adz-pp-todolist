@@ -31,6 +31,10 @@
     opacity: 1;
 }
 
+.word-button:disabled {
+    color: var(--black);
+}
+
 @keyframes arrow_blink {
     0%, 50% {
         opacity: 1;

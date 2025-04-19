@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <link rel="stylesheet" href="../buttons/word-button/word-button.css">
+    <link rel="stylesheet" href="../finestra/window.css">
+    <link rel="stylesheet" href="input-block.css">
+    <script type="module" src="./input-block.js"></script>
+    <script type="module" src="../finestra/window.js"></script>
+    <title>Input Block</title>
+</head>
+
+<body style="display: flex; gap: 10px; align-items: center; justify-content: center; height: 100dvh;">
+    <div class="naked-box" style="border: 2px solid red; width: 300px; height: 800px; padding: 10px; display: flex; flex-direction: column; gap: 20px; --bg-color: #FFFDF6">
+        <article class="comp input-block one-liner">
+            <label for="item" class="input-label select-none cursor-default">
+                <span class="title">One liner input</span>: <span class="optional">(optional)</span>
+            </label>
+            <div class="input-wrapper">
+                <span class="arrow">&gt;</span><input type="text" id="item">
+            </div>
+            <div class="hint cursor-default select-none">
+                <span class="title">Title</span>: <span class="text">I'm a hint</span>
+            </div>
+        </article>
+        <article class="comp input-block one-liner">
+            <label for="item" class="input-label select-none cursor-default">
+                <span class="title">One liner input</span>: <span class="optional">(optional)</span>
+            </label>
+            <div class="input-wrapper">
+                <span class="arrow typing">&gt;</span><input type="text" id="item">
+            </div>
+            <div class="hint cursor-default select-none">
+                <span class="title">Title</span>: <span class="text">I'm a hint</span>
+            </div>
+        </article>
+        <article class="comp input-block multi-liner">
+            <label for="item" class="input-label select-none cursor-default">
+                <span class="title">Multi liner input</span>: <span class="optional">(optional)</span>
+            </label>
+            <div class="input-wrapper">
+                <span class="arrow typing">&gt;</span><textarea name="" id="item" rows="1"></textarea>
+            </div>
+            <div class="hint cursor-default select-none hidden">
+                <span class="title">Title</span>: <span class="text">I'm a hint</span>
+            </div>
+        </article>
+        <article class="comp input-block multi-liner">
+            <label for="item" class="input-label select-none cursor-default">
+                <span class="title">Clickable hint</span>: <span class="optional">(optional)</span>
+            </label>
+            <div class="input-wrapper">
+                <span class="arrow typing">&gt;</span><textarea name="" id="item" rows="1"></textarea>
+            </div>
+            <div class="hint cursor-default select-none clickable">
+                <span class="title">suggestions</span>: 
+                <div class="button-group">
+                    <button type="button" class="comp word-button btn alt">
+                        <span class="action" id="action-name">
+                            suggestion 1
+                        </span>
+                        <span class="arrow">&lt;</span>
+                    </button>
+                    <button type="button" class="comp word-button btn alt">
+                        <span class="action" id="action-name">
+                            suggestion 2
+                        </span>
+                        <span class="arrow">&lt;</span>
+                    </button>
+                    <button type="button" class="comp word-button btn alt">
+                        <span class="action" id="action-name">
+                            suggestion 3
+                        </span>
+                        <span class="arrow">&lt;</span>
+                    </button>
+                </div>
+            </div>
+        </article>
+        <article class="comp input-block time-liner">
+            <label for="item" class="input-label select-none cursor-default">
+                <span class="title">Time input</span>: <span class="optional">(optional)</span>
+            </label>
+            <div class="input-wrapper">
+                <span class="arrow typing">&gt;</span>
+                <div class="time-format">
+                    <input type="number" name="" id="hour-ten" value="0"><input type="number" name="" id="hour-one" value="2">:<input type="number" name="" id="minute-ten" value="3"><input type="number" name="" id="minute-one" value="0"> | <input type="number" name="" id="month-ten" value="0"><input type="number" name="" id="month-one" value="7">/<input type="number" name="" id="day-ten" value="1"><input type="number" name="" id="day-one" value="5">/<input type="number" name="" id="year-mille" value="2"><input type="number" name="" id="year-cent" value="0"><input type="number" name="" id="year-ten" value="2"><input type="number" name="" id="year-one" value="6">
+                </div>
+            </div>
+            <div class="hint cursor-default select-none">
+                <span class="title">format</span>: <span class="text">hh:mmam | mm/dd/yyyy</span>
+            </div>
+        </article>
+    </div>
+    <div class="window-box" style="border: 2px solid blue; padding: 10px; display: flex; flex-direction: column; gap: 10px; height: 800px; width: 900px;">
+        
+    </div>
+    <script type="module">
+        import Finestra from '../finestra/window.js';
+        import WordButton from '../buttons/word-button/word-button.js';
+        import InputBlock from './input-block.js';
+
+        const textareas = document.querySelectorAll('textarea');
+
+        textareas.forEach((textarea) => {
+            textarea.addEventListener("input", () => {
+                textarea.style.height = "auto";
+                textarea.style.height = textarea.scrollHeight + "px";
+            });
+        });
+
+        const windowsBox = document.querySelector('.window-box');
+
+        const simpleBox = Finestra({
+            id: 'create',
+            windowTitle: 'create new...',
+        });
+
+        simpleBox.render(windowsBox);
+
+        const oneBlock = InputBlock({
+            title: 'One liner block',
+            isOptional: true,
+            hint: {
+                hasHint: true,
+                title: 'Nani',
+                message: 'yeah bruv'
+            }
+        });
+        
+        const multiBlock = InputBlock({
+            title: 'Multi block',
+            isOptional: true,
+            inputType: 'multi'
+        });
+        
+        const clickablesBlock = InputBlock({
+            title: 'Multi block',
+            isOptional: true,
+            inputType: 'multi',
+            hint: {
+                hasHint: true,
+                title: 'Nani',
+                message: 'yeah bruv',
+                clickable: true
+            }
+        });
+
+        const suggestion_one = WordButton({
+            text: 'Kalabayo',
+            id: 'yes',
+            isAlt: true
+        });
+
+        const btn_suggestion_one = suggestion_one.component;
+
+        clickablesBlock.addClickables({}, btn_suggestion_one);
+
+        simpleBox.addContent(oneBlock);
+        simpleBox.addContent(multiBlock);
+        simpleBox.addContent(clickablesBlock);
+    </script>
+</body>
+
+</html>
