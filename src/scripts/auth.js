@@ -67,7 +67,7 @@ function Auth() {
 
             if (resolved === 'login') {
                 loadGame.uncheck();
-                console.log('Logged in!');
+                window.location.href = './dashboard.html';
             };
         };
     });
