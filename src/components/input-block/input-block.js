@@ -1,5 +1,21 @@
 import DateHandler from "../../scripts/date-handler.js";
 
+/**
+ * 
+ * @param {{
+ * inputType: string,
+ * title: string,
+ * inputId: string,
+ * isOptional: boolean,
+ * hint: {
+ *  hasHint: boolean,
+ *  title: string,
+ *  message: string,
+ *  clickable: string
+ * }
+ * }}
+ * @returns 
+ */
 function InputBlock({
     inputType = 'one',
     title = 'Input title',
@@ -28,7 +44,7 @@ function InputBlock({
     const component = fragment.querySelector('article.input-block');
 
     const input_label = component.querySelector('.input-label');
-    const optionalComponent = CreateOptional();
+    const optionalComponent = CreateOptional(isOptional);
 
     input_label.appendChild(optionalComponent);
 
@@ -172,12 +188,16 @@ function InputBlock({
             optionalComponent.classList.add('required');
         };
     };
-    
+
     const removeRequiredMessage = () => {
         if (!isOptional) {
             optionalComponent.textContent = `(optional)`;
-            optionalComponent.classList.add('required');
+            optionalComponent.classList.remove('required');
         };
+    };
+
+    const addPlaceholder = (placeholder) => {
+        objectComponents.input.placeholder = placeholder;
     };
 
     return {
@@ -191,7 +211,8 @@ function InputBlock({
         addClickables,
         removeClickables,
         requiredMessage,
-        removeRequiredMessage
+        removeRequiredMessage,
+        addPlaceholder
     };
 };
 
@@ -264,7 +285,7 @@ function CreateTimeLiner(component, inputId) {
     const template =
         `
         <div class="time-format" id="${inputId}">
-            <input type="number" name="" id="hour-ten" value="${timeNow.slice(0, 1)}"><input type="number" name="" id="hour-one" value="${timeNow.slice(1, 2)}">:<input type="number" name="" id="minute-ten" value="${timeNow.slice(3, 4)}"><input type="number" name="" id="minute-one" value="${timeNow.slice(4, 5)}"><input class="btn" type="button" id="meridian" value="${timeNow.slice(5, 7).toLowerCase()}"> | <input type="number" name="" id="month-ten" value="${dateNow.slice(0, 1)}"><input type="number" name="" id="month-one" value="${dateNow.slice(1, 2)}">/<input type="number" name="" id="day-ten" value="${dateNow.slice(3, 4)}"><input type="number" name="" id="day-one" value="${dateNow.slice(4, 5)}">/<input type="number" name="" id="year-mille" value="${dateNow.slice(6, 7)}"><input type="number" name="" id="year-cent" value="${dateNow.slice(7, 8)}"><input type="number" name="" id="year-ten" value="${dateNow.slice(8, 9)}"><input type="number" name="" id="year-one" value="${dateNow.slice(9, 10)}">
+            <input type="number" name="" id="hour-ten" placeholder="${timeNow.slice(0, 1)}"><input type="number" name="" id="hour-one" placeholder="${timeNow.slice(1, 2)}">:<input type="number" name="" id="minute-ten" placeholder="${timeNow.slice(3, 4)}"><input type="number" name="" id="minute-one" placeholder="${timeNow.slice(4, 5)}"><input class="btn" type="button" id="meridian" value="${timeNow.slice(5, 7).toLowerCase()}"> | <input type="number" name="" id="month-ten" placeholder="${dateNow.slice(0, 1)}"><input type="number" name="" id="month-one" placeholder="${dateNow.slice(1, 2)}">/<input type="number" name="" id="day-ten" placeholder="${dateNow.slice(3, 4)}"><input type="number" name="" id="day-one" placeholder="${dateNow.slice(4, 5)}">/<input type="number" name="" id="year-mille" placeholder="${dateNow.slice(6, 7)}"><input type="number" name="" id="year-cent" placeholder="${dateNow.slice(7, 8)}"><input type="number" name="" id="year-ten" placeholder="${dateNow.slice(8, 9)}"><input type="number" name="" id="year-one" placeholder="${dateNow.slice(9, 10)}">
         </div>
     `;
 
@@ -306,7 +327,7 @@ function CreateTimeLiner(component, inputId) {
     timeInputs.push(input_yo);
 
     timeInputs.forEach(timeInput => {
-        const originalValue = timeInput.value;
+        // const originalValue = timeInput.value;
 
         timeInput.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft') {
@@ -337,9 +358,9 @@ function CreateTimeLiner(component, inputId) {
                     timeInput.value = value.slice(1, 2);
                 };
 
-                if (value.length === 0) {
-                    timeInput.value = originalValue;
-                };
+                // if (value.length === 0) {
+                //     timeInput.value = originalValue;
+                // };
             });
 
             timeInput.addEventListener('keydown', (e) => {
@@ -379,10 +400,10 @@ function CreateTimeLiner(component, inputId) {
  * Creates an optional component
  * @returns Returns optional component
  */
-function CreateOptional() {
+function CreateOptional(isOptional) {
     const template =
         `
-        <span class="optional">(optional)</span>
+        <span class="${isOptional ? 'optional' : 'required'}">(optional)</span>
     `;
 
     const fragment = CreateFragment(template);

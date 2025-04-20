@@ -21,7 +21,7 @@ align-items: center; justify-content: center; height: 100dvh;">
     </div>
     <div class="box" style="border: 2px solid black; width: 500px;height: 800px; padding: 10px; display: flex;
     flex-direction: column; gap: 30px; overflow-y: auto;">
-        <!-- <div class="comp window-component type-1" id="window-name">
+        <div class="comp window-component type-1" id="window-name">
             <div type="button" class="title select-none cursor-default">
                 <span class="text">Item Title</span>
                 <button type="button" class="comp word-button btn">
@@ -38,11 +38,6 @@ align-items: center; justify-content: center; height: 100dvh;">
                         facere? Magni est et, nemo eius officia, enim, consequatur animi deleniti excepturi quis qui
                         sequi voluptatem ex!
                     </p>
-                    <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis cum autem aliquid delectus
-                        facere? Magni est et, nemo eius officia, enim, consequatur animi deleniti excepturi quis qui
-                        sequi voluptatem ex!
-                    </p>
                 </div>
             </section>
         </div>
@@ -53,16 +48,22 @@ align-items: center; justify-content: center; height: 100dvh;">
             </button>
             <section id="content">
                 <div class="content-container">
+                    <div id="keys-status">
+                        <p class="select-none cursor-default" id="status-msg">
+                            Status: <span id="status">Creating account</span>...
+                        </p>
+                        <p class="select-none cursor-default" id="tip-msg">
+                            <span class="tip" id="tip-1">- ctrl + q to cancel/back</span>
+                            <span class="tip" id="tip-2">- ctrl + r to reset</span>
+                            <span class="tip" id="tip-3">- enter to proceed/confirm</span>
+                        </p>
+                    </div>
                     <p>
                         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis cum autem aliquid delectus
                         facere? Magni est et, nemo eius officia, enim, consequatur animi deleniti excepturi quis qui
                         sequi voluptatem ex!
                     </p>
-                    <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis cum autem aliquid delectus
-                        facere? Magni est et, nemo eius officia, enim, consequatur animi deleniti excepturi quis qui
-                        sequi voluptatem ex!
-                    </p>
+                    <p class="select-none cursor-default" id="bottom-msg">What the hell</p>
                 </div>
             </section>
         </div>
@@ -99,7 +100,7 @@ align-items: center; justify-content: center; height: 100dvh;">
                     </button>
                 </div>
             </section>
-        </div> -->
+        </div>
     </div>
     <script type="module">
         import Finestra from './window.js';
@@ -110,10 +111,10 @@ align-items: center; justify-content: center; height: 100dvh;">
         const btn_expandable_action = document.querySelector('#expandable-action');
         const btn_action = document.querySelector('#action');
         const box = document.querySelector('.box');
-        // const component_2 = document.querySelector('.window-component.type-2');
-        // const component_3 = document.querySelector('.window-component.type-3');
-        // const btn_title_2 = component_2.querySelector('.title');
-        // const btn_title_3 = component_3.querySelector('.title');
+        const component_2 = document.querySelector('.window-component.type-2');
+        const component_3 = document.querySelector('.window-component.type-3');
+        const btn_title_2 = component_2.querySelector('.title');
+        const btn_title_3 = component_3.querySelector('.title');
 
         if (btn_unexpandable) {
             btn_unexpandable.addEventListener('click', () => {
@@ -163,45 +164,45 @@ align-items: center; justify-content: center; height: 100dvh;">
             });
         };
 
-        // if (btn_title_2) {
-        //     btn_title_2.addEventListener('click', () => {
-        //         const span_action_text = btn_title_2.querySelector('.action-text');
-        //         const span_action_icon = btn_title_2.querySelector('.action-icon');
-        //         const section_content = component_2.querySelector('#content');
+        if (btn_title_2) {
+            btn_title_2.addEventListener('click', () => {
+                const span_action_text = btn_title_2.querySelector('.action-text');
+                const span_action_icon = btn_title_2.querySelector('.action-icon');
+                const section_content = component_2.querySelector('#content');
 
-        //         if (span_action_text) {
-        //             span_action_text.classList.toggle('show');
-        //         };
+                if (span_action_text) {
+                    span_action_text.classList.toggle('show');
+                };
 
-        //         if (span_action_icon) {
-        //             span_action_icon.classList.toggle('hide');
-        //         };
+                if (span_action_icon) {
+                    span_action_icon.classList.toggle('hide');
+                };
 
-        //         if (section_content) {
-        //             section_content.classList.toggle('show');
-        //         };
-        //     });
-        // };
+                if (section_content) {
+                    section_content.classList.toggle('show');
+                };
+            });
+        };
 
-        // if (btn_title_3) {
-        //     btn_title_3.addEventListener('click', () => {
-        //         const span_action_text = btn_title_3.querySelector('.action-text');
-        //         const span_action_icon = btn_title_3.querySelector('.action-icon');
-        //         const section_content = component_3.querySelector('#content');
+        if (btn_title_3) {
+            btn_title_3.addEventListener('click', () => {
+                const span_action_text = btn_title_3.querySelector('.action-text');
+                const span_action_icon = btn_title_3.querySelector('.action-icon');
+                const section_content = component_3.querySelector('#content');
 
-        //         if (span_action_text) {
-        //             span_action_text.classList.toggle('show');
-        //         };
+                if (span_action_text) {
+                    span_action_text.classList.toggle('show');
+                };
 
-        //         if (span_action_icon) {
-        //             span_action_icon.classList.toggle('hide');
-        //         };
+                if (span_action_icon) {
+                    span_action_icon.classList.toggle('hide');
+                };
 
-        //         if (section_content) {
-        //             section_content.classList.toggle('show');
-        //         };
-        //     });
-        // };
+                if (section_content) {
+                    section_content.classList.toggle('show');
+                };
+            });
+        };
     </script>
 </body>
 

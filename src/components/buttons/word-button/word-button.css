@@ -32,7 +32,15 @@
 }
 
 .word-button:disabled {
+    cursor: default;
     color: var(--black);
+}
+
+.word-button.clicked:disabled .arrow,
+.word-button:hover:disabled .arrow,
+.word-button:focus:disabled .arrow {
+    opacity: 0;
+    animation: none;
 }
 
 @keyframes arrow_blink {

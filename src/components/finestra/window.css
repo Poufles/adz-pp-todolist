@@ -59,7 +59,7 @@
     border-right: 2px solid var(--black);
     border-bottom: 2px solid var(--black);
     border-top: 0;
-    height: 300px;
+    height: 550px;
     transition-delay: 0s, 0s;
 }
 
@@ -67,13 +67,30 @@
     flex-grow: 1;
     flex-basis: 100%;
     
-    padding: 10px 10px 60px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 15px;
     overflow-y: auto;
     scrollbar-width: none;
     scroll-behavior: smooth;
+}
+
+.window-component>#content>.content-container>#keys-status>#tip-msg {
+    display: flex;
+    flex-direction: column;
+    opacity: 0.5;
+}
+
+.window-component>#content>.content-container>#keys-status>#tip-msg>.tip {
+    font-size: var(--fn-sm);
+}
+
+.window-component>#content>.content-container>#bottom-msg {
+    font-size: var(--fn-sm);
+    margin-top: auto;
+    padding-top: 20px;
+    opacity: 0.5;
 }
 
 .window-component>#content>.actions {
@@ -95,7 +112,7 @@
     border-bottom: 2px solid var(--black);
     border-top: 0;
     width: 100%;
-    height: 300px;
+    height: 550px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
