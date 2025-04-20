@@ -9,7 +9,6 @@ import '../components/devtools/devtools.css';
 
 import SimpleButton from '../components/buttons/simple-button/simple-button.js';
 import AuthInterface from '../components/auth-interface/auth-interface.js';
-import DevTools from '../components/devtools/devtools.js';
 
 function Auth() {
     const body = document.body;
@@ -67,7 +66,7 @@ function Auth() {
 
             if (resolved === 'login') {
                 loadGame.uncheck();
-                console.log('Logged in!');
+                window.location.href = './dashboard.html';
             };
         };
     });
