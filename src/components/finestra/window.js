@@ -100,22 +100,66 @@ function Finestra({
     // };
 
     const enable = () => {
-        for (let button of componentButtonsArr) {
-            if (Object.hasOwn(button, 'enable')) {
-                button.enable();
-            } else {
-                button.classList.remove('disabled');
-            };
+        // for (let button of componentButtonsArr) {
+        //     if (Object.hasOwn(button, 'enable')) {
+        //         button.enable();
+        //     } else {
+        //         button.classList.remove('disabled');
+        //     };
+        // };
+
+        const allButtons = component.querySelectorAll('button');
+        const allInputs = component.querySelectorAll('input');
+        const allTextareas = component.querySelectorAll('textarea');
+
+        if (allButtons.length != 0) {
+            allButtons.forEach(button => {
+                button.disabled = 'true';
+            });
+        };
+
+        if (allInputs.length != 0) {
+            allInputs.forEach(input => {
+                input.disabled = 'true';
+            });
+        };
+
+        if (allTextareas.length != 0) {
+            allTextareas.forEach(textarea => {
+                textarea.disabled = 'true';
+            });
         };
     };
     
     const disable = () => {
-        for (let button of componentButtonsArr) {
-            if (Object.hasOwn(button, 'disable')) {
-                button.disable();
-            } else {
-                button.classList.add('disabled');
-            };
+        // for (let button of componentButtonsArr) {
+        //     if (Object.hasOwn(button, 'disable')) {
+        //         button.disable();
+        //     } else {
+        //         button.classList.add('disabled');
+        //     };
+        // };
+
+        const allButtons = component.querySelectorAll('button');
+        const allInputs = component.querySelectorAll('input');
+        const allTextareas = component.querySelectorAll('textarea');
+
+        if (allButtons.length != 0) {
+            allButtons.forEach(button => {
+                button.disabled = 'false';
+            });
+        };
+
+        if (allInputs.length != 0) {
+            allInputs.forEach(input => {
+                input.disabled = 'false';
+            });
+        };
+
+        if (allTextareas.length != 0) {
+            allTextareas.forEach(textarea => {
+                textarea.disabled = 'false';
+            });
         };
     };
 

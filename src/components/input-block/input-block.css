@@ -5,6 +5,7 @@
 }
 
 .input-block label .optional,
+.input-block label .required,
 .input-block .hint {
     font-size: var(--fn-sm);
     opacity: 0.5;
@@ -12,8 +13,13 @@
     user-select: none;
 }
 
-.input-block label .optional.required {
+.input-block label .required {
+    display: none;
+}
+
+.input-block label .required.show {
     color: red;
+    display: block;
     opacity: 0.75;
 }
 
@@ -51,6 +57,10 @@
     color: rgba(0, 0, 0, 0.5)
 }
 
+.input-block.time-liner .time-format input:focus::placeholder {
+    color: var(--secondary-color) /* CHANGE LATER */
+}
+
 /* For Chrome, Safari, Edge */
 .input-block.time-liner .time-format input[type=number]::-webkit-inner-spin-button,
 .input-block.time-liner .time-format input[type=number]::-webkit-outer-spin-button {
@@ -85,6 +95,11 @@
     background-color: transparent;
     border: 0;
     outline: none;
+}
+
+.input-block .input-wrapper input:focus::placeholder,
+.input-block .input-wrapper textarea:focus::placeholder {
+    color: transparent;
 }
 
 .input-block .input-wrapper textarea {
