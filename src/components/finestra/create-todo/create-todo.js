@@ -5,7 +5,8 @@ const CreateTodo = function() {
     const finestra = Finestra({
         hasActions: true,
         id: 'creator-todo',
-        windowTitle: 'create todo...'
+        windowTitle: 'create todo...',
+        titleButtonText: 'back',
     });
 
     const input_name = InputBlock({

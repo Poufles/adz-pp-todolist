@@ -5,7 +5,8 @@ const CreateNote = function(){
     const finestra = Finestra({
         hasActions: true,
         id: 'creator-note',
-        windowTitle: 'create note...'
+        windowTitle: 'create note...',
+        titleButtonText: 'back',
     });
 
     const input_project = InputBlock({
@@ -20,6 +21,8 @@ const CreateNote = function(){
         }
     });
 
+    input_project.addPlaceholder('change later bruh');
+    
     const input_color = InputBlock({
         inputType: 'one',
         inputId: 'item-color',
@@ -31,11 +34,15 @@ const CreateNote = function(){
         }
     });
 
+    input_color.addPlaceholder('green');
+
     const input_note = InputBlock({
         inputType: 'multi',
         inputId: 'item-note',
         title: 'Write anything',
     });
+
+    input_note.addPlaceholder('my petite note carina');
 
     finestra.addContent(input_project);
     finestra.addContent(input_color);
