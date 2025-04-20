@@ -60,10 +60,12 @@ const CreateTodo = function() {
     
     input_color.addPlaceholder('green');
 
+    finestra.addKeyboardAndStatusTip('creating', 'ctrl + alt + q to go back', 'ctrl + alt + r to reset', 'enter to proceed/confirm');
     finestra.addContent(input_name);
     finestra.addContent(input_deadline);
     finestra.addContent(input_project);
     finestra.addContent(input_color);
+    finestra.addBottomMessage('experience to earn: 5xp');
 
     return finestra;
 }();

@@ -62,10 +62,12 @@ const CreateProject = function(){
 
     input_color.addPlaceholder('green');
 
+    finestra.addKeyboardAndStatusTip('creating', 'ctrl + alt + q to go back', 'ctrl + alt + r to reset', 'enter to proceed/confirm');
     finestra.addContent(input_name);
     finestra.addContent(input_description);
     finestra.addContent(input_routine);
     finestra.addContent(input_color);
+    finestra.addBottomMessage('experience to earn: 30xp + no. of todos');
 
     return finestra;
 }();

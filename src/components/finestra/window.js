@@ -6,13 +6,20 @@ import WordButton from '../buttons/word-button/word-button.js';
  *  isExpandable: boolean,
  *  id: string,
  *  windowTitle: string,
- *  titleButtonText: string
+ *  titleButtonText: string,
+ *  keyboardNStatus: {
+ *      hasKeyboardInputs: boolean,
+ *      statusName: string,
+ *      keyboardHints: Array
+ *  }
  * }} options - Properties to create
  * @returns {{
  *  component: HTMLElement,
  *  componentButtonsArr: Array,
  *  render: (parent: HTMLElement) => void,
  *  unrender: () => void,
+ *  addKeyboardAndStatusTip: (statusMessage: string, ...keyboardHints: Array) => void,
+ *  addBottomMessage: (message: string) => void
  *  addContent: (parent: HTMLElement) => void,
  *  enable: () => void,
  *  disable: () => void
@@ -62,6 +69,11 @@ function Finestra({
         };
     };
 
+    /**
+     * Renders the component if parent is provided
+     * @param {HTMLElement} parent - (Optional) Parent to where the component must be appended
+     * @returns The component if no parent is provided
+     */
     const render = (parent) => {
         if (parent) {
             parent.appendChild(component); return;
@@ -70,6 +82,10 @@ function Finestra({
         return component;
     };
 
+    /**
+     * Automatically removes the component from its parent
+     * @returns 
+     */
     const unrender = () => {
         const parent = component.parentElement;
 
@@ -78,10 +94,14 @@ function Finestra({
         };
     };
 
+    /**
+     * Adds new content in the component
+     * @param {Object} object - Object to append automatically inside the component. 
+     */
     const addContent = (object) => {
         if (Object.hasOwn(object, 'render')) {
             const section_content = component.querySelector('section#content');
-            const cont_content = component.querySelector('.content-container');
+            const cont_content = section_content.querySelector('.content-container');
 
             object.render(cont_content);
             contentItemsArr.push(object);
@@ -99,15 +119,36 @@ function Finestra({
     //     };
     // };
 
-    const enable = () => {
-        // for (let button of componentButtonsArr) {
-        //     if (Object.hasOwn(button, 'enable')) {
-        //         button.enable();
-        //     } else {
-        //         button.classList.remove('disabled');
-        //     };
-        // };
+    /**
+     * Adds a status and keyboard hints 
+     * @param {string} statusMessage - Message to show in the status 
+     * @param  {...any} keyboardHints 
+     */
+    const addKeyboardAndStatusTip = (statusMessage, ...keyboardHints) => {
+        const keyboardNStats = GetKeyboardNStatus(statusMessage, keyboardHints);
+        const section_content = component.querySelector('section#content');
+        const cont_content = section_content.querySelector('.content-container');
+    
+        cont_content.appendChild(keyboardNStats);
+    };
 
+    /**
+     * Adds a bottom message in the component (Use this lastly)
+     * @param {string} message 
+     */
+    const addBottomMessage = (message) => {
+        const bottomMessage = GetBottomMessage(message);
+        
+        const section_content = component.querySelector('section#content');
+        const cont_content = section_content.querySelector('.content-container');
+
+        cont_content.appendChild(bottomMessage);
+    };
+
+    /**
+     * Enables the component for interactivity
+     */
+    const enable = () => {
         const allButtons = component.querySelectorAll('button');
         const allInputs = component.querySelectorAll('input');
         const allTextareas = component.querySelectorAll('textarea');
@@ -131,15 +172,10 @@ function Finestra({
         };
     };
     
+    /**
+     * Disables the component
+     */
     const disable = () => {
-        // for (let button of componentButtonsArr) {
-        //     if (Object.hasOwn(button, 'disable')) {
-        //         button.disable();
-        //     } else {
-        //         button.classList.add('disabled');
-        //     };
-        // };
-
         const allButtons = component.querySelectorAll('button');
         const allInputs = component.querySelectorAll('input');
         const allTextareas = component.querySelectorAll('textarea');
@@ -169,6 +205,8 @@ function Finestra({
         render,
         unrender,
         addContent,
+        addKeyboardAndStatusTip,
+        addBottomMessage,
         enable,
         disable
     };
@@ -311,6 +349,63 @@ function GetActionsComponent() {
         component,
         buttonObjectsArr
     };
+};
+
+/**
+ * Retrieves the keyboard and status component
+ * @param {string} statusName - Name to be added in the status part of the component 
+ * @param {Array} keyboardHints - Array containing the keyboard input hints
+ */
+function GetKeyboardNStatus(statusName, keyboardHints) {
+    const keyHintfragments = [];
+
+    if (keyboardHints.length !== 0) {
+        for (let index = 0; index < keyboardHints.length; index++) {
+            const template_keyHint = 
+            `
+                <span class="tip" id="tip-${index}">- ${keyboardHints[index]}</span>
+            `;
+
+            const keyHintfragment = GetTemplateFragment(template_keyHint);
+            const component = keyHintfragment.querySelector('span.tip');
+
+            keyHintfragments.push(component);
+        };
+    };
+
+    const template = 
+    `
+        <div id="keys-status">
+            <p class="select-none cursor-default" id="status-msg">
+                Status: <span id="status">${statusName}</span>...
+            </p>
+            <p class="select-none cursor-default" id="tip-msg">
+            </p>
+        </div>
+    `;
+
+    const fragment = GetTemplateFragment(template);
+    const component = fragment.querySelector('#keys-status');
+    const tip_msg = component.querySelector('#tip-msg');
+
+    for (let index = 0; index < keyHintfragments.length; index++) {
+        tip_msg.appendChild(keyHintfragments[index]);
+    };
+
+    return component;
+};
+
+
+function GetBottomMessage(message) {
+    const template =
+    `
+        <p class="select-none cursor-default" id="bottom-msg">${message}</p>
+    `;
+
+    const fragment = GetTemplateFragment(template);
+    const component = fragment.querySelector('#bottom-msg');
+
+    return component;
 };
 
 /**

@@ -44,6 +44,7 @@ const CreateNote = function(){
 
     input_note.addPlaceholder('my petite note carina');
 
+    finestra.addKeyboardAndStatusTip('creating', 'ctrl + alt + q to go back', 'ctrl + alt + r to reset', 'enter to proceed/confirm');
     finestra.addContent(input_project);
     finestra.addContent(input_color);
     finestra.addContent(input_note);
