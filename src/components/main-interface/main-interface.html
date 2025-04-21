@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <link rel="stylesheet" href="main-interface.css">
+    <link rel="stylesheet" href="../buttons/box-button/box-button.css">
+    <title>Main Interface</title>
+</head>
+<body style="background-color: var(--secondary-color); height: 100dvh; padding: 0 100px; display: flex; gap: 50px; align-items: center;
+justify-content: center;">
+    <article class="comp main-interface" id="interface-type">
+        <div class="return-wrapper">
+            <button type="button" class="btn select-none" id="return">&lt; go back</button>
+        </div>
+        <div class="top">
+            <p class="title-wrapper">
+                <span id="title">todo</span> <span id="count"> | 5 todos</span>
+            </p>
+            <button type="button">create</button>
+        </div>
+        <p id="description">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus similique magni laudantium corrupti sunt laborum quaerat esse non reprehenderit rerum!
+        </p>
+    </article>
+    <!-- <article class="comp main-interface" id="interface-type">
+        <div class="top">
+            <p class="title-wrapper">
+                <span id="title">Long title example here</span> <span id="count">| 5 todos</span>
+            </p>
+            <button type="button">create</button>
+        </div>
+        <p id="description">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus similique magni laudantium corrupti sunt laborum quaerat esse non reprehenderit rerum!
+        </p>
+    </article> -->
+    <article class="comp main-interface" id="interface-type">
+        <div class="return-wrapper">
+            <button type="button" class="btn select-none" id="return">&lt; go back</button>
+        </div>
+        <div class="top">
+            <p class="title-wrapper">
+                <span id="title">todo</span> <span id="count"> | 5 todos</span>
+            </p>
+        </div>
+        <p id="description">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus similique magni laudantium corrupti sunt laborum quaerat esse non reprehenderit rerum!
+        </p>
+        <div id="sub-section">
+            <div class="actions">
+                <button type="button" class="btn action selected" id="today">
+                    <span id="name">today</span>
+                    <span id="count">| 2</span>
+                </button>
+                <button type="button" class="btn action" id="tomorrow">
+                    <span id="name">tomorrow</span>
+                    <span id="count">| 3</span>
+                </button>
+                <button type="button" class="btn action" id="today">
+                    <span id="name">upcoming</span>
+                    <span id="count">| 1</span>
+                </button>
+            </div>
+        </div>
+        <div id="content">
+
+        </div>
+    </article>
+    <script type="module">
+        import BoxButton from '../buttons/box-button/box-button.js';
+
+        const button = BoxButton({
+            id: 'create',
+            text: 'create'
+        });
+        
+        const btn_create = button.render();
+        const subSection = document.body.querySelector('#sub-section');
+
+        subSection.appendChild(btn_create);
+    </script>
+</body>
+</html>

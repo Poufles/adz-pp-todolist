@@ -13,16 +13,10 @@
 
 <body style="display: flex;
 align-items: center; justify-content: center; height: 100dvh;">
-    <div id="button-box" style="display: flex; flex-direction: column;">
-        <button type="button" id="expandable">Make expandable</button>
-        <button type="button" id="unexpandable">Make unexpandable</button>
-        <button type="button" id="expandable-action">Make expandable action</button>
-        <button type="button" id="unexpandable-action">Make unexpandable action</button>
-    </div>
     <div class="box" style="border: 2px solid black; width: 500px;height: 800px; padding: 10px; display: flex;
     flex-direction: column; gap: 30px; overflow-y: auto;">
-        <div class="comp window-component unexpandable" id="window-name">
-            <div type="button" class="title select-none cursor-default">
+        <div class="comp window-component expanded" id="window-name">
+            <div class="title select-none cursor-default">
                 <span class="text">Item Title</span>
                 <button type="button" class="comp word-button btn">
                     <span class="action" id="action-name">
@@ -41,11 +35,16 @@ align-items: center; justify-content: center; height: 100dvh;">
                 </div>
             </section>
         </div>
-        <div class="comp window-component type-2 expandable" id="window-name">
-            <button type="button" class="btn title">
-                <span class="text">Item Title</span><span class="action-text">close</span><span
-                    class="action-icon">&gt;</span>
-            </button>
+        <div class="comp window-component type-2 expanded" id="window-name">
+            <div class="title select-none cursor-default">
+                <span class="text">Item Title</span>
+                <button type="button" class="comp word-button btn">
+                    <span class="action" id="action-name">
+                        see all
+                    </span>
+                    <span class="arrow">&gt;</span>
+                </button>
+            </div>
             <section id="content">
                 <div class="content-container">
                     <div id="keys-status">
@@ -67,142 +66,55 @@ align-items: center; justify-content: center; height: 100dvh;">
                 </div>
             </section>
         </div>
-        <div class="comp window-component type-3 expandable" id="window-name">
-            <button type="button" class="btn title">
-                <span class="text">Item Title</span><span class="action-text">close</span><span
-                    class="action-icon">&gt;</span>
-            </button>
-            <section id="content">
+        <div class="comp window-component type-3 unexpanded" id="window-name">
+            <div class="title select-none cursor-default">
+                <span class="text">Item Title</span>
+                <button type="button" class="comp word-button btn">
+                    <span class="action" id="action-name">
+                        see all
+                    </span>
+                    <span class="arrow">&gt;</span>
+                </button>
+            </div>
+        </div>
+        <div class="comp window-component type-4 expanded" id="window-name">
+            <div class="title select-none cursor-default">
+                <span class="text">Item Title</span>
+                <button type="button" class="comp word-button btn">
+                    <span class="action" id="action-name">
+                        see all
+                    </span>
+                    <span class="arrow">&gt;</span>
+                </button>
+            </div>
+            <section id="content" style="height: 400px;">
                 <div class="content-container">
-                    <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis cum autem aliquid delectus
-                        facere? Magni est et, nemo eius officia, enim, consequatur animi deleniti excepturi quis qui
-                        sequi voluptatem ex!
-                    </p>
-                    <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis cum autem aliquid delectus
-                        facere? Magni est et, nemo eius officia, enim, consequatur animi deleniti excepturi quis qui
-                        sequi voluptatem ex!
-                    </p>
-                </div>
-                <div class="actions">
-                    <button type="button" class="comp word-button btn alt">
-                        <span class="action" id="action-name">
-                            reset
-                        </span>
-                        <span class="arrow">&lt;</span>
-                    </button>
-                    <button type="button" class="comp word-button btn">
-                        <span class="action" id="action-name">
-                            save
-                        </span>
-                        <span class="arrow">&gt;</span>
-                    </button>
+                    <div id="empty-visual">
+                        <div id="visual">
+                            <svg width="40" height="40" viewBox="0 0 40 40" fill=""
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g clip-path="url(#clip0_90_929)">
+                                    <path
+                                        d="M25 23.3333L24.805 23.345C24.433 23.3889 24.0866 23.5568 23.8217 23.8217C23.5568 24.0866 23.3889 24.433 23.345 24.805L23.3333 25V35H6.66333C6.22336 35.0009 5.80103 34.8271 5.48915 34.5167C5.17726 34.2064 5.00132 33.785 5 33.345V6.655C5 5.74167 5.74167 5 6.655 5H33.345C34.2583 5 35 5.745 35 6.665V23.3333H25ZM35 26.6667L26.6667 34.995V26.6667H35Z"
+                                        fill="" />
+                                </g>
+                                <defs>
+                                    <clipPath id="clip0_90_929">
+                                        <rect width="40" height="40" fill="" />
+                                    </clipPath>
+                                </defs>
+                            </svg>
+                        </div>
+                        <p id="message">
+                            this is an empty visual
+                        </p>
+                    </div>
                 </div>
             </section>
         </div>
     </div>
     <script type="module">
-        import Finestra from './window.js';
-
-        const btn_expandable = document.querySelector('#expandable');
-        const btn_unexpandable = document.querySelector('#unexpandable');
-        const btn_unexpandable_action = document.querySelector('#unexpandable-action');
-        const btn_expandable_action = document.querySelector('#expandable-action');
-        const btn_action = document.querySelector('#action');
-        const box = document.querySelector('.box');
-        const component_2 = document.querySelector('.window-component.type-2');
-        const component_3 = document.querySelector('.window-component.type-3');
-        const btn_title_2 = component_2.querySelector('.title');
-        const btn_title_3 = component_3.querySelector('.title');
-
-        if (btn_unexpandable) {
-            btn_unexpandable.addEventListener('click', () => {
-                const unexpandableWindow = Finestra({
-                    windowTitle: 'Another',
-                    titleButtonText: 'close'
-                });
-
-                unexpandableWindow.render(box);
-            });
-        };
-
-        if (btn_expandable) {
-            btn_expandable.addEventListener('click', () => {
-                const expandableWindow = Finestra({
-                    isExpandable: true,
-                    windowTitle: 'Nigger',
-                    titleButtonText: 'close'
-                });
-
-                expandableWindow.render(box);
-            });
-        };
-
-        if (btn_unexpandable_action) {
-            btn_unexpandable_action.addEventListener('click', () => {
-                const unexpandableActionWindow = Finestra({
-                    hasActions: true,
-                    windowTitle: 'Nigger',
-                    titleButtonText: 'close'
-                });
-
-                unexpandableActionWindow.render(box);
-            });
-        };
-
-        if (btn_expandable_action) {
-            btn_expandable_action.addEventListener('click', () => {
-                const expandableActionWindow = Finestra({
-                    isExpandable: true,
-                    hasActions: true,
-                    windowTitle: 'Nigger',
-                    titleButtonText: 'close'
-                });
-
-                expandableActionWindow.render(box);
-            });
-        };
-
-        if (btn_title_2) {
-            btn_title_2.addEventListener('click', () => {
-                const span_action_text = btn_title_2.querySelector('.action-text');
-                const span_action_icon = btn_title_2.querySelector('.action-icon');
-                const section_content = component_2.querySelector('#content');
-
-                if (span_action_text) {
-                    span_action_text.classList.toggle('show');
-                };
-
-                if (span_action_icon) {
-                    span_action_icon.classList.toggle('hide');
-                };
-
-                if (section_content) {
-                    section_content.classList.toggle('show');
-                };
-            });
-        };
-
-        if (btn_title_3) {
-            btn_title_3.addEventListener('click', () => {
-                const span_action_text = btn_title_3.querySelector('.action-text');
-                const span_action_icon = btn_title_3.querySelector('.action-icon');
-                const section_content = component_3.querySelector('#content');
-
-                if (span_action_text) {
-                    span_action_text.classList.toggle('show');
-                };
-
-                if (span_action_icon) {
-                    span_action_icon.classList.toggle('hide');
-                };
-
-                if (section_content) {
-                    section_content.classList.toggle('show');
-                };
-            });
-        };
+        // import Finestra from './window.js';
     </script>
 </body>
 

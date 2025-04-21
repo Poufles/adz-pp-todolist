@@ -44,7 +44,7 @@
         min-height: 650px;
     }
 
-    #page_dashboard #main-interface #todo-type-stats {
+    #page_dashboard #main-interface .type-stats {
         font-size: var(--fn-md);
     }
 }
@@ -109,7 +109,7 @@
         height: 20px;
     }
     
-    #page_dashboard #main-interface #todo-type-stats {
+    #page_dashboard #main-interface .type-stats {
         font-size: var(--fn-xsm);
         padding: 10px;
         gap: 20px;

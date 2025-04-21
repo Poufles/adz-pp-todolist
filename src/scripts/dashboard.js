@@ -6,12 +6,19 @@ import '../styles/dashboard/dashboard.css';
 import '../styles/dashboard/dashboard-responsiveness.css';
 import '../components/buttons/simple-button/simple-button.css';
 import '../components/buttons/word-button/word-button.css';
+import '../components/buttons/box-button/box-button.css';
 import '../components/finestra/window.css';
 import '../components/auth-interface/auth-interface.css';
 import '../components/message-box/message-box.css';
+import '../components/main-interface/main-interface.css';
 
 import DateHandler from './date-handler.js';
 import Finestra from '../components/finestra/window.js';
+import WordButton from '../components/buttons/word-button/word-button.js';
+import TypeStats from '../components/type-stats/type-stats.js';
+import SVG from '../scripts/svg.js';
+import MainInterface from '../components/main-interface/main-interface.js';
+import TodoInterface from '../components/main-interface/todo-interface/todo-interface.js';
 
 function Dashboard() {
     const body = document.body;
@@ -19,7 +26,7 @@ function Dashboard() {
     const page_auth = AuthTemplate();
 
     body.prepend(page_auth);
-    
+
     /**
      * This part is solely here for animation
      * please note of the time if ever this
@@ -42,7 +49,7 @@ function Dashboard() {
     const currentTime = DateHandler.currentTime();
     const currentDate = DateHandler.currentDate();
     const p_time = page_dashboard.querySelector('#current-time');
-    
+
     p_time.textContent = `${currentTime} @ ${currentDate}`;
 
     ClockLoop(p_time);
@@ -58,12 +65,12 @@ function Dashboard() {
         const count = all_todos.querySelector('.count');
         count.textContent = 0;
     };
-    
+
     if (all_completed) {
         const count = all_completed.querySelector('.count');
         count.textContent = 0;
     };
-    
+
     if (all_due) {
         const count = all_due.querySelector('.count');
         count.textContent = 0;
@@ -72,9 +79,13 @@ function Dashboard() {
     // TODO STATS //
 
     // MAIN INTERFACE //
-    const left_panel = page_dashboard.querySelector('#left-panel');
-    const middle_panel = page_dashboard.querySelector('#middle-panel');
-    const right_panel = page_dashboard.querySelector('#right-panel');
+    const main_interface = page_dashboard.querySelector('#main-interface');
+
+    TypeStats.render(main_interface);
+    
+    const left_panel = main_interface.querySelector('#left-panel');
+    const middle_panel = main_interface.querySelector('#middle-panel');
+    const right_panel = main_interface.querySelector('#right-panel');
 
     // LEFT PANEL //
     const cont_settings = left_panel.querySelector('#settings-container');
@@ -94,14 +105,17 @@ function Dashboard() {
         titleButtonText: 'see all'
     });
 
+    finestra_stickies.addEmptyVisual(SVG.i_note, 'stickies would appear here if there is one...')
+
     finestra_setting.render(cont_settings);
     finestra_stickies.render(cont_left_todo_type);
     // LEFT PANEL //
 
     // MAIN PANEL //
-
+    TodoInterface.render(middle_panel);
+    TodoInterface.toggleReturnButton(true);
     // MAIN PANEL //
-    
+
     // RIGHT PANEL //
     const cont_overdues = right_panel.querySelector('#overdue-container');
     const cont_right_todo = right_panel.querySelector('.todo-type-container');
@@ -120,6 +134,8 @@ function Dashboard() {
         titleButtonText: 'see all'
     });
 
+    finestra_projects.addEmptyVisual(SVG.i_project, 'projects seem to be empty... why not create one?');
+
     const finestra_archives = Finestra({
         isExpanded: false,
         id: 'archives',
@@ -133,6 +149,26 @@ function Dashboard() {
     // RIGHT PANEL //
 
     // MAIN INTERFACE //
+
+    // FOOTER //
+    const footer = page_dashboard.querySelector('footer');
+    const footer_left = footer.querySelector('#left');
+
+    const aboutButton = WordButton({
+        text: 'about the project',
+        id: 'about',
+        cls: ['action'],
+        isAlt: true,
+    });
+
+    const btn_about = aboutButton.component;
+
+    footer_left.appendChild(btn_about);
+    // FOOTER //
+};
+
+function DashboardRuntime() {
+    
 };
 
 /**
