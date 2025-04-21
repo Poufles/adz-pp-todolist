@@ -8,6 +8,7 @@ import '../components/buttons/simple-button/simple-button.css';
 import '../components/buttons/word-button/word-button.css';
 import '../components/buttons/box-button/box-button.css';
 import '../components/finestra/window.css';
+import '../components/finestra/basic-settings/basic-settings.css';
 import '../components/auth-interface/auth-interface.css';
 import '../components/message-box/message-box.css';
 import '../components/main-interface/main-interface.css';
@@ -19,6 +20,7 @@ import TypeStats from '../components/type-stats/type-stats.js';
 import SVG from '../scripts/svg.js';
 import MainInterface from '../components/main-interface/main-interface.js';
 import TodoInterface from '../components/main-interface/todo-interface/todo-interface.js';
+import BasicSettings from '../components/finestra/basic-settings/basic-settings.js';
 
 const Dashboard = function() {
     const body = document.body;
@@ -92,13 +94,6 @@ const Dashboard = function() {
     const cont_left_todo_type = left_panel.querySelector('.todo-type-container');
 
     // Create a settings component later
-    const finestra_setting = Finestra({
-        hasActions: true,
-        id: 'settings',
-        windowTitle: 'settings',
-        titleButtonText: 'see all'
-    });
-
     const finestra_stickies = Finestra({
         id: 'stickies',
         windowTitle: 'stickies | 0',
@@ -107,7 +102,7 @@ const Dashboard = function() {
 
     finestra_stickies.addEmptyVisual(SVG.i_note, 'stickies would appear here if there is one...')
 
-    finestra_setting.render(cont_settings);
+    BasicSettings.render(cont_settings);
     finestra_stickies.render(cont_left_todo_type);
     // LEFT PANEL //
 

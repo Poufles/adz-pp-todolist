@@ -1,0 +1,33 @@
+.comp.basic-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.comp.basic-settings input {
+    background-color: transparent;
+    border: 0;
+    caret-color: transparent;
+    width: 1ch;
+    padding: 0;
+    text-align: center;
+    outline: none;
+}
+
+.comp.basic-settings input:focus {
+    animation: blink 1.25s infinite;
+}
+
+.comp.basic-settings .sub>.block::before {
+    content: '>';
+}
+
+@keyframes blink {
+    0%, 50% {
+        background-color: var(--black);
+        color: var(--accent-color-1);
+    } 51%, 100% {
+        background-color: transparent;
+        color: var(--black);
+    }
+}
