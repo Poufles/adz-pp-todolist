@@ -21,6 +21,7 @@ import SVG from '../scripts/svg.js';
 import MainInterface from '../components/main-interface/main-interface.js';
 import TodoInterface from '../components/main-interface/todo-interface/todo-interface.js';
 import BasicSettings from '../components/finestra/basic-settings/basic-settings.js';
+import UserBox from '../components/userbox/userbox.js';
 
 const Dashboard = function() {
     const body = document.body;
@@ -47,10 +48,20 @@ const Dashboard = function() {
         }, 500);
     };
 
+    ////////////////////////////////
+    ////////// MISC INFO ///////////
+    ////////////////////////////////
+
+    const misc_info = page_dashboard.querySelector('#misc-info');
+    // USER BOX / PROFILE //
+    UserBox.render(misc_info);
+    // USER BOX / PROFILE //
+
+
     // TIME //
     const currentTime = DateHandler.currentTime();
     const currentDate = DateHandler.currentDate();
-    const p_time = page_dashboard.querySelector('#current-time');
+    const p_time = misc_info.querySelector('#current-time');
 
     p_time.textContent = `${currentTime} @ ${currentDate}`;
 
@@ -80,7 +91,13 @@ const Dashboard = function() {
     // CHANGE LATER //
     // TODO STATS //
 
-    // MAIN INTERFACE //
+    ////////////////////////////////
+    ////////// MISC INFO ///////////
+    ////////////////////////////////
+
+    /////////////////////////////////////
+    ////////// MAIN INTERFACE ///////////
+    /////////////////////////////////////
     const main_interface = page_dashboard.querySelector('#main-interface');
 
     TypeStats.render(main_interface);
@@ -143,9 +160,13 @@ const Dashboard = function() {
     finestra_archives.render(cont_archives);
     // RIGHT PANEL //
 
-    // MAIN INTERFACE //
+    /////////////////////////////////////
+    ////////// MAIN INTERFACE ///////////
+    /////////////////////////////////////
 
-    // FOOTER //
+    //////////////////////////////
+    ////////// FOOTER ////////////
+    //////////////////////////////
     const footer = page_dashboard.querySelector('footer');
     const footer_left = footer.querySelector('#left');
 
@@ -159,7 +180,9 @@ const Dashboard = function() {
     const btn_about = aboutButton.component;
 
     footer_left.appendChild(btn_about);
-    // FOOTER //
+    //////////////////////////////
+    ////////// FOOTER ////////////
+    //////////////////////////////
 
     // ALL COMPONENTS FOR RUNTIME //
      
