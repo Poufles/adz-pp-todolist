@@ -35,7 +35,7 @@ function MainInterface({
 
     let cont_count;
 
-    if (titleCount) cont_count = CreateTitleCount(component, titleCount);
+    if (titleCount !== undefined) cont_count = CreateTitleCount(component, title, titleCount);
 
     const button = BoxButton({
         text: buttonText,
@@ -70,11 +70,21 @@ function MainInterface({
      */
     const changeTitleCount = (newCount) => {
         if (!cont_count) {
-            cont_count = CreateTitleCount(component, newCount);
+            cont_count = CreateTitleCount(component, title, newCount);
             return;
         };
 
         cont_count.textContent = ` | ${titleCount} ${title}`;
+    };
+
+    /**
+     * Toggles return button
+     * @param {boolean} toggle - Boolean value to toggle the return button above the component 
+     */
+    const toggleReturnButton = (toggle) => {
+        const btn_return = component.querySelector('.return-wrapper #return');
+
+        btn_return.disabled = toggle;
     };
 
     /**
@@ -105,6 +115,7 @@ function MainInterface({
         render,
         unrender,
         changeTitleCount,
+        toggleReturnButton,
         enable,
         disable
     };

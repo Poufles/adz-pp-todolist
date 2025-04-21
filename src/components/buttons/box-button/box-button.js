@@ -15,6 +15,20 @@ function BoxButton({ text = 'button', id = 'button' } = {}) {
         htmlButtonTemplate: template
     });
 
+    const buttonComponent = button.component;
+
+    buttonComponent.addEventListener('mousedown', (e) => {
+        buttonComponent.classList.add('click-hold');
+    });
+
+    buttonComponent.addEventListener('mouseup', (e) => {
+        buttonComponent.classList.remove('click-hold');
+    });
+
+    buttonComponent.addEventListener('mouseleave', (e) => {
+        buttonComponent.classList.remove('click-hold');
+    });
+
     return button;
 };
 

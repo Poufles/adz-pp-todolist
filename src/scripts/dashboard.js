@@ -6,15 +6,19 @@ import '../styles/dashboard/dashboard.css';
 import '../styles/dashboard/dashboard-responsiveness.css';
 import '../components/buttons/simple-button/simple-button.css';
 import '../components/buttons/word-button/word-button.css';
+import '../components/buttons/box-button/box-button.css';
 import '../components/finestra/window.css';
 import '../components/auth-interface/auth-interface.css';
 import '../components/message-box/message-box.css';
+import '../components/main-interface/main-interface.css';
 
 import DateHandler from './date-handler.js';
 import Finestra from '../components/finestra/window.js';
 import WordButton from '../components/buttons/word-button/word-button.js';
 import TypeStats from '../components/type-stats/type-stats.js';
 import SVG from '../scripts/svg.js';
+import MainInterface from '../components/main-interface/main-interface.js';
+import TodoInterface from '../components/main-interface/todo-interface/todo-interface.js';
 
 function Dashboard() {
     const body = document.body;
@@ -108,7 +112,8 @@ function Dashboard() {
     // LEFT PANEL //
 
     // MAIN PANEL //
-
+    TodoInterface.render(middle_panel);
+    TodoInterface.toggleReturnButton(true);
     // MAIN PANEL //
 
     // RIGHT PANEL //

@@ -39,6 +39,7 @@
 
 .comp.main-interface #description {
     border-bottom: 2px solid var(--black);
+    font-size: var(--fn-xlr);
     padding-bottom: 7px;
 }
 
@@ -60,6 +61,7 @@
     background-color: transparent;
     border: 0;
     color: var(--black);
+    font-size: var(--fn-xlr);
     opacity: 0.5;
     transition: var(--trans-q);
 }

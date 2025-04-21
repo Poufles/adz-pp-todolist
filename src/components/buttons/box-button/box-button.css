@@ -7,6 +7,7 @@
     background-color: var(--accent-color-1);
     border: 2px solid var(--black);
     color: var(--black); /* CHANGE LATER */
+    font-size: var(--fn-xlr);
     padding: 4px 15px;
     transition: var(--trans-q);
 }
@@ -17,4 +18,12 @@
 
 .box-button>button:hover {
     transform: scale(1.065) translateY(-5px);
+}
+
+.box-button.click-hold>button:hover {
+    transform: none;
+}
+
+.box-button.click-hold {
+    background-color: rgba(0, 0, 0, 1);
 }
