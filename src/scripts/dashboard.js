@@ -20,7 +20,7 @@ import SVG from '../scripts/svg.js';
 import MainInterface from '../components/main-interface/main-interface.js';
 import TodoInterface from '../components/main-interface/todo-interface/todo-interface.js';
 
-function Dashboard() {
+const Dashboard = function() {
     const body = document.body;
     const page_dashboard = body.querySelector('.dashboard');
     const page_auth = AuthTemplate();
@@ -165,10 +165,20 @@ function Dashboard() {
 
     footer_left.appendChild(btn_about);
     // FOOTER //
-};
+
+    // ALL COMPONENTS FOR RUNTIME //
+     
+    return {
+        btn_about,
+    }
+}();
 
 function DashboardRuntime() {
-    
+    const btn_about = Dashboard.btn_about;
+
+    btn_about.addEventListener('click', () => {
+        console.log('hello');
+    });
 };
 
 /**
@@ -314,4 +324,4 @@ function GetFragmentFromTemplate(template) {
     return framgent;
 };
 
-Dashboard(); // Instantiate dashboard
+DashboardRuntime();
