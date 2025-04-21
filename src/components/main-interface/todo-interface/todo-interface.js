@@ -16,15 +16,15 @@ const TodoInterface = function () {
             <div class="actions">
                 <button type="button" class="btn action selected" id="today">
                     <span id="name">today</span>
-                    <span id="count">| 2</span>
+                    <span id="count">| 0</span>
                 </button>
                 <button type="button" class="btn action" id="tomorrow">
                     <span id="name">tomorrow</span>
-                    <span id="count">| 3</span>
+                    <span id="count">| 0</span>
                 </button>
                 <button type="button" class="btn action" id="today">
                     <span id="name">upcoming</span>
-                    <span id="count">| 1</span>
+                    <span id="count">| 0</span>
                 </button>
             </div>
         </div>

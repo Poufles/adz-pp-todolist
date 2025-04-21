@@ -18,7 +18,7 @@ import WordButton from '../buttons/word-button/word-button.js';
  *  addBottomMessage: (message: string) => void,
  *  addEmptyVisual: (svgHTML: HTMLElement | string, message: string) => Object,
  *  toggleVisual: (toggle: boolean) => void,
- *  addContent: (parent: HTMLElement) => void,
+ *  addContent: (object: HTMLElement) => void,
  *  changeTitle: (newTitle: string) => void,
  *  enable: () => void,
  *  disable: () => void
@@ -123,12 +123,11 @@ function Finestra({
      */
     const addContent = (object) => {
         if (Object.hasOwn(object, 'render')) {
-            // const section_content = component.querySelector('section#content');
-            // const cont_content = section_content.querySelector('.content-container');
-
             object.render(cont_content);
             contentItemsArr.push(object);
         } else {
+            cont_content.appendChild(object);
+            contentItemsArr.push(object);
             console.log(`Object element has no render()`);
         };
     };

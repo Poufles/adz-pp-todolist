@@ -14,15 +14,15 @@ function MainInterface({
         <div class="return-wrapper">
             <button type="button" class="btn select-none" id="return">&lt; go back</button>
         </div>
-        <div class="top">
+        <div class="top select-none">
             <p class="title-wrapper">
                 <span id="title">${title}</span>
             </p>
         </div>
-        <p id="description">
+        <p class="select-none" id="description">
             ${description}
         </p>
-        <div id="content">
+        <div class="select-none" id="content">
         </div>
     </article>
     `;

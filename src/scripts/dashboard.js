@@ -8,6 +8,7 @@ import '../components/buttons/simple-button/simple-button.css';
 import '../components/buttons/word-button/word-button.css';
 import '../components/buttons/box-button/box-button.css';
 import '../components/finestra/window.css';
+import '../components/finestra/basic-settings/basic-settings.css';
 import '../components/auth-interface/auth-interface.css';
 import '../components/message-box/message-box.css';
 import '../components/main-interface/main-interface.css';
@@ -19,8 +20,10 @@ import TypeStats from '../components/type-stats/type-stats.js';
 import SVG from '../scripts/svg.js';
 import MainInterface from '../components/main-interface/main-interface.js';
 import TodoInterface from '../components/main-interface/todo-interface/todo-interface.js';
+import BasicSettings from '../components/finestra/basic-settings/basic-settings.js';
+import UserBox from '../components/userbox/userbox.js';
 
-function Dashboard() {
+const Dashboard = function() {
     const body = document.body;
     const page_dashboard = body.querySelector('.dashboard');
     const page_auth = AuthTemplate();
@@ -45,10 +48,20 @@ function Dashboard() {
         }, 500);
     };
 
+    ////////////////////////////////
+    ////////// MISC INFO ///////////
+    ////////////////////////////////
+
+    const misc_info = page_dashboard.querySelector('#misc-info');
+    // USER BOX / PROFILE //
+    UserBox.render(misc_info);
+    // USER BOX / PROFILE //
+
+
     // TIME //
     const currentTime = DateHandler.currentTime();
     const currentDate = DateHandler.currentDate();
-    const p_time = page_dashboard.querySelector('#current-time');
+    const p_time = misc_info.querySelector('#current-time');
 
     p_time.textContent = `${currentTime} @ ${currentDate}`;
 
@@ -78,7 +91,13 @@ function Dashboard() {
     // CHANGE LATER //
     // TODO STATS //
 
-    // MAIN INTERFACE //
+    ////////////////////////////////
+    ////////// MISC INFO ///////////
+    ////////////////////////////////
+
+    /////////////////////////////////////
+    ////////// MAIN INTERFACE ///////////
+    /////////////////////////////////////
     const main_interface = page_dashboard.querySelector('#main-interface');
 
     TypeStats.render(main_interface);
@@ -92,13 +111,6 @@ function Dashboard() {
     const cont_left_todo_type = left_panel.querySelector('.todo-type-container');
 
     // Create a settings component later
-    const finestra_setting = Finestra({
-        hasActions: true,
-        id: 'settings',
-        windowTitle: 'settings',
-        titleButtonText: 'see all'
-    });
-
     const finestra_stickies = Finestra({
         id: 'stickies',
         windowTitle: 'stickies | 0',
@@ -107,7 +119,7 @@ function Dashboard() {
 
     finestra_stickies.addEmptyVisual(SVG.i_note, 'stickies would appear here if there is one...')
 
-    finestra_setting.render(cont_settings);
+    BasicSettings.render(cont_settings);
     finestra_stickies.render(cont_left_todo_type);
     // LEFT PANEL //
 
@@ -148,9 +160,13 @@ function Dashboard() {
     finestra_archives.render(cont_archives);
     // RIGHT PANEL //
 
-    // MAIN INTERFACE //
+    /////////////////////////////////////
+    ////////// MAIN INTERFACE ///////////
+    /////////////////////////////////////
 
-    // FOOTER //
+    //////////////////////////////
+    ////////// FOOTER ////////////
+    //////////////////////////////
     const footer = page_dashboard.querySelector('footer');
     const footer_left = footer.querySelector('#left');
 
@@ -164,11 +180,23 @@ function Dashboard() {
     const btn_about = aboutButton.component;
 
     footer_left.appendChild(btn_about);
-    // FOOTER //
-};
+    //////////////////////////////
+    ////////// FOOTER ////////////
+    //////////////////////////////
+
+    // ALL COMPONENTS FOR RUNTIME //
+     
+    return {
+        btn_about,
+    }
+}();
 
 function DashboardRuntime() {
-    
+    const btn_about = Dashboard.btn_about;
+
+    btn_about.addEventListener('click', () => {
+        console.log('hello');
+    });
 };
 
 /**
@@ -314,4 +342,4 @@ function GetFragmentFromTemplate(template) {
     return framgent;
 };
 
-Dashboard(); // Instantiate dashboard
+DashboardRuntime();
