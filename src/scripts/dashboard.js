@@ -12,6 +12,8 @@ import '../components/message-box/message-box.css';
 
 import DateHandler from './date-handler.js';
 import Finestra from '../components/finestra/window.js';
+import WordButton from '../components/buttons/word-button/word-button.js';
+import SVG from '../scripts/svg.js';
 
 function Dashboard() {
     const body = document.body;
@@ -19,7 +21,7 @@ function Dashboard() {
     const page_auth = AuthTemplate();
 
     body.prepend(page_auth);
-    
+
     /**
      * This part is solely here for animation
      * please note of the time if ever this
@@ -42,7 +44,7 @@ function Dashboard() {
     const currentTime = DateHandler.currentTime();
     const currentDate = DateHandler.currentDate();
     const p_time = page_dashboard.querySelector('#current-time');
-    
+
     p_time.textContent = `${currentTime} @ ${currentDate}`;
 
     ClockLoop(p_time);
@@ -58,12 +60,12 @@ function Dashboard() {
         const count = all_todos.querySelector('.count');
         count.textContent = 0;
     };
-    
+
     if (all_completed) {
         const count = all_completed.querySelector('.count');
         count.textContent = 0;
     };
-    
+
     if (all_due) {
         const count = all_due.querySelector('.count');
         count.textContent = 0;
@@ -94,6 +96,8 @@ function Dashboard() {
         titleButtonText: 'see all'
     });
 
+    finestra_stickies.addEmptyVisual(SVG.i_note, 'stickies would appear here if there is one...')
+
     finestra_setting.render(cont_settings);
     finestra_stickies.render(cont_left_todo_type);
     // LEFT PANEL //
@@ -101,7 +105,7 @@ function Dashboard() {
     // MAIN PANEL //
 
     // MAIN PANEL //
-    
+
     // RIGHT PANEL //
     const cont_overdues = right_panel.querySelector('#overdue-container');
     const cont_right_todo = right_panel.querySelector('.todo-type-container');
@@ -120,6 +124,8 @@ function Dashboard() {
         titleButtonText: 'see all'
     });
 
+    finestra_projects.addEmptyVisual(SVG.i_project, 'projects seem to be empty... why not create one?');
+
     const finestra_archives = Finestra({
         isExpanded: false,
         id: 'archives',
@@ -133,6 +139,26 @@ function Dashboard() {
     // RIGHT PANEL //
 
     // MAIN INTERFACE //
+
+    // FOOTER //
+    const footer = page_dashboard.querySelector('footer');
+    const footer_left = footer.querySelector('#left');
+
+    const aboutButton = WordButton({
+        text: 'about the project',
+        id: 'about',
+        cls: ['action'],
+        isAlt: true,
+    });
+
+    const btn_about = aboutButton.component;
+
+    footer_left.appendChild(btn_about);
+    // FOOTER //
+};
+
+function DashboardRuntime() {
+    
 };
 
 /**

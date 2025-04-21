@@ -22,17 +22,52 @@ const twitter =
 </svg>
 `;
 
+const todo =
+`
+<svg width="40" height="40" viewBox="0 0 40 40" fill="" xmlns="http://www.w3.org/2000/svg">
+<path d="M14.1707 6H11C9.34314 6 8 7.34314 8 9V33C8 34.6568 9.34314 36 11 36H29C30.6568 36 32 34.6568 32 33V9C32 7.34314 30.6568 6 29 6H25.8292C25.4174 4.8348 24.3062 4 23 4H17C15.6938 4 14.5825 4.8348 14.1707 6ZM17 6H23C23.5522 6 24 6.44772 24 7C24 7.55228 23.5522 8 23 8H17C16.4477 8 16 7.55228 16 7C16 6.44772 16.4477 6 17 6ZM18 17C18 16.4477 18.4477 16 19 16H26C26.5522 16 27 16.4477 27 17C27 17.5523 26.5522 18 26 18H19C18.4477 18 18 17.5523 18 17ZM18 23C18 22.4478 18.4477 22 19 22H26C26.5522 22 27 22.4478 27 23C27 23.5522 26.5522 24 26 24H19C18.4477 24 18 23.5522 18 23ZM18 29C18 28.4478 18.4477 28 19 28H26C26.5522 28 27 28.4478 27 29C27 29.5522 26.5522 30 26 30H19C18.4477 30 18 29.5522 18 29ZM16 17C16 17.8284 15.3284 18.5 14.5 18.5C13.6716 18.5 13 17.8284 13 17C13 16.1716 13.6716 15.5 14.5 15.5C15.3284 15.5 16 16.1716 16 17ZM16 23C16 23.8284 15.3284 24.5 14.5 24.5C13.6716 24.5 13 23.8284 13 23C13 22.1716 13.6716 21.5 14.5 21.5C15.3284 21.5 16 22.1716 16 23ZM14.5 30.5C13.6716 30.5 13 29.8284 13 29C13 28.1716 13.6716 27.5 14.5 27.5C15.3284 27.5 16 28.1716 16 29C16 29.8284 15.3284 30.5 14.5 30.5Z" fill=""/>
+</svg>
+`;
+
+const note =
+`
+<svg width="40" height="40" viewBox="0 0 40 40" fill="" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_90_929)">
+<path d="M25 23.3333L24.805 23.345C24.433 23.3889 24.0866 23.5568 23.8217 23.8217C23.5568 24.0866 23.3889 24.433 23.345 24.805L23.3333 25V35H6.66333C6.22336 35.0009 5.80103 34.8271 5.48915 34.5167C5.17726 34.2064 5.00132 33.785 5 33.345V6.655C5 5.74167 5.74167 5 6.655 5H33.345C34.2583 5 35 5.745 35 6.665V23.3333H25ZM35 26.6667L26.6667 34.995V26.6667H35Z" fill=""/>
+</g>
+<defs>
+<clipPath id="clip0_90_929">
+<rect width="40" height="40" fill=""/>
+</clipPath>
+</defs>
+</svg>
+`;
+
+const project =
+`
+<svg width="40" height="40" viewBox="0 0 40 40" fill="" xmlns="http://www.w3.org/2000/svg">
+<path d="M33.6016 15H6.39844C5.01563 15 4.94531 15.7188 5.02344 16.6016L6.03906 30.8984C6.10938 31.7734 6.3125 32.5 7.6875 32.5H32.3906C33.7969 32.5 33.9609 31.7812 34.0391 30.8984L34.9844 16.4219C35.0547 15.5469 34.9844 15 33.6016 15Z" fill=""/>
+<path d="M33.2969 11.1953C33.2578 10.2266 32.9453 10 32.1172 10C32.1172 10 22.6328 10 20.9297 10C19.2266 10 19.0234 10.0234 17.7344 8.64063C16.6641 7.48438 17.0859 7.5 14.875 7.5C13.1094 7.5 8.99219 7.5 8.99219 7.5C7.63281 7.5 7.14844 7.38282 7.02344 8.79688C6.90625 10.1016 6.63281 13.2656 6.59375 13.75H33.4219L33.2969 11.1953Z" fill=""/>
+</svg>
+`;
+
 const SVG = function(){
     const range = document.createRange();
 
-    const i_github = range.createContextualFragment(github);
-    const i_instagram = range.createContextualFragment(instagram);
-    const i_twitter = range.createContextualFragment(twitter);
+    const i_github = range.createContextualFragment(github).querySelector('svg');
+    const i_instagram = range.createContextualFragment(instagram).querySelector('svg');
+    const i_twitter = range.createContextualFragment(twitter).querySelector('svg');
+    const i_todo = range.createContextualFragment(todo).querySelector('svg');
+    const i_note = range.createContextualFragment(note).querySelector('svg');
+    const i_project = range.createContextualFragment(project).querySelector('svg');
 
     return {
         i_github,
         i_instagram,
-        i_twitter
+        i_twitter,
+        i_todo,
+        i_note,
+        i_project
     }
 }();
 

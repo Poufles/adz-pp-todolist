@@ -15,7 +15,9 @@ import WordButton from '../buttons/word-button/word-button.js';
  *  render: (parent: HTMLElement) => void,
  *  unrender: () => void,
  *  addKeyboardAndStatusTip: (statusMessage: string, ...keyboardHints: Array) => void,
- *  addBottomMessage: (message: string) => void
+ *  addBottomMessage: (message: string) => void,
+ *  addEmptyVisual: (svgHTML: HTMLElement | string, message: string) => Object,
+ *  toggleVisual: (toggle: boolean) => void,
  *  addContent: (parent: HTMLElement) => void,
  *  changeTitle: (newTitle: string) => void,
  *  enable: () => void,
@@ -57,10 +59,14 @@ function Finestra({
 
     const componentButtonsArr = [];
     const contentItemsArr = [];
+    let visualComponent;
+
+    const section_content = component.querySelector('section#content');
+    const cont_content = section_content.querySelector('.content-container');
 
     if (!isExpanded) {
         const content_expansion = component.querySelector('section#content');
-        
+
         if (content_expansion) {
             component.removeChild(content_expansion);
         };
@@ -117,8 +123,8 @@ function Finestra({
      */
     const addContent = (object) => {
         if (Object.hasOwn(object, 'render')) {
-            const section_content = component.querySelector('section#content');
-            const cont_content = section_content.querySelector('.content-container');
+            // const section_content = component.querySelector('section#content');
+            // const cont_content = section_content.querySelector('.content-container');
 
             object.render(cont_content);
             contentItemsArr.push(object);
@@ -143,8 +149,8 @@ function Finestra({
      */
     const addKeyboardAndStatusTip = (statusMessage, ...keyboardHints) => {
         const keyboardNStats = GetKeyboardNStatus(statusMessage, keyboardHints);
-        const section_content = component.querySelector('section#content');
-        const cont_content = section_content.querySelector('.content-container');
+        // const section_content = component.querySelector('section#content');
+        // const cont_content = section_content.querySelector('.content-container');
 
         cont_content.appendChild(keyboardNStats);
     };
@@ -156,10 +162,42 @@ function Finestra({
     const addBottomMessage = (message) => {
         const bottomMessage = GetBottomMessage(message);
 
-        const section_content = component.querySelector('section#content');
-        const cont_content = section_content.querySelector('.content-container');
+        // const section_content = component.querySelector('section#content');
+        // const cont_content = section_content.querySelector('.content-container');
 
         cont_content.appendChild(bottomMessage);
+    };
+
+    /**
+     * Adds a visual object when empty
+     * @param {HTMLElement | string} svgHTML - HTML element or string to add as a visual aid
+     * @param {string} message - Message to show 
+     * @returns An object containing 3 properties to access or change its elements (component | svgContainer | messageContainer)
+     */
+    const addEmptyVisual = (svgHTML, message) => {
+        if (visualComponent) visualComponent = undefined;
+
+        const visualObject = GetEmptyVisual(svgHTML, message);
+        visualComponent = visualObject.component;
+
+        cont_content.appendChild(visualComponent);
+
+        return visualObject;
+    };
+
+    /**
+     * Toggles visual
+     * @param {boolean} toggle - Accepts a boolean value to toggle visual for empty windows if it exists. 
+     */
+    const toggleVisual = (toggle) => {
+        if (visualComponent && cont_content.contains(visualComponent) && toggle) {
+            cont_content.removeChild(visualComponent);
+        };
+        
+        
+        if (visualComponent && cont_content.contains(visualComponent) && !toggle) {
+            cont_content.appendChild(visualComponent);
+        };
     };
 
     /**
@@ -234,6 +272,8 @@ function Finestra({
         addContent,
         addKeyboardAndStatusTip,
         addBottomMessage,
+        addEmptyVisual,
+        toggleVisual,
         changeTitle,
         enable,
         disable
@@ -321,6 +361,50 @@ function GetKeyboardNStatus(statusName, keyboardHints) {
     };
 
     return component;
+};
+
+/**
+ * Retrieves an empty visual object
+ * @param {HTMLElement | string} svg - SVG to append for visual aids 
+ * @param {string} message - Message to add context 
+ * @returns {{
+ * component: HTMLElement,
+ * svgContainer: HTMLElement,
+ * messageContainer: HTMLElement
+ * }}
+ */
+function GetEmptyVisual(svg, message) {
+    const template =
+        `
+        <div class="select-none" id="empty-visual">
+            <div id="visual">
+            </div>
+            <p id="message">
+                ${message}
+            </p>
+        </div>
+    `;
+
+    const fragment = GetTemplateFragment(template);
+    const component = fragment.querySelector('#empty-visual');
+
+    let svgElement = svg;
+
+    if (typeof svg === String) {
+        const svgFragment = GetTemplateFragment(svg);
+        svgElement = svgFragment.querySelector('svg');
+    };
+
+    const visual_element = component.querySelector('#visual');
+    visual_element.appendChild(svgElement);
+
+    const messageContainer = component.querySelector('#message');
+
+    return {
+        component,
+        svgContainer: visual_element,
+        messageContainer: messageContainer
+    };
 };
 
 /**
