@@ -1,0 +1,20 @@
+.box-button {
+    background-color: rgba(0, 0, 0, 1);
+    transition: var(--trans-q);
+}
+
+.box-button>button {
+    background-color: var(--accent-color-1);
+    border: 2px solid var(--black);
+    color: var(--black); /* CHANGE LATER */
+    padding: 4px 15px;
+    transition: var(--trans-q);
+}
+
+.box-button:has(button:hover) {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.box-button>button:hover {
+    transform: scale(1.065) translateY(-5px);
+}

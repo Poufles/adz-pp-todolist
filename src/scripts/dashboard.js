@@ -13,6 +13,7 @@ import '../components/message-box/message-box.css';
 import DateHandler from './date-handler.js';
 import Finestra from '../components/finestra/window.js';
 import WordButton from '../components/buttons/word-button/word-button.js';
+import TypeStats from '../components/type-stats/type-stats.js';
 import SVG from '../scripts/svg.js';
 
 function Dashboard() {
@@ -74,9 +75,13 @@ function Dashboard() {
     // TODO STATS //
 
     // MAIN INTERFACE //
-    const left_panel = page_dashboard.querySelector('#left-panel');
-    const middle_panel = page_dashboard.querySelector('#middle-panel');
-    const right_panel = page_dashboard.querySelector('#right-panel');
+    const main_interface = page_dashboard.querySelector('#main-interface');
+
+    TypeStats.render(main_interface);
+    
+    const left_panel = main_interface.querySelector('#left-panel');
+    const middle_panel = main_interface.querySelector('#middle-panel');
+    const right_panel = main_interface.querySelector('#right-panel');
 
     // LEFT PANEL //
     const cont_settings = left_panel.querySelector('#settings-container');

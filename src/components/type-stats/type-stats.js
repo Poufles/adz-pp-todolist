@@ -1,7 +1,7 @@
 const TypeStats = function() {
     const template = 
     `
-    <div class="comp type-stats">
+    <div class="comp type-stats select-none">
         <p id="stickies">
             stickies | <span class="count">0</span>
         </p>

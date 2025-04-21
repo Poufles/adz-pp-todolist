@@ -178,7 +178,7 @@
 }
 /* CHANGE LATER */
 
-/* #page_dashboard #main-interface #todo-type-stats {
+#page_dashboard #main-interface .type-stats {
     background-color: var(--secondary-color);
     border: 2px solid var(--black);
     width: 100%;
@@ -193,7 +193,7 @@
     left: 50%;
     bottom: var(--box-padding);
     z-index: 10;
-} */
+}
 
 #page_dashboard #main-interface #left-panel,
 #page_dashboard #main-interface #right-panel {

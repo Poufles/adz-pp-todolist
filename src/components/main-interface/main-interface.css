@@ -1,0 +1,70 @@
+.comp.main-interface .return-wrapper button {
+    background-color: transparent;
+    border: 0;
+    color: var(--black);
+}
+
+.comp.main-interface .return-wrapper button:disabled {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.comp.main-interface .top {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+}
+
+.comp.main-interface .title-wrapper {
+    display: flex;
+    gap: 7px;
+    align-items: baseline;
+}
+
+.comp.main-interface .title-wrapper #title,
+.comp.main-interface .title-wrapper #count {
+    display: inline-block;
+}
+
+.comp.main-interface #title {
+    color: var(--black);
+    font-size: var(--fn-msv);
+}
+
+.comp.main-interface .title-wrapper #count {
+    font-size: var(--xlr);
+    opacity: 0.5;
+}
+
+.comp.main-interface #description {
+    border-bottom: 2px solid var(--black);
+    padding-bottom: 7px;
+}
+
+.comp.main-interface #sub-section {
+    border-bottom: 2px solid var(--black);
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.comp.main-interface #sub-section .actions {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.comp.main-interface #sub-section .action {
+    background-color: transparent;
+    border: 0;
+    color: var(--black);
+    opacity: 0.5;
+    transition: var(--trans-q);
+}
+
+.comp.main-interface #sub-section .action:hover, 
+.comp.main-interface #sub-section .action.selected {
+    opacity: 1;
+}
