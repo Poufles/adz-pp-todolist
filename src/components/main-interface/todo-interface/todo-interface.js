@@ -1,10 +1,13 @@
+import StorageHandler from "../../../scripts/storage-handler.js";
 import MainInterface from "../main-interface.js";
 
 const TodoInterface = function () {
+    const account = StorageHandler.GetStorage(true);
+
     const todoInterface = MainInterface({
         id: 'todos',
         title: 'todos',
-        titleCount: 0, // CHANGE LATER
+        titleCount: account.sticky.length, // CHANGE LATER
         description: 'todos are your tasks to be done. be sure that you will do them in time!',
         buttonText: 'create',
         buttonId: 'create'

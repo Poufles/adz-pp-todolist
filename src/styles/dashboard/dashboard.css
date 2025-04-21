@@ -46,27 +46,6 @@
     grid-area: left;
 }
 
-#page_dashboard #misc-info #user-profile #user-block {
-    font-size: var(--fn-xlr);
-    width: max-content;
-}
-
-#page_dashboard #misc-info #user-profile #level-bar-block {
-    font-size: var(--fn-xsm);
-    display: flex;
-    gap: 5px;
-    align-items: baseline;
-    justify-content: center;
-}
-
-#page_dashboard #misc-info #user-profile #level-bar-block #level-bar {
-    flex-grow: 1;
-
-    border: 1px solid var(--black);
-    width: 100%;
-    height: 9px;
-}
-
 #page_dashboard #misc-info #task-stats {
     grid-area: middle;
 
@@ -181,6 +160,7 @@
 #page_dashboard #main-interface .type-stats {
     background-color: var(--secondary-color);
     border: 2px solid var(--black);
+    font-size: var(--fn-xlr);
     width: 100%;
     max-width: max-content;
     padding: 10px 30px;

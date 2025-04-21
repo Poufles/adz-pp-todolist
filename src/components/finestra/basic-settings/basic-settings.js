@@ -1,3 +1,4 @@
+import StorageHandler from '../../../scripts/storage-handler.js';
 import Finestra from '../window.js';
 
 const BasicSettings = function() {
@@ -17,27 +18,29 @@ const BasicSettings = function() {
 }();
 
 function GetBasicSettingsBlock() {
+    const account = StorageHandler.GetStorage(true);
+
     const template = `
     <article class="comp basic-settings">
         <div class="block select-none" id="dark-mode">
             <label for="set-dm" class="text btn">Dark mode(y/n):</label>
-            <input type="text" id="set-dm" value="y">
+            <input type="text" id="set-dm" value="${account.preference.darkmode ? 'y' : 'n'}">
         </div>
         <div class="block select-none" id="sounds">
             <label for="set-sn" class="text btn">Sounds(y/n):</label>
-            <input type="text" id="set-sn" value="y">
+            <input type="text" id="set-sn" value="${account.preference.sound.all ? 'y' : 'n'}">
             <div class="sub">
                 <div class="block select-none" id="background">
                     <label for="set-bg" class="text btn">Background(y/n):</label>
-                    <input type="text" id="set-bg" value="y">
+                    <input type="text" id="set-bg" value="${account.preference.sound.background ? 'y' : 'n'}">
                 </div>
                 <div class="block select-none" id="keyboard">
                     <label for="set-kb" class="text btn">Keyboard(y/n):</label>
-                    <input type="text" id="set-kb" value="y">
+                    <input type="text" id="set-kb" value="${account.preference.sound.keyboard ? 'y' : 'n'}">
                 </div>
                 <div class="block select-none" id="click">
                     <label for="set-cl" class="text btn">Click(y/n):</label>
-                    <input type="text" id="set-cl" value="y">
+                    <input type="text" id="set-cl" value="${account.preference.sound.click ? 'y' : 'n'}">
                 </div>
             </div>
         </div>

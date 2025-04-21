@@ -1,9 +1,13 @@
+import StorageHandler from "../../scripts/storage-handler.js";
+
 const UserBox = function () {
+    const account = StorageHandler.GetStorage(true);
+
     const template = `
     <section class="misc comp userbox" id="user-profile">
         <div id="user-block">
             <p id="user-info">
-                <span id="username">poufsadev</span> | lv<span id="level">1</span>
+                <span id="username">${account.username}</span> | lv<span id="level">${account.level}</span>
             </p>
         </div>
         <div id="level-bar-block">

@@ -1,15 +1,19 @@
+import StorageHandler from "../../scripts/storage-handler.js";
+
 const TypeStats = function() {
+    const account = StorageHandler.GetStorage(true);
+
     const template = 
     `
     <div class="comp type-stats select-none">
         <p id="stickies">
-            stickies | <span class="count">0</span>
+            stickies | <span class="count">${account.sticky.length}</span>
         </p>
         <p id="todos">
-            todos | <span class="count">0</span>
+            todos | <span class="count">${account.todo.length}</span>
         </p>
         <p id="projects">
-            projects | <span class="count">0</span>
+            projects | <span class="count">${account.project.length}</span>
         </p>
     </div>
     `;
