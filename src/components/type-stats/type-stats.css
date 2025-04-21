@@ -1,0 +1,16 @@
+.type-stats {
+    background-color: var(--secondary-color);
+    border: 2px solid var(--black);
+    width: 100%;
+    max-width: max-content;
+    padding: 10px 30px;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    bottom: var(--box-padding);
+    z-index: 10;
+}
