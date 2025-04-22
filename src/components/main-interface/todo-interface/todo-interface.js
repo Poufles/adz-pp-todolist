@@ -16,7 +16,7 @@ const TodoInterface = function () {
     const template_subsection = 
     `
         <div id="sub-section">
-            <div class="actions">
+            <div class="actions select-none">
                 <button type="button" class="btn action selected" id="today">
                     <span id="name">today</span>
                     <span id="count">| 0</span>

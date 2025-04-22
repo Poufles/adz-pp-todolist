@@ -7,6 +7,7 @@ import '../styles/dashboard/dashboard-responsiveness.css';
 import '../components/buttons/simple-button/simple-button.css';
 import '../components/buttons/word-button/word-button.css';
 import '../components/buttons/box-button/box-button.css';
+import '../components/input-block/input-block.css';
 import '../components/finestra/window.css';
 import '../components/finestra/basic-settings/basic-settings.css';
 import '../components/auth-interface/auth-interface.css';
@@ -26,6 +27,7 @@ import TodoInterface from '../components/main-interface/todo-interface/todo-inte
 import BasicSettings from '../components/finestra/basic-settings/basic-settings.js';
 import UserBox from '../components/userbox/userbox.js';
 import StorageHandler from './storage-handler.js';
+import CreateTodo from '../components/finestra/create-todo/create-todo.js';
 
 const Dashboard = function () {
     const account = StorageHandler.GetStorage(true);
@@ -191,15 +193,27 @@ const Dashboard = function () {
     // ALL COMPONENTS FOR RUNTIME //
 
     return {
+        main_interface,
         btn_about,
     }
 }();
 
 function DashboardRuntime() {
+    const main_interface = Dashboard.main_interface;
+
+    const todoInterface = TodoInterface.component;
+    const btn_todoInterfaceCreate = todoInterface.querySelector('#box-create');
+
     const btn_about = Dashboard.btn_about;
 
+    btn_todoInterfaceCreate.addEventListener('click', () => {
+        const createTodo = CreateTodo();
+
+        createTodo.modal(main_interface);
+    });
+
     btn_about.addEventListener('click', () => {
-        console.log('hello');
+        console.log('About Section later lol');
     });
 };
 

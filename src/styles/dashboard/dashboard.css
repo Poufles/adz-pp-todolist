@@ -143,6 +143,7 @@
     justify-content: space-between;
     gap: 70px;
     position: relative;
+    overflow: hidden;
 }
 
 /* CHANGE LATER */

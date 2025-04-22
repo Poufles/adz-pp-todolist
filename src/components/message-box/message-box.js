@@ -4,16 +4,11 @@ import WordButton from '../buttons/word-button/word-button.js';
  * Creates a base message box
  * @returns MessageBox object
  */
-function MessageBox({ title, text, htmlTemplate, onCreate }) {
+function MessageBox({ htmlTemplate, onCreate }) {
     const range = document.createRange();
     const fragment = range.createContextualFragment(htmlTemplate);
     const component = fragment.firstElementChild;
     const cont_titlebar = component.querySelector('#title-bar');
-    const p_title = component.querySelector('#title');
-    const p_text = component.querySelector('#text');
-
-    p_title.textContent = title;
-    p_text.textContent = text;
 
     if (onCreate) onCreate(component);
 
@@ -64,9 +59,10 @@ function MessageBox({ title, text, htmlTemplate, onCreate }) {
     });
 
     btn_close.addEventListener('click', (e) => {
+        e.stopPropagation();
+
         if (component.classList.contains('modal')) return;
 
-        e.stopPropagation();
         unrender();
     });
 
@@ -130,21 +126,27 @@ function MessageBox({ title, text, htmlTemplate, onCreate }) {
             const btn_cancel = component.querySelector('#window #actions #cancel');
 
             if (btn_close) {
-                btn_close.addEventListener('click', () => {
+                btn_close.addEventListener('click', (e) => {
+                    e.stopPropagation();
+
                     unrender();
                     resolve('close');
                 });
             };
             
             if (btn_confirm) {
-                btn_confirm.addEventListener('click', () => {
+                btn_confirm.addEventListener('click', (e) => {
+                    e.stopPropagation();
+
                     unrender();
                     resolve('confirm');
                 });
             };
             
             if (btn_cancel) {
-                btn_cancel.addEventListener('click', () => {
+                btn_cancel.addEventListener('click', (e) => {
+                    e.stopPropagation();
+
                     unrender();
                     resolve('cancel');
                 });
@@ -171,14 +173,14 @@ export function ConfirmMessageBox(title, text, customConfirm = 'yes') {
         `
         <div class="comp message-box confirm select-none">
             <div id="title-bar">
-                <p id="title">Title</p>
+                <p id="title">${title}</p>
                 <div id="actions">
                     
                 </div>
             </div>
             <div id="window">
                 <p class="cursor-default" id="message">
-                    > <span id="text">Text</span>
+                    > <span id="text">${text}</span>
                 </p>
                 <div id="actions">
                     
@@ -226,14 +228,14 @@ export function InformMessageBox(title, text) {
         `
         <div class="comp message-box inform select-none">
             <div id="title-bar">
-                <p id="title">Title</p>
+                <p id="title">${title}</p>
                 <div id="actions">
                     
                 </div>
             </div>
             <div id="window">
                 <p class="cursor-default" id="message">
-                    > <span id="text">Text</span>
+                    > <span id="text">${text}</span>
                 </p>
                 <div id="actions">
                     
@@ -243,8 +245,6 @@ export function InformMessageBox(title, text) {
     `;
 
     const messageBox = MessageBox({
-        title: title || 'Message!',
-        text: text || 'Information message',
         htmlTemplate: template
     });
 
@@ -261,9 +261,10 @@ export function InformMessageBox(title, text) {
     cont_window_action.appendChild(btn_confirm);
 
     btn_confirm.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
         if (cont_msgBox.classList.contains('modal')) return;
 
-        e.stopPropagation();
         messageBox.unrender();
     });
 

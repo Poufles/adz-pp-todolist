@@ -1,4 +1,5 @@
 import WordButton from '../buttons/word-button/word-button.js';
+import { ConfirmMessageBox } from '../message-box/message-box.js';
 
 /**
  * Creates a Window Component (Finestra in Italian)
@@ -9,20 +10,6 @@ import WordButton from '../buttons/word-button/word-button.js';
  *  windowTitle: string,
  *  titleButtonText: string,
  * }} options - Properties to create
- * @returns {{
- *  component: HTMLElement,
- *  componentButtonsArr: Array,
- *  render: (parent: HTMLElement) => void,
- *  unrender: () => void,
- *  addKeyboardAndStatusTip: (statusMessage: string, ...keyboardHints: Array) => void,
- *  addBottomMessage: (message: string) => void,
- *  addEmptyVisual: (svgHTML: HTMLElement | string, message: string) => Object,
- *  toggleVisual: (toggle: boolean) => void,
- *  addContent: (object: HTMLElement) => void,
- *  changeTitle: (newTitle: string) => void,
- *  enable: () => void,
- *  disable: () => void
- * }}
  */
 function Finestra({
     isExpanded = true,
@@ -35,7 +22,7 @@ function Finestra({
         `
         <div class="comp window-component expanded" id="window-name">
             <div class="title select-none cursor-default">
-                <span class="text">${titleButtonText}</span>
+                <span class="text">${windowTitle}</span>
             </div>
             <section id="content">
                 <div class="content-container">
@@ -60,6 +47,7 @@ function Finestra({
     const componentButtonsArr = [];
     const contentItemsArr = [];
     let visualComponent;
+    let awaiting = false;
 
     const section_content = component.querySelector('section#content');
     const cont_content = section_content.querySelector('.content-container');
@@ -78,7 +66,6 @@ function Finestra({
     componentButtonsArr.push(titleButton);
 
     component.id = `window-${id}`;
-    span_title.textContent = windowTitle;
 
     if (hasActions) {
         const actionsObject = GetActionsComponent();
@@ -112,8 +99,93 @@ function Finestra({
     const unrender = () => {
         const parent = component.parentElement;
 
+        if (parent.id === 'overlay') {
+            console.error('Error: component is used as a modal. Use unrenderModal() instead.');
+
+            return;
+        };
+
         if (parent && parent.contains(component)) {
             parent.removeChild(component); return;
+        };
+    };
+
+
+    /**
+     * Creates a render of the component in a modal.
+     * @param {HTMLElement} parent - The parent component to where the overlay must be appended.
+     */
+    const modal = (parent) => {
+        if (!parent) {
+            console.error('Error: parent parameter does not exist');
+
+            return;
+        };
+
+        enable();
+        // CHANGE LATER IF PROMISE MUST BE USED
+        const overlay = GetBackgroundOverlay();
+
+        overlay.appendChild(component);
+        parent.appendChild(overlay);
+        setTimeout(() => {
+            overlay.classList.add('shown');
+        }, 0);
+
+        // CHANGE LATER IN CASE OF PROMISE
+        overlay.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            if (awaiting) return;
+
+            unrenderModal();
+        });
+    };
+
+    /**
+     * Unrenders the modal.
+     * @param {boolean} isCompleted - Accepts boolean value.
+     * @returns 
+     */
+    const unrenderModal = async (isCompleted = false) => {
+        disable();
+
+        if (isCompleted) {
+            CloseComponent(component, true);
+            return;
+        };
+
+        let hasInputs = false
+        for (let index = 0; index < contentItemsArr.length; index++) {
+            const objectItem = contentItemsArr[index];
+
+            if (!Object.hasOwn(objectItem, 'inputComponent')) continue;
+
+            const input = objectItem.inputComponent;
+
+            if (input.value && input.type !== 'button') {
+                hasInputs = true; break;
+            };
+        };
+
+        if (!hasInputs) {
+            CloseComponent(component, true);
+
+            return;
+        };
+
+        const messageBox = ConfirmMessageBox('Cancel creation?', 'Are you sure you want to cancel?');
+
+        const response = await messageBox.modal(overlay);
+
+        if (response !== 'confirm') {
+            enable();
+
+            return;
+        };
+
+        if (response === 'confirm') {
+            CloseComponent(component, true);
         };
     };
 
@@ -161,9 +233,6 @@ function Finestra({
     const addBottomMessage = (message) => {
         const bottomMessage = GetBottomMessage(message);
 
-        // const section_content = component.querySelector('section#content');
-        // const cont_content = section_content.querySelector('.content-container');
-
         cont_content.appendChild(bottomMessage);
     };
 
@@ -185,6 +254,54 @@ function Finestra({
     };
 
     /**
+     * Verifies if contents containing inputs all have values.
+     * @returns Boolean value
+     */
+    const inputsHasValue = () => {
+        let hasValue = true;
+
+        for (let index = 0; index < contentItemsArr.length; index++) {
+            const objectItem = contentItemsArr[index];
+
+            // TIME INPUTS
+            if (Object.hasOwn(objectItem, 'inputComponent')) {
+                const inputObject = objectItem.inputComponent;
+                const inputArr = inputObject.querySelectorAll('input')
+
+                inputArr.forEach(input => {
+                    if (input.value === '') {
+                        hasValue = false;
+                        objectItem.requiredMessage();
+                    };
+                });
+            };
+
+            if (Object.hasOwn(objectItem, 'inputComponent') && Object.hasOwn(objectItem, 'requiredMessage') && Object.hasOwn(objectItem, 'isOptional')) {
+                const input = objectItem.inputComponent;
+
+                if (input.value === '' && !objectItem.isOptional) {
+                    hasValue = false;
+                    objectItem.requiredMessage();
+                };
+            };
+        };
+
+        return hasValue;
+    };
+
+    const resetInputs = () => {
+        const itemsLength = contentItemsArr.length;
+
+        if (itemsLength != 0) {
+            contentItemsArr.forEach(item => {
+                if (Object.hasOwn(item, 'removeInput')) {
+                    item.removeInput();
+                };
+            });
+        };
+    };
+
+    /**
      * Toggles visual
      * @param {boolean} toggle - Accepts a boolean value to toggle visual for empty windows if it exists. 
      */
@@ -192,8 +309,8 @@ function Finestra({
         if (visualComponent && cont_content.contains(visualComponent) && toggle) {
             cont_content.removeChild(visualComponent);
         };
-        
-        
+
+
         if (visualComponent && cont_content.contains(visualComponent) && !toggle) {
             cont_content.appendChild(visualComponent);
         };
@@ -213,25 +330,27 @@ function Finestra({
      * Enables the component for interactivity
      */
     const enable = () => {
+        awaiting = false;
+
         const allButtons = component.querySelectorAll('button');
         const allInputs = component.querySelectorAll('input');
         const allTextareas = component.querySelectorAll('textarea');
 
         if (allButtons.length != 0) {
             allButtons.forEach(button => {
-                button.disabled = 'true';
+                button.disabled = false;
             });
         };
 
         if (allInputs.length != 0) {
             allInputs.forEach(input => {
-                input.disabled = 'true';
+                input.disabled = false;
             });
         };
 
         if (allTextareas.length != 0) {
             allTextareas.forEach(textarea => {
-                textarea.disabled = 'true';
+                textarea.disabled = false;
             });
         };
     };
@@ -240,35 +359,46 @@ function Finestra({
      * Disables the component
      */
     const disable = () => {
+        awaiting = true;
+
         const allButtons = component.querySelectorAll('button');
         const allInputs = component.querySelectorAll('input');
         const allTextareas = component.querySelectorAll('textarea');
 
         if (allButtons.length != 0) {
             allButtons.forEach(button => {
-                button.disabled = 'false';
+                button.disabled = true;
             });
         };
 
         if (allInputs.length != 0) {
             allInputs.forEach(input => {
-                input.disabled = 'false';
+                input.disabled = true;
             });
         };
 
         if (allTextareas.length != 0) {
             allTextareas.forEach(textarea => {
-                textarea.disabled = 'false';
+                textarea.disabled = true;
             });
         };
     };
 
+    component.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
     return {
         component,
+        closeButton: btn_title,
         componentButtonsArr,
         render,
         unrender,
+        modal,
+        unrenderModal,
         addContent,
+        inputsHasValue,
+        resetInputs,
         addKeyboardAndStatusTip,
         addBottomMessage,
         addEmptyVisual,
@@ -302,7 +432,7 @@ function GetActionsComponent() {
     });
     const saveButton = WordButton({
         text: 'save',
-        id: 'save',
+        id: 'confirm',
     });
     const buttonObjectsArr = [resetButton, saveButton];
 
@@ -421,6 +551,45 @@ function GetBottomMessage(message) {
     const component = fragment.querySelector('#bottom-msg');
 
     return component;
+};
+
+function GetBackgroundOverlay() {
+    const template = `
+        <div class="modal" id="overlay"></div>
+    `
+
+    const fragment = GetTemplateFragment(template);
+    const component = fragment.querySelector('#overlay');
+
+    return component;
+};
+
+/**
+ * Closes the component
+ * @param {HTMLElement} component 
+ * @param {HTMLElement} closeButton 
+ * @param {boolean} isModal 
+ */
+function CloseComponent(component, isModal) {
+    if (isModal) {
+        const overlay = component.parentElement;
+        const parent = overlay.parentElement
+
+        if (parent) {
+            overlay.classList.remove('shown');
+            setTimeout(() => {
+                if (parent.contains(overlay)) parent.removeChild(overlay);
+            }, 200);
+        };
+
+        return;
+    };
+
+    const parent = component.parentElement;
+
+    if (parent && parent.contains(component)) {
+        parent.removeChild(component);
+    };
 };
 
 /**
