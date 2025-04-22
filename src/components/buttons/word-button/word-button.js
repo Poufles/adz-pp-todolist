@@ -13,7 +13,7 @@ import Button from "../button.js";
 function WordButton({ text, id = '', cls = [], isAlt = false } = {}) {
     const template =
         `
-        <button type="button" class="comp word-button btn">
+        <button type="button" class="comp word-button btn select-none">
             <span class="arrow">&gt;</span>
             <span class="action" id="">
                 button
@@ -23,7 +23,7 @@ function WordButton({ text, id = '', cls = [], isAlt = false } = {}) {
 
     const templateAlt =
         `
-        <button type="button" class="comp word-button btn">
+        <button type="button" class="comp word-button btn select-none">
             <span class="action" id="">
             button
             </span>

@@ -7,12 +7,16 @@ import '../styles/dashboard/dashboard-responsiveness.css';
 import '../components/buttons/simple-button/simple-button.css';
 import '../components/buttons/word-button/word-button.css';
 import '../components/buttons/box-button/box-button.css';
+import '../components/input-block/input-block.css';
 import '../components/finestra/window.css';
 import '../components/finestra/basic-settings/basic-settings.css';
 import '../components/auth-interface/auth-interface.css';
 import '../components/message-box/message-box.css';
 import '../components/main-interface/main-interface.css';
+import '../components/userbox/userbox.css';
+import '../components/devtools/devtools.css';
 
+import DevTools from '../components/devtools/devtools.js';
 import DateHandler from './date-handler.js';
 import Finestra from '../components/finestra/window.js';
 import WordButton from '../components/buttons/word-button/word-button.js';
@@ -22,8 +26,11 @@ import MainInterface from '../components/main-interface/main-interface.js';
 import TodoInterface from '../components/main-interface/todo-interface/todo-interface.js';
 import BasicSettings from '../components/finestra/basic-settings/basic-settings.js';
 import UserBox from '../components/userbox/userbox.js';
+import StorageHandler from './storage-handler.js';
+import CreateTodo from '../components/finestra/create-todo/create-todo.js';
 
-const Dashboard = function() {
+const Dashboard = function () {
+    const account = StorageHandler.GetStorage(true);
     const body = document.body;
     const page_dashboard = body.querySelector('.dashboard');
     const page_auth = AuthTemplate();
@@ -53,12 +60,11 @@ const Dashboard = function() {
     ////////////////////////////////
 
     const misc_info = page_dashboard.querySelector('#misc-info');
-    // USER BOX / PROFILE //
+    ////////////////// USER PROFILE //////////////////
     UserBox.render(misc_info);
-    // USER BOX / PROFILE //
+    ////////////////// USER PROFILE //////////////////
 
-
-    // TIME //
+    ////////////////// TIME //////////////////
     const currentTime = DateHandler.currentTime();
     const currentDate = DateHandler.currentDate();
     const p_time = misc_info.querySelector('#current-time');
@@ -66,9 +72,9 @@ const Dashboard = function() {
     p_time.textContent = `${currentTime} @ ${currentDate}`;
 
     ClockLoop(p_time);
-    // TIME //
+    ////////////////// TIME //////////////////
 
-    // TODO STATS //
+    ////////////////// TODO STATS //////////////////
     const all_todos = page_dashboard.querySelector('#all-todos');
     const all_completed = page_dashboard.querySelector('#all-completed');
     const all_due = page_dashboard.querySelector('#all-due');
@@ -89,7 +95,7 @@ const Dashboard = function() {
         count.textContent = 0;
     };
     // CHANGE LATER //
-    // TODO STATS //
+    ////////////////// TODO STATS //////////////////
 
     ////////////////////////////////
     ////////// MISC INFO ///////////
@@ -101,19 +107,19 @@ const Dashboard = function() {
     const main_interface = page_dashboard.querySelector('#main-interface');
 
     TypeStats.render(main_interface);
-    
+
     const left_panel = main_interface.querySelector('#left-panel');
     const middle_panel = main_interface.querySelector('#middle-panel');
     const right_panel = main_interface.querySelector('#right-panel');
 
-    // LEFT PANEL //
+    ////////////////// LEFT PANEL //////////////////
     const cont_settings = left_panel.querySelector('#settings-container');
     const cont_left_todo_type = left_panel.querySelector('.todo-type-container');
 
     // Create a settings component later
     const finestra_stickies = Finestra({
         id: 'stickies',
-        windowTitle: 'stickies | 0',
+        windowTitle: `stickies | ${account.sticky.length}`,
         titleButtonText: 'see all'
     });
 
@@ -121,14 +127,14 @@ const Dashboard = function() {
 
     BasicSettings.render(cont_settings);
     finestra_stickies.render(cont_left_todo_type);
-    // LEFT PANEL //
+    ////////////////// LEFT PANEL //////////////////
 
-    // MAIN PANEL //
+    ////////////////// MAIN PANEL //////////////////
     TodoInterface.render(middle_panel);
     TodoInterface.toggleReturnButton(true);
-    // MAIN PANEL //
+    ////////////////// MAIN PANEL //////////////////
 
-    // RIGHT PANEL //
+    ////////////////// RIGHT PANEL //////////////////
     const cont_overdues = right_panel.querySelector('#overdue-container');
     const cont_right_todo = right_panel.querySelector('.todo-type-container');
     const cont_archives = right_panel.querySelector('#archive-container');
@@ -136,13 +142,13 @@ const Dashboard = function() {
     const finestra_overdue = Finestra({
         isExpanded: false,
         id: 'overdues',
-        windowTitle: `overdue | 0`,
+        windowTitle: `overdue | 0`, // CHANGE LATER
         titleButtonText: 'see all'
     });
 
     const finestra_projects = Finestra({
         id: 'projects',
-        windowTitle: `projects | 0`,
+        windowTitle: `projects | ${account.project.length}`,
         titleButtonText: 'see all'
     });
 
@@ -151,14 +157,14 @@ const Dashboard = function() {
     const finestra_archives = Finestra({
         isExpanded: false,
         id: 'archives',
-        windowTitle: `archives | 0`,
+        windowTitle: `archives | ${account.archive.length}`,
         titleButtonText: 'see all'
     });
 
     finestra_overdue.render(cont_overdues);
     finestra_projects.render(cont_right_todo);
     finestra_archives.render(cont_archives);
-    // RIGHT PANEL //
+    ////////////////// RIGHT PANEL //////////////////
 
     /////////////////////////////////////
     ////////// MAIN INTERFACE ///////////
@@ -185,17 +191,29 @@ const Dashboard = function() {
     //////////////////////////////
 
     // ALL COMPONENTS FOR RUNTIME //
-     
+
     return {
+        main_interface,
         btn_about,
     }
 }();
 
 function DashboardRuntime() {
+    const main_interface = Dashboard.main_interface;
+
+    const todoInterface = TodoInterface.component;
+    const btn_todoInterfaceCreate = todoInterface.querySelector('#box-create');
+
     const btn_about = Dashboard.btn_about;
 
+    btn_todoInterfaceCreate.addEventListener('click', () => {
+        const createTodo = CreateTodo();
+
+        createTodo.modal(main_interface);
+    });
+
     btn_about.addEventListener('click', () => {
-        console.log('hello');
+        console.log('About Section later lol');
     });
 };
 

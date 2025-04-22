@@ -80,11 +80,14 @@ const AccountHandler = function() {
                 const isValid = await Encryption.verifyPassword(password, accountPassword);
 
                 if (isValid) {
+                    account.insession = true;
                     isSuccessful = true;
                     break;
                 };
             };
         };
+
+        StorageHandler.UpdateStorage({ isLogin: true });
         
         return isSuccessful;
     };

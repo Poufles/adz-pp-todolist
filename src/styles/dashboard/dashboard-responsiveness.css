@@ -43,10 +43,6 @@
     #page_dashboard>.container {
         min-height: 650px;
     }
-
-    #page_dashboard #main-interface .type-stats {
-        font-size: var(--fn-md);
-    }
 }
 
 @media screen and (max-width: 670px) {

@@ -1,9 +1,39 @@
+#overlay {
+    background-color: rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(3px);
+    height: 100%;
+    width: 100%;
+    padding: 30px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: var(--trans-q);
+    opacity: 0;
+    z-index: 50;
+}
+
+#overlay .window-component {
+    transform: scale(0.1);
+}
+
+#overlay.shown {
+    opacity: 1;
+}
+
+#overlay.shown .window-component {
+    transform: none;
+}
+
 .window-component {
     width: 100%;
     max-width: 350px;
     max-height: 100%;
     display: flex;
     flex-direction: column;
+    transition: var(--trans-q);
 }
 
 .window-component>.title {

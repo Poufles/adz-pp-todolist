@@ -35,7 +35,7 @@ function InputBlock({
                 <span class="title">${title}: </span> 
             </label>
             <div class="input-wrapper">
-                <span class="arrow">&gt;</span>
+                <span class="arrow select-none">&gt;</span>
             </div>
         </article>
     `;
@@ -62,6 +62,7 @@ function InputBlock({
         return false;
     };
 
+    const inputComponent = objectComponents.input;
     let hintComponent;
 
     if (hint.hasHint) {
@@ -70,26 +71,45 @@ function InputBlock({
         component.appendChild(hintComponent);
     };
 
-    if (objectComponents.input) {
+    if (inputComponent) {
         const arrow = component.querySelector('.input-wrapper .arrow');
-        const input = objectComponents.input;
 
-        input.addEventListener('keydown', (e) => {
+        inputComponent.addEventListener('keydown', (e) => {
             if (arrow.classList.contains('stagnant')) arrow.classList.remove('stagnant');
 
             arrow.classList.add('typing');
         });
 
-        input.addEventListener('keyup', (e) => {
+        inputComponent.addEventListener('keyup', (e) => {
             arrow.classList.remove('typing');
         });
 
-        input.addEventListener('blur', (e) => {
-            if (input.value) {
+        inputComponent.addEventListener('blur', (e) => {
+            if (inputComponent.value) {
                 arrow.classList.add('stagnant');
             } else {
                 arrow.classList.remove('stagnant');
             }
+        });
+
+        inputComponent.addEventListener('focus', (e) => {
+            e.stopPropagation();
+
+            if (optionalComponent && optionalComponent.classList.contains('show')) {
+                optionalComponent.classList.remove('show');
+            };
+        });
+    };
+
+    if (objectComponents.timeInputs) {
+        objectComponents.timeInputs.forEach(input => {
+            input.addEventListener('focus', (e) => {
+                e.stopPropagation();
+    
+                if (optionalComponent && optionalComponent.classList.contains('show')) {
+                    optionalComponent.classList.remove('show');
+                };
+            });
         });
     };
 
@@ -128,6 +148,27 @@ function InputBlock({
      */
     const disable = () => {
 
+    };
+
+    const removeInput = () => {
+        const inputElements = component.querySelectorAll('input');
+        const textareaElements = component.querySelector('textarea');
+
+        if (inputElements) {
+            inputElements.forEach(input => {
+                if (input.type === 'button') {
+                    input.value = input.dataset.initial;
+
+                    return;
+                };
+
+                input.value = '';
+            });
+        };
+
+        if (textareaElements) {
+            textareaElements.value = '';
+        };
     };
 
     /**
@@ -185,23 +226,25 @@ function InputBlock({
     const requiredMessage = (message = 'required') => {
         if (!isOptional) {
             optionalComponent.textContent = `(${message})`;
-            optionalComponent.classList.add('required');
+            optionalComponent.classList.add('show');
         };
     };
 
     const removeRequiredMessage = () => {
         if (!isOptional) {
             optionalComponent.textContent = `(optional)`;
-            optionalComponent.classList.remove('required');
+            optionalComponent.classList.remove('show');
         };
     };
 
     const addPlaceholder = (placeholder) => {
-        objectComponents.input.placeholder = placeholder;
+        inputComponent.placeholder = placeholder;
     };
 
     return {
         component,
+        inputComponent,
+        isOptional,
         render,
         unrender,
         enable,
@@ -210,6 +253,7 @@ function InputBlock({
         hideHint,
         addClickables,
         removeClickables,
+        removeInput,
         requiredMessage,
         removeRequiredMessage,
         addPlaceholder
@@ -284,8 +328,8 @@ function CreateTimeLiner(component, inputId) {
 
     const template =
         `
-        <div class="time-format" id="${inputId}">
-            <input type="number" name="" id="hour-ten" placeholder="${timeNow.slice(0, 1)}"><input type="number" name="" id="hour-one" placeholder="${timeNow.slice(1, 2)}">:<input type="number" name="" id="minute-ten" placeholder="${timeNow.slice(3, 4)}"><input type="number" name="" id="minute-one" placeholder="${timeNow.slice(4, 5)}"><input class="btn" type="button" id="meridian" value="${timeNow.slice(5, 7).toLowerCase()}"> | <input type="number" name="" id="month-ten" placeholder="${dateNow.slice(0, 1)}"><input type="number" name="" id="month-one" placeholder="${dateNow.slice(1, 2)}">/<input type="number" name="" id="day-ten" placeholder="${dateNow.slice(3, 4)}"><input type="number" name="" id="day-one" placeholder="${dateNow.slice(4, 5)}">/<input type="number" name="" id="year-mille" placeholder="${dateNow.slice(6, 7)}"><input type="number" name="" id="year-cent" placeholder="${dateNow.slice(7, 8)}"><input type="number" name="" id="year-ten" placeholder="${dateNow.slice(8, 9)}"><input type="number" name="" id="year-one" placeholder="${dateNow.slice(9, 10)}">
+        <div class="time-format select-none" id="${inputId}">
+            <input type="number" name="" id="hour-ten" placeholder="${timeNow.slice(0, 1)}"><input type="number" name="" id="hour-one" placeholder="${timeNow.slice(1, 2)}">:<input type="number" name="" id="minute-ten" placeholder="${timeNow.slice(3, 4)}"><input type="number" name="" id="minute-one" placeholder="${timeNow.slice(4, 5)}"><input class="btn" type="button" data-initial="${timeNow.slice(5, 7).toLowerCase()}" id="meridian" value="${timeNow.slice(5, 7).toLowerCase()}"> | <input type="number" name="" id="month-ten" placeholder="${dateNow.slice(0, 1)}"><input type="number" name="" id="month-one" placeholder="${dateNow.slice(1, 2)}">/<input type="number" name="" id="day-ten" placeholder="${dateNow.slice(3, 4)}"><input type="number" name="" id="day-one" placeholder="${dateNow.slice(4, 5)}">/<input type="number" name="" id="year-mille" placeholder="${dateNow.slice(6, 7)}"><input type="number" name="" id="year-cent" placeholder="${dateNow.slice(7, 8)}"><input type="number" name="" id="year-ten" placeholder="${dateNow.slice(8, 9)}"><input type="number" name="" id="year-one" placeholder="${dateNow.slice(9, 10)}">
         </div>
     `;
 
@@ -327,20 +371,48 @@ function CreateTimeLiner(component, inputId) {
     timeInputs.push(input_yo);
 
     timeInputs.forEach(timeInput => {
-        // const originalValue = timeInput.value;
+        timeInput.addEventListener('input', (e) => {
+            e.stopPropagation();
+
+            if (timeInput.value) {
+                for (let index = 0; index < timeInputs.length; index++) {
+                    const nextInput = timeInputs[index];
+
+                    if (nextInput.value === '') {
+                        nextInput.focus();
+                        break;
+                    };
+                };
+            };
+        });
 
         timeInput.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') {
-                const index = timeInputs.indexOf(timeInput);
+            e.stopPropagation();
 
+            const index = timeInputs.indexOf(timeInput);
+
+            if (e.key === 'Backspace') {
+                if (timeInput.value === '') {
+                    e.preventDefault();
+
+                    if (timeInputs[index - 1].type === 'button') {
+                        timeInputs[index - 2].focus();
+                        return;
+                    }
+
+                    if (index - 1 !== -1) {
+                        timeInputs[index - 1].focus();
+                    };
+                };
+            };
+
+            if (e.key === 'ArrowLeft') {
                 if (index - 1 !== -1) {
                     timeInputs[index - 1].focus();
                 };
             };
 
             if (e.key === 'ArrowRight') {
-                const index = timeInputs.indexOf(timeInput);
-
                 if (index + 1 !== timeInputs.length) {
                     timeInputs[index + 1].focus();
                 };
@@ -348,7 +420,9 @@ function CreateTimeLiner(component, inputId) {
         });
 
         if (timeInput.id !== 'meridian') {
-            timeInput.addEventListener('input', () => {
+            timeInput.addEventListener('input', (e) => {
+                e.stopPropagation();
+
                 const nums = '0123456789';
                 const value = timeInput.value;
 
@@ -357,13 +431,11 @@ function CreateTimeLiner(component, inputId) {
                 if (value.length > 1) {
                     timeInput.value = value.slice(1, 2);
                 };
-
-                // if (value.length === 0) {
-                //     timeInput.value = originalValue;
-                // };
             });
 
             timeInput.addEventListener('keydown', (e) => {
+                e.stopPropagation();
+
                 const value = timeInput.value;
 
                 if (e.key === '.' || e.key === '-') {
@@ -392,7 +464,8 @@ function CreateTimeLiner(component, inputId) {
     });
 
     return {
-        input
+        input,
+        timeInputs
     };
 };
 

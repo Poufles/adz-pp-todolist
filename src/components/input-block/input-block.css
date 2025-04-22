@@ -58,7 +58,8 @@
 }
 
 .input-block.time-liner .time-format input:focus::placeholder {
-    color: var(--secondary-color) /* CHANGE LATER */
+    color: var(--secondary-color); /* CHANGE LATER */
+    opacity: 0.2;
 }
 
 /* For Chrome, Safari, Edge */

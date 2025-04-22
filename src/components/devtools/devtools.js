@@ -1,3 +1,5 @@
+import StorageHandler from "../../scripts/storage-handler.js";
+
 const DevTools = function () {
     const template =
         `
@@ -7,6 +9,7 @@ const DevTools = function () {
                 <div class="" id="tools">
                     <button type="button" class="animate btn" id="auth-exit">Exit Auth Animation</button>
                     <button type="button" class="btn" id="no-auth">Remove Auth</button>
+                    <button type="button" class="btn" id="logout">Logout</button>
                 </div>
             </section>
         </div>
@@ -23,6 +26,7 @@ const DevTools = function () {
     const tools = devtools.querySelector('#tools');
     const exauth = tools.querySelector('#auth-exit');
     const noauth = tools.querySelector('#no-auth');
+    const logout = tools.querySelector('#logout');
 
     let hold1
 
@@ -138,6 +142,16 @@ const DevTools = function () {
 
                 if (parent && parent.contains(page_auth)) parent.removeChild(page_auth);
             };
+        });
+    };
+
+    if (logout) {
+        logout.addEventListener('click', () => {
+            const account = StorageHandler.GetStorage(true);
+
+            account.insession = false;
+            StorageHandler.UpdateStorage({ isLogout: true });
+            window.location.href = './auth.html';
         });
     };
 }();

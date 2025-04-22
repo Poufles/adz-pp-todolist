@@ -65,7 +65,7 @@ const StorageHandler = function () {
 
     /**
      * Updates storages
-     * @param {Boolean} isLogin - (Optional) Default false. A boolean that verifies if the update is for login but also for registering new account.
+     * @param {Boolean} isLogin - (Optional) Default false. A boolean that verifies if the update is for login.
      * @param {Boolean} isLogout - (Optional) Default false. A boolean that verifies if the update is for logging out but also for deleting the account
      * @param {Boolean} isRegister - (Optional Default false. A bollean that verifies if the update is for creating a new account
      */

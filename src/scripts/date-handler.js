@@ -1,8 +1,8 @@
-import { format, parse, differenceInMilliseconds, differenceInMinutes, differenceInHours, differenceInDays } from "date-fns";
+import { format, parse, isBefore, isValid, differenceInMilliseconds, differenceInMinutes, differenceInHours, differenceInDays } from "date-fns";
 
 // import { format, parse, differenceInMilliseconds, differenceInMinutes, differenceInHours, differenceInDays } from "https://esm.sh/date-fns";
 
-const DateHandler = function() {
+const DateHandler = function () {
     /**
      * Retrieves current time
      * @returns A formatted date (MM/dd/yyyy)
@@ -23,6 +23,29 @@ const DateHandler = function() {
         const formattedTime = format(now, 'hh:mma');
 
         return formattedTime;
+    };
+
+    /**
+     * Verifies if the time is valid.
+     * @param {string} time - The time string to be validated.
+     * @returns A boolean value
+     */
+    const isValidateFullTime = (time) => {
+        const [hour, date] = time.split(' @ ');
+        const formattedDate = parse(`${date} ${hour}`, 'MM/dd/yyyy hh:mma', new Date());
+
+        if (!isValid(formattedDate)) return false;
+
+        return !isBefore(formattedDate, new Date());
+    };
+
+    /**
+     * Time to be added to a certain time type (hour || minute).
+     * @param {string} type -  
+     * @param {number} addedTime 
+     */
+    const addTime = (type, addedTime) => {
+
     };
 
     /**
@@ -51,6 +74,7 @@ const DateHandler = function() {
     return {
         currentDate,
         currentTime,
+        isValidateFullTime,
         timeDifference
     };
 }();
