@@ -32,7 +32,9 @@ function MainInterface({
     const component = fragment.querySelector('.main-interface');
     const cont_top = component.querySelector('.top');
     const cont_description = component.querySelector('#description');
+    const cont_content = component.querySelector('#content');
 
+    const contentArr = [];
     let cont_count;
 
     if (titleCount !== undefined) cont_count = CreateTitleCount(component, title, titleCount);
@@ -109,6 +111,21 @@ function MainInterface({
         });
     };
 
+    const getContentArray = () => contentArr;
+
+    /**
+     * Adds new content.
+     * @param {object} object 
+     */
+    const addContent = (object) => {
+        if (Object.hasOwn(object, 'render')) {
+            contentArr.push(object);
+            object.render(cont_content);
+        } else {
+            console.error('Error: The given object does not have a render() function.');
+        }
+    };
+
     return {
         component,
         description: cont_description,
@@ -117,7 +134,9 @@ function MainInterface({
         changeTitleCount,
         toggleReturnButton,
         enable,
-        disable
+        disable,
+        getContentArray,
+        addContent
     };
 };
 

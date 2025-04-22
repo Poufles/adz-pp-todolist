@@ -3,6 +3,7 @@ import InputBlock from '../../input-block/input-block.js';
 import { InformMessageBox } from '../../message-box/message-box.js';
 import CRUD from '../../../scripts/crud.js';
 import DateHandler from '../../../scripts/date-handler.js';
+import TodoBar from '../../todo-bar/todo-bar.js';
 
 // CHANGE LATER
 // IF THIS SHOULD REALLY BE A IIFE

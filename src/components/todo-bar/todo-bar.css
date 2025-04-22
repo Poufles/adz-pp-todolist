@@ -1,0 +1,73 @@
+.comp.todo-bar {
+    background-color: rgba(0, 0, 0, 1);
+    height: 100%;
+    width: 100%;
+    max-height: 80px;
+    transition: var(--trans-q);
+}
+
+.comp.todo-bar .info-wrapper {
+    background-color: var(--accent-color-1); /* CHANGE LATER */
+    border: 2px solid var(--black);
+    cursor: pointer;
+    font-size: var(--fn-xlr);
+    padding: 0 25px;
+    height: inherit;
+    display: flex;
+    align-items: center;
+    transition: var(--trans-q);
+}
+
+.comp.todo-bar:has(.info-wrapper:hover) {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.comp.todo-bar .info-wrapper:hover {
+    transform: translateY(-5px) scale(1.02);
+}
+
+.comp.todo-bar.click-hold>.info-wrapper:hover {
+    transform: none;
+}
+
+.comp.todo-bar.click-hold {
+    background-color: rgba(0, 0, 0, 1);
+}
+
+.comp.todo-bar .check-container {
+    flex-shrink: 0;
+
+    height: 100%;
+    place-content: center;
+    place-items: center;
+    padding-right: 25px;
+}
+
+.comp.todo-bar .check-container input[type=checkbox] {
+    display: none;
+}
+
+.comp.todo-bar .check-container .custom-checkbox {
+    aspect-ratio: 1;
+    background-color: var(--primary-color);
+    border: 2px solid var(--black);
+    width: 20px;
+}
+
+.comp.todo-bar .mid-container {
+    flex-grow: 1;
+    flex-shrink: 1;
+
+    display: flex;
+    align-items: center;
+}
+
+.comp.todo-bar .mid-container .todo-container {
+    flex-shrink: 1;
+    width: 100%;
+    max-width: 40%;
+}
+
+.comp.todo-bar .time-container {
+    flex-shrink: 0;
+}

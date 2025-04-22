@@ -13,6 +13,7 @@ import '../components/finestra/basic-settings/basic-settings.css';
 import '../components/auth-interface/auth-interface.css';
 import '../components/message-box/message-box.css';
 import '../components/main-interface/main-interface.css';
+import '../components/todo-bar/todo-bar.css';
 import '../components/userbox/userbox.css';
 import '../components/devtools/devtools.css';
 
@@ -28,6 +29,7 @@ import BasicSettings from '../components/finestra/basic-settings/basic-settings.
 import UserBox from '../components/userbox/userbox.js';
 import StorageHandler from './storage-handler.js';
 import CreateTodo from '../components/finestra/create-todo/create-todo.js';
+import TodoBar from '../components/todo-bar/todo-bar.js';
 
 const Dashboard = function () {
     const account = StorageHandler.GetStorage(true);
@@ -132,6 +134,19 @@ const Dashboard = function () {
     ////////////////// MAIN PANEL //////////////////
     TodoInterface.render(middle_panel);
     TodoInterface.toggleReturnButton(true);
+
+    const todosArr = [];
+
+    for (let index = 0; index < account.todo.length; index++) {
+        let todo = account.todo[index];
+
+        const todoBar = TodoBar();
+
+        TodoInterface.addContent(todoBar);
+        todosArr.push(todoBar);
+        
+        console.log(todosArr);
+    };
     ////////////////// MAIN PANEL //////////////////
 
     ////////////////// RIGHT PANEL //////////////////
