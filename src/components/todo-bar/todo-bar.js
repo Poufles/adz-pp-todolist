@@ -133,8 +133,6 @@ function TodoBar(todoObject) {
     checkbox.addEventListener('mouseup', (e) => {
         e.stopPropagation();
 
-        // if (isHintInAnimation) return;
-
         setTimeout(() => {
             checkbox.classList.remove('hidden');
         }, 100);
