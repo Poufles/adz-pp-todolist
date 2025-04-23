@@ -44,6 +44,7 @@ const TodoInterface = function () {
     component.insertBefore(subSection, content);
     cont_top.removeChild(button);
     subSection.appendChild(button);
+    todoInterface.toggleReturnButton(false);
 
     return todoInterface;
 }();

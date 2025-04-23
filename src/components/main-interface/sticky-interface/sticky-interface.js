@@ -20,8 +20,15 @@ const StickyInterface = function () {
     btn_return.addEventListener('click', () => {
         const middle_panel = DashboardRuntime.componentActions.get('middle-panel') 
 
-        stickyInterface.unrender();
+        StickyInterface.animate('leave');
+
         TodoInterface.render(middle_panel.component); // CHANGE LATER
+        TodoInterface.animate('enter');
+        
+        setTimeout(() => {
+            stickyInterface.unrender();
+            TodoInterface.toggleReturnButton(false);
+        }, 530);
     });
 
     return stickyInterface;

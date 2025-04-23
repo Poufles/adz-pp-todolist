@@ -33,6 +33,9 @@ function Finestra({
         </div>
     `;
 
+    let isAnimating, visualComponent;
+    let awaiting = false;
+
     const templateFragment = GetTemplateFragment(template);
     const component = templateFragment.querySelector('.window-component');
     const titleButton = WordButton({
@@ -47,8 +50,6 @@ function Finestra({
 
     const componentButtonsArr = [];
     const contentItemsArr = [];
-    let visualComponent;
-    let awaiting = false;
 
     const section_content = component.querySelector('section#content');
     const cont_content = section_content.querySelector('.content-container');
@@ -79,6 +80,10 @@ function Finestra({
             componentButtonsArr.push(button);
         };
     };
+    
+    component.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
 
     /**
      * Renders the component if parent is provided
@@ -290,6 +295,9 @@ function Finestra({
         return hasValue;
     };
 
+    /**
+     * Reset all inputs if inputs exist.
+     */
     const resetInputs = () => {
         const itemsLength = contentItemsArr.length;
 
@@ -385,9 +393,35 @@ function Finestra({
         };
     };
 
-    component.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
+    /**
+     * Animates the component
+     * @param {string} type - enter || leave 
+     */
+    const animate = (type) => { // ANIMATION FOR THIS COMPONENT IS FOUND IN THE dashboard.css ITSELF
+        if (!component.parentElement) return;
+        if (isAnimating) return;
+
+        isAnimating = true;
+        disable();
+
+        if (type === 'leave')
+            component.classList.add('animate-leave');
+
+        if (type === 'enter') {
+            component.classList.add('entering');
+            setTimeout(() => {
+                component.classList.add('animate-enter');
+            }, 0);
+        };
+
+        setTimeout(() => {
+            isAnimating = false;
+            component.classList.remove('animate-leave');
+            component.classList.remove('entering');
+            component.classList.remove('animate-enter');
+            enable();
+        }, 240);
+    };
 
     return {
         component,
@@ -406,7 +440,8 @@ function Finestra({
         toggleVisual,
         changeTitle,
         enable,
-        disable
+        disable,
+        animate
     };
 };
 
