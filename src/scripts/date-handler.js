@@ -1,4 +1,4 @@
-import { format, parse, isBefore, isValid, differenceInMilliseconds, differenceInMinutes, differenceInHours, differenceInDays } from "date-fns";
+import { format, parse, isBefore, isValid, isToday, differenceInMilliseconds, differenceInMinutes, differenceInHours, differenceInDays } from "date-fns";
 
 // import { format, parse, differenceInMilliseconds, differenceInMinutes, differenceInHours, differenceInDays } from "https://esm.sh/date-fns";
 
@@ -40,6 +40,18 @@ const DateHandler = function () {
     };
 
     /**
+     * Retrieves the given time type from a formatted time.
+     * @param {string} formattedTime - Time with a format of hh:mma @ MM/dd/yyyy 
+     * @param {string} type - hour || date 
+     */
+    const getTimeSlice = (formattedTime, type) => {
+        const [hour, date] = formattedTime.split(' @ ');
+        
+        if (type === 'hour') return hour;
+        if (type === 'date') return date;
+    };
+
+    /**
      * Time to be added to a certain time type (hour || minute).
      * @param {string} type -  
      * @param {number} addedTime 
@@ -58,12 +70,14 @@ const DateHandler = function () {
         const [hour, date] = dateInput.split(' @ ');
         const formattedDate = parse(`${date} ${hour}`, 'MM/dd/yyyy hh:mma', new Date());
 
+        const isThisTimeToday = isToday(parse(date, 'MM/dd/yyyy', new Date()));
         const daysDifference = differenceInDays(formattedDate, now);
         const hoursDifference = differenceInHours(formattedDate, now);
         const minutesDifference = differenceInMinutes(formattedDate, now);
         const millisecDifference = differenceInMilliseconds(formattedDate, now);
 
         return {
+            isThisTimeToday,
             daysDifference,
             hoursDifference,
             minutesDifference,
@@ -74,6 +88,7 @@ const DateHandler = function () {
     return {
         currentDate,
         currentTime,
+        getTimeSlice,
         isValidateFullTime,
         timeDifference
     };

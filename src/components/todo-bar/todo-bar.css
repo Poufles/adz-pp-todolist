@@ -58,16 +58,74 @@
     flex-grow: 1;
     flex-shrink: 1;
 
+    width: 100%;
+    padding-right: 30px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: baseline;
 }
 
 .comp.todo-bar .mid-container .todo-container {
-    flex-shrink: 1;
     width: 100%;
-    max-width: 40%;
+    max-width: 300px;
+}
+
+.comp.todo-bar .folder-container {
+    flex-shrink: 1;
+
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    font-size: var(--fn-md);
+    margin-top: -5px;
+    width: 100%;
+    max-width: max-content;
+    position: relative;
+    transition: var(--trans-q);
+    opacity: 0.5;
+}
+
+.comp.todo-bar .folder-container::after {
+    content: '>';
+
+    transform: translateX(-5px);
+    position: absolute;
+    transition: var(--trans-q);
+    opacity: 0;
+}
+
+.comp.todo-bar .folder-container:hover {
+    border-bottom: 1px solid var(--black);
+}
+
+.comp.todo-bar .folder-container:hover::after {
+    transform: translateX(5px);
+    opacity: 1;
 }
 
 .comp.todo-bar .time-container {
     flex-shrink: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    justify-content: baseline;
+}
+
+.comp.todo-bar .time-container #due-message {
+    font-size: var(--fn-md);
+    font-weight: bold;
+    margin-top: -5px;
+}
+
+.comp.todo-bar .time-container #due-message.today {
+    color: red;
+}
+
+.comp.todo-bar .time-container #due-message.soon {
+    color: orange;
+}
+
+.comp.todo-bar .time-container #due-message.overdue {
+    color: gray;
 }

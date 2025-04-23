@@ -51,8 +51,27 @@ const CRUD = function () {
         };
     };
 
+    /**
+     * Retrieves all todos.
+     * @returns An array of JSON objects containing information about each todos.
+     */
+    const getTodos = () => {
+        const todos = account.todo;
+        const todosLength = todos.length;
+        const todosArr = [];
+
+        for (let index = 0; index < todosLength; index++) {
+            let todo = todos[index];
+
+            todosArr.push(todo);
+        };
+
+        return todosArr;
+    };
+
     return {
         createTodo,
+        getTodos
     }
 }();
 

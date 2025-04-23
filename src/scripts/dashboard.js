@@ -19,6 +19,7 @@ import '../components/devtools/devtools.css';
 
 import DevTools from '../components/devtools/devtools.js';
 import DateHandler from './date-handler.js';
+import CRUD from './crud.js';
 import Finestra from '../components/finestra/window.js';
 import WordButton from '../components/buttons/word-button/word-button.js';
 import TypeStats from '../components/type-stats/type-stats.js';
@@ -135,18 +136,18 @@ const Dashboard = function () {
     TodoInterface.render(middle_panel);
     TodoInterface.toggleReturnButton(true);
 
+    const todos = CRUD.getTodos();
     const todosArr = [];
 
-    for (let index = 0; index < account.todo.length; index++) {
-        let todo = account.todo[index];
+    for (let index = 0; index < todos.length; index++) {
+        let todo = todos[index];
 
-        const todoBar = TodoBar();
+        const todoBar = TodoBar(todo);
 
         TodoInterface.addContent(todoBar);
         todosArr.push(todoBar);
-        
-        console.log(todosArr);
     };
+    
     ////////////////// MAIN PANEL //////////////////
 
     ////////////////// RIGHT PANEL //////////////////
