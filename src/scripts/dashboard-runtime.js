@@ -23,9 +23,11 @@ const DashboardRuntime = function() {
             },
             get(id) {
                 return objects[id];
+            },
+            all() {
+                return objects;
             }
         },
-        objects
     };
 }();
 

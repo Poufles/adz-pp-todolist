@@ -30,6 +30,7 @@ function MainInterface({
     const range = document.createRange();
     const fragment = range.createContextualFragment(template);
     const component = fragment.querySelector('.main-interface');
+    const btn_return = component.querySelector('button#return');
     const cont_top = component.querySelector('.top');
     const cont_description = component.querySelector('#description');
     const cont_content = component.querySelector('#content');
@@ -52,6 +53,7 @@ function MainInterface({
      * @returns The component if no parent is provided
      */
     const render = (parent) => {
+        console.log('hello');
         if (!parent) return component;
 
         parent.appendChild(component);
@@ -128,6 +130,8 @@ function MainInterface({
 
     return {
         component,
+        createButton: button.component,
+        returnButton: btn_return,
         description: cont_description,
         render,
         unrender,

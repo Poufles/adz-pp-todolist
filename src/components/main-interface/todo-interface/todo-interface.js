@@ -7,7 +7,7 @@ const TodoInterface = function () {
     const todoInterface = MainInterface({
         id: 'todos',
         title: 'todos',
-        titleCount: account.sticky.length, // CHANGE LATER
+        titleCount: account.todo.length, // CHANGE LATER
         description: 'todos are your tasks to be done. be sure that you will do them in time!',
         buttonText: 'create',
         buttonId: 'create'
