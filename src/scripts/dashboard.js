@@ -31,6 +31,7 @@ import UserBox from '../components/userbox/userbox.js';
 import StorageHandler from './storage-handler.js';
 import CreateTodo from '../components/finestra/create-todo/create-todo.js';
 import TodoBar from '../components/todo-bar/todo-bar.js';
+import DashboardRuntime from './dashboard-runtime.js';
 
 const Dashboard = function () {
     const account = StorageHandler.GetStorage(true);
@@ -208,13 +209,17 @@ const Dashboard = function () {
 
     // ALL COMPONENTS FOR RUNTIME //
 
+    const componentActions = DashboardRuntime.componentActions;
+    
+    componentActions.add('main-interface', main_interface);
+
     return {
         main_interface,
         btn_about,
     }
 }();
 
-function DashboardRuntime() {
+function DashboardRuntimed() {
     const main_interface = Dashboard.main_interface;
 
     const todoInterface = TodoInterface.component;
@@ -376,4 +381,4 @@ function GetFragmentFromTemplate(template) {
     return framgent;
 };
 
-DashboardRuntime();
+DashboardRuntimed();

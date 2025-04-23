@@ -51,6 +51,11 @@ const project =
 </svg>
 `;
 
+const check =
+`
+<?xml version="1.0" ?><svg height="15px" version="1.1" viewBox="0 0 18 15" width="18px" xmlns="http://www.w3.org/2000/svg" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" xmlns:xlink="http://www.w3.org/1999/xlink"><title/><desc/><defs/><g fill="none" fill-rule="evenodd" id="Page-1" stroke="none" stroke-width="1"><g fill="#000000" id="Core" transform="translate(-423.000000, -47.000000)"><g id="check" transform="translate(423.000000, 47.500000)"><path d="M6,10.2 L1.8,6 L0.4,7.4 L6,13 L18,1 L16.6,-0.4 L6,10.2 Z" id="Shape"/></g></g></g></svg>
+`;
+
 const SVG = function(){
     const range = document.createRange();
 
@@ -60,6 +65,7 @@ const SVG = function(){
     const i_todo = range.createContextualFragment(todo).querySelector('svg');
     const i_note = range.createContextualFragment(note).querySelector('svg');
     const i_project = range.createContextualFragment(project).querySelector('svg');
+    const i_check = range.createContextualFragment(check).querySelector('svg');
 
     return {
         i_github,
@@ -67,7 +73,8 @@ const SVG = function(){
         i_twitter,
         i_todo,
         i_note,
-        i_project
+        i_project,
+        i_check
     }
 }();
 

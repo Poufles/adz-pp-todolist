@@ -52,6 +52,74 @@
     background-color: var(--primary-color);
     border: 2px solid var(--black);
     width: 20px;
+    padding-top: 1px;
+    padding-left: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.comp.todo-bar .check-container .custom-checkbox #hint-wrapper {
+    transform: translateY(-50%);
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 10px);
+    transition-behavior: allow-discrete;
+    transition-property: display, opacity;
+    transition-duration: var(--trans-q);
+    transition-delay: 0s;
+    opacity: 0;
+    z-index: 1;
+}
+
+.comp.todo-bar .check-container .custom-checkbox #hint {
+    background-color: var(--accent-color-1); /* CHANGE COLOR */
+    border: 2px solid var(--black);
+    height: max-content;
+    width: 0%;
+    max-width: max-content;
+    position: relative;
+    transition-property: width;
+    transition-duration: var(--trans-q);
+    transition-delay: 0.2s;
+    overflow: hidden;
+}
+
+.comp.todo-bar .check-container .custom-checkbox #hint p {
+    width: max-content;
+    padding: 3px 7px;
+}
+
+.comp.todo-bar .check-container .custom-checkbox svg {
+    aspect-ratio: 1;
+    width: 15px;
+    height: 15px;
+}
+
+.comp.todo-bar .check-container .custom-checkbox.hidden #hint-wrapper #hint {
+    transition-property: width;
+    transition-duration: var(--trans-q);
+    transition-delay: 0s;
+    width: 0%;
+}
+
+.comp.todo-bar .check-container .custom-checkbox:hover #hint-wrapper {
+    display: block;
+    opacity: 1;
+    
+    @starting-style {
+        opacity: 0;
+    }
+}
+
+.comp.todo-bar .check-container .custom-checkbox:not(.hidden):hover #hint {
+    width: 100%;
+
+    @starting-style {
+        width: 0%;
+    }
 }
 
 .comp.todo-bar .mid-container {

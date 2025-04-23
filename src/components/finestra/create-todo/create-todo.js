@@ -4,10 +4,16 @@ import { InformMessageBox } from '../../message-box/message-box.js';
 import CRUD from '../../../scripts/crud.js';
 import DateHandler from '../../../scripts/date-handler.js';
 import TodoBar from '../../todo-bar/todo-bar.js';
+import DashboardRuntime from '../../../scripts/dashboard-runtime.js';
+import TodoInterface from '../../main-interface/todo-interface/todo-interface.js';
 
 // CHANGE LATER
 // IF THIS SHOULD REALLY BE A IIFE
 function CreateTodo() {
+    let isEdit = false;
+    let todoObject;
+    let todoObjectUpdateFunction;
+
     const finestra = Finestra({
         hasActions: true,
         id: 'creator-todo',
@@ -93,10 +99,18 @@ function CreateTodo() {
     };
 
     btn_reset.addEventListener('click', () => {
+        if (isEdit) {
+            EditTodo(todoObject, input_name, input_deadline, input_project, input_color);
+
+            return;
+        };
+
         finestra.resetInputs();
     });
 
     btn_create.addEventListener('click', async () => {
+        let responseVerify;
+
         if (!finestra.inputsHasValue()) {
             const overlay = finestra.component.parentElement;
             const messageBox = InformMessageBox('Error!', 'Please complete the required information');
@@ -111,9 +125,13 @@ function CreateTodo() {
             return;
         };
 
-        const response = VerifyInputs(input_name.inputComponent, input_deadline.inputComponent, input_project.inputComponent, input_color.inputComponent);
+        if (isEdit) {
+            responseVerify = VerifyInputs(input_name.inputComponent, input_deadline.inputComponent, input_project.inputComponent, input_color.inputComponent, todoObject.id, true);
+        } else {
+            responseVerify = VerifyInputs(input_name.inputComponent, input_deadline.inputComponent, input_project.inputComponent, input_color.inputComponent);
+        };
 
-        if (response.status === 'n-invalid') {
+        if (responseVerify.status === 'n-invalid') {
             const overlay = finestra.component.parentElement;
             const messageBox = InformMessageBox('Error!', 'A todo with the same name already exists. Please choose a new one.');
 
@@ -127,7 +145,7 @@ function CreateTodo() {
             return;
         };
 
-        if (response.status === 't-invalid') {
+        if (responseVerify.status === 't-invalid') {
             const overlay = finestra.component.parentElement;
             const messageBox = InformMessageBox('Error!', 'Your time input is invalid. Please input a valid time.');
 
@@ -141,15 +159,28 @@ function CreateTodo() {
             return;
         };
 
-        if (response.status === 'success') {
+        if (responseVerify.status === 'success') {
+            let messageBox;
             const overlay = finestra.component.parentElement;
-            const messageBox = InformMessageBox('Success!', 'A new todo has been successfully created!');
+
+            if (isEdit) {
+                messageBox = InformMessageBox('Success!', 'Your todo has been successfully updated!');
+            } else {
+                messageBox = InformMessageBox('Success!', 'A new todo has been successfully created!');
+            };
 
             finestra.disable();
             const response = await messageBox.modal(overlay);
 
             if (response) {
                 finestra.unrenderModal(true);
+
+                if (isEdit) {
+                    todoObjectUpdateFunction(responseVerify.inputs);
+                } else {
+                    const todoBar = TodoBar(responseVerify.inputs);
+                    TodoInterface.addContent(todoBar);
+                };
             };
         };
     });
@@ -158,7 +189,61 @@ function CreateTodo() {
         finestra.unrenderModal();
     });
 
+    /**
+     * To edit a todo information
+     */
+    const editMode = (todoObjectInfo, updateInfo) => {
+        isEdit = true;
+        todoObject = todoObjectInfo;
+        todoObjectUpdateFunction = updateInfo;
+
+        EditTodo(todoObject, input_name, input_deadline, input_project, input_color);
+    };
+
+    finestra.editMode = editMode;
+
     return finestra;
+};
+
+function EditTodo(todoObject, inputName, inputDeadline, inputProject, inputColor) {
+    inputName.inputComponent.value = todoObject.name;
+    inputName.addPlaceholder(todoObject.name);
+
+    inputProject.addPlaceholder(todoObject.project);
+
+    inputColor.inputComponent.value = todoObject.color;
+    inputColor.addPlaceholder(todoObject.color);
+
+    const inputsArr = [];
+    const inputs = inputDeadline.inputComponent.querySelectorAll('input');
+
+    inputs.forEach(input => {
+        inputsArr.push(input);
+    });
+
+    EditTime(todoObject.deadline, inputsArr);
+};
+
+function EditTime(time, inputsArr) {
+    const hour = DateHandler.getTimeSlice(time, 'hour');
+    const date = DateHandler.getTimeSlice(time, 'date');
+    const [hourNums, minMeridNums] = hour.split(':');
+    const meridian = minMeridNums.slice(2, 4);
+    const [mNums, dNums, yNums] = date.split('/');
+    const fullTime = hourNums + minMeridNums.slice(0, 2) + 'm' + mNums + dNums + yNums;
+
+    for (let index = 0; index < inputsArr.length; index++) {
+        const input = inputsArr[index];
+
+        if (input.type === 'button') {
+            input.value = meridian;
+            input.placeholder = meridian;
+            continue;
+        };
+
+        input.value = fullTime[index];
+        input.placeholder = fullTime[index];
+    };
 };
 
 /**
@@ -168,30 +253,35 @@ function CreateTodo() {
  * @param {HTMLInputElement} project 
  * @param {HTMLInputElement} color 
  */
-function VerifyInputs(name, deadline, project, color) {
-    let status;
+function VerifyInputs(name, deadline, project, color, id = undefined, isEdit = false) {
     const input_name = name.value || color.placeholder;
     const input_project = project.value;
     const input_color = color.value || color.placeholder;
     const inputTimeArr = deadline.querySelectorAll('input');
 
-    const input_ht = inputTimeArr[0].value || inputTimeArr[0].placeholder; 
-    const input_ho = inputTimeArr[1].value || inputTimeArr[1].placeholder; 
-    const input_mt = inputTimeArr[2].value || inputTimeArr[2].placeholder; 
-    const input_mo = inputTimeArr[3].value || inputTimeArr[3].placeholder; 
-    const input_meridian = inputTimeArr[4].value; 
-    const input_Mt = inputTimeArr[5].value || inputTimeArr[5].placeholder; 
-    const input_Mo = inputTimeArr[6].value || inputTimeArr[6].placeholder; 
-    const input_dt = inputTimeArr[7].value || inputTimeArr[7].placeholder; 
-    const input_do = inputTimeArr[8].value || inputTimeArr[8].placeholder; 
-    const input_ym = inputTimeArr[9].value || inputTimeArr[9].placeholder; 
-    const input_yc = inputTimeArr[10].value || inputTimeArr[10].placeholder; 
-    const input_yt = inputTimeArr[11].value || inputTimeArr[11].placeholder; 
-    const input_yd = inputTimeArr[12].value || inputTimeArr[12].placeholder; 
+    const input_ht = inputTimeArr[0].value || inputTimeArr[0].placeholder;
+    const input_ho = inputTimeArr[1].value || inputTimeArr[1].placeholder;
+    const input_mt = inputTimeArr[2].value || inputTimeArr[2].placeholder;
+    const input_mo = inputTimeArr[3].value || inputTimeArr[3].placeholder;
+    const input_meridian = inputTimeArr[4].value;
+    const input_Mt = inputTimeArr[5].value || inputTimeArr[5].placeholder;
+    const input_Mo = inputTimeArr[6].value || inputTimeArr[6].placeholder;
+    const input_dt = inputTimeArr[7].value || inputTimeArr[7].placeholder;
+    const input_do = inputTimeArr[8].value || inputTimeArr[8].placeholder;
+    const input_ym = inputTimeArr[9].value || inputTimeArr[9].placeholder;
+    const input_yc = inputTimeArr[10].value || inputTimeArr[10].placeholder;
+    const input_yt = inputTimeArr[11].value || inputTimeArr[11].placeholder;
+    const input_yd = inputTimeArr[12].value || inputTimeArr[12].placeholder;
 
     const timeString = `${input_ht}${input_ho}:${input_mt}${input_mo}${input_meridian} @ ${input_Mt}${input_Mo}/${input_dt}${input_do}/${input_ym}${input_yc}${input_yt}${input_yd}`;
-    
-    const todo = CRUD.createTodo(input_name, timeString, input_project, input_color);
+
+    let todo;
+
+    if (isEdit) {
+        todo = CRUD.updateTodo(id, input_name, timeString, input_project, input_color);
+    } else {
+        todo = CRUD.createTodo(input_name, timeString, input_project, input_color);
+    };
 
     return {
         status: todo.status,

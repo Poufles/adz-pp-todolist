@@ -73,11 +73,11 @@ const AuthInterface = function () {
 
         if (component) {
             let messageBox = component.querySelector('.message-box');
-            
+
             if (messageBox) {
                 isModalExist = true; return isModalExist;
             };
-            
+
             return isModalExist;
         }
 
@@ -344,11 +344,11 @@ const AuthInterface = function () {
 
         async function IsAuthenticated(input) {
             const username = input.querySelector('#username').textContent;
-            
+
             previousInterface = currentInterface;
 
             const auth = await OpenAuthenticate(username);
-            
+
             if (auth === 'cancel') {
                 cont_lower.removeChild(currentInterface);
                 currentInterface = previousInterface;
@@ -387,7 +387,7 @@ const AuthInterface = function () {
                 });
             };
 
-            inputArr.forEach((input) => {
+            inputArr.forEach(input => {
                 input.addEventListener('click', async () => {
                     const isLoggedIn = await IsAuthenticated(input);
 
@@ -395,53 +395,55 @@ const AuthInterface = function () {
                 });
             });
 
-            currentInterface.addEventListener('keyup', (e) => {
-                if (ctrlHold && e.key === 'Control') {
-                    altHold = false;
-
-                    return;
-                };
-
-                if (altHold && e.key === 'Alt') {
-                    altHold = false;
-
-                    return;
-                };
-            });
-
-            currentInterface.addEventListener('keydown', async (e) => {
-                if (e.key === 'Control' && !ctrlHold) {
-                    ctrlHold = true; return;
-                };
-
-                if (e.key === 'Alt' && !altHold) {
-                    altHold = true; return;
-                };
-
-                if (e.key.toLowerCase() === 'q' && ctrlHold && altHold) {
-                    if (previousInterface) {
-                        cont_lower.removeChild(currentInterface);
-                        currentInterface = previousInterface;
-                        cont_lower.appendChild(currentInterface);
-                        previousInterface = undefined;
+            if (currentInterface) {
+                currentInterface.addEventListener('keyup', (e) => {
+                    if (ctrlHold && e.key === 'Control') {
+                        altHold = false;
 
                         return;
                     };
 
-                    reinitialize();
-                    resolve('cancel');
+                    if (altHold && e.key === 'Alt') {
+                        altHold = false;
 
-                    return;
-                };
+                        return;
+                    };
+                });
 
-                if (e.key === 'Enter') {
-                    const cont_account = currentInterface.querySelector('.clicked');
+                currentInterface.addEventListener('keydown', async (e) => {
+                    if (e.key === 'Control' && !ctrlHold) {
+                        ctrlHold = true; return;
+                    };
 
-                    const isLoggedIn = await IsAuthenticated(cont_account);
+                    if (e.key === 'Alt' && !altHold) {
+                        altHold = true; return;
+                    };
 
-                    if (isLoggedIn === 'login') resolve('login');
-                };
-            });
+                    if (e.key.toLowerCase() === 'q' && ctrlHold && altHold) {
+                        if (previousInterface) {
+                            cont_lower.removeChild(currentInterface);
+                            currentInterface = previousInterface;
+                            cont_lower.appendChild(currentInterface);
+                            previousInterface = undefined;
+
+                            return;
+                        };
+
+                        reinitialize();
+                        resolve('cancel');
+
+                        return;
+                    };
+
+                    if (e.key === 'Enter') {
+                        const cont_account = currentInterface.querySelector('.clicked');
+
+                        const isLoggedIn = await IsAuthenticated(cont_account);
+
+                        if (isLoggedIn === 'login') resolve('login');
+                    };
+                });
+            };
         });
     };
 
@@ -903,6 +905,7 @@ function LoadLoadGameElements(component) {
         </div>
     `;
 
+    const accArr = [];
     const storage = StorageHandler.GetStorage();
     const accountStorage = storage.app.account;
     const range = document.createRange();
@@ -921,10 +924,11 @@ function LoadLoadGameElements(component) {
         cont_interface.appendChild(cont_msgBox);
         cont_lower.appendChild(cont_interface);
 
-        return cont_interface;
+        return {
+            elementInterface: cont_interface,
+            inputArr: accArr
+        };
     };
-
-    const accArr = [];
 
     // Make a loop here later (CHANGE)
     for (let index = 0; index < accountStorage.length; index++) {
@@ -1001,7 +1005,7 @@ function LoadLoadGameElements(component) {
     return {
         elementInterface: cont_interface,
         inputArr: accArr
-    }; 
+    };
 };
 
 /**

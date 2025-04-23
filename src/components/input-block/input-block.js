@@ -395,7 +395,7 @@ function CreateTimeLiner(component, inputId) {
                 if (timeInput.value === '') {
                     e.preventDefault();
 
-                    if (timeInputs[index - 1].type === 'button') {
+                    if (timeInputs[index - 1] && timeInputs[index - 1].type === 'button') {
                         timeInputs[index - 2].focus();
                         return;
                     }
