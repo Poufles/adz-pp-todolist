@@ -56,6 +56,13 @@ const check =
 <?xml version="1.0" ?><svg height="15px" version="1.1" viewBox="0 0 18 15" width="18px" xmlns="http://www.w3.org/2000/svg" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" xmlns:xlink="http://www.w3.org/1999/xlink"><title/><desc/><defs/><g fill="none" fill-rule="evenodd" id="Page-1" stroke="none" stroke-width="1"><g fill="#000000" id="Core" transform="translate(-423.000000, -47.000000)"><g id="check" transform="translate(423.000000, 47.500000)"><path d="M6,10.2 L1.8,6 L0.4,7.4 L6,13 L18,1 L16.6,-0.4 L6,10.2 Z" id="Shape"/></g></g></g></svg>
 `;
 
+const complete =
+`
+<svg width="40" height="40" viewBox="0 0 40 40" fill="" xmlns="http://www.w3.org/2000/svg">
+<path d="M17 4C15.6938 4 14.5825 4.8348 14.1707 6H11C9.34314 6 8 7.34314 8 9V33C8 34.6568 9.34314 36 11 36H29C30.6568 36 32 34.6568 32 33V9C32 7.34314 30.6568 6 29 6H25.8292C25.4174 4.8348 24.3062 4 23 4H17ZM16 7C16 6.44772 16.4477 6 17 6H23C23.5522 6 24 6.44772 24 7C24 7.55228 23.5522 8 23 8H17C16.4477 8 16 7.55228 16 7ZM25.7072 19.7071L18.7071 26.7072C18.3166 27.0976 17.6834 27.0976 17.2929 26.7072L14.2929 23.7072C13.9024 23.3166 13.9024 22.6834 14.2929 22.2928C14.6834 21.9024 15.3166 21.9024 15.7071 22.2928L18 24.5858L24.2928 18.2929C24.6834 17.9024 25.3166 17.9024 25.7072 18.2929C26.0976 18.6834 26.0976 19.3166 25.7072 19.7071Z" fill=""/>
+</svg>
+`;
+
 const SVG = function(){
     const range = document.createRange();
 
@@ -66,6 +73,7 @@ const SVG = function(){
     const i_note = range.createContextualFragment(note).querySelector('svg');
     const i_project = range.createContextualFragment(project).querySelector('svg');
     const i_check = range.createContextualFragment(check).querySelector('svg');
+    const i_complete = range.createContextualFragment(complete).querySelector('svg');
 
     return {
         i_github,
@@ -74,7 +82,8 @@ const SVG = function(){
         i_todo,
         i_note,
         i_project,
-        i_check
+        i_check,
+        i_complete
     }
 }();
 

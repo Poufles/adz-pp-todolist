@@ -215,6 +215,8 @@ function Dashboard() {
         titleButtonText: 'see all'
     });
 
+    finestra_todos.addEmptyVisual(SVG.i_complete, 'there are no todos! you did well!');
+
     const componentActions = DashboardRuntime.componentActions;
 
     componentActions.add('main-interface', main_interface);

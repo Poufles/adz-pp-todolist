@@ -99,7 +99,6 @@ function MainInterface({
         const allButtons = component.querySelectorAll('button');
 
         allButtons.forEach(button => {
-            console.log(button);
             button.disabled = false;
         });
     };
