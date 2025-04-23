@@ -120,7 +120,7 @@ function Dashboard() {
 
     ////////////////// LEFT PANEL //////////////////
     const cont_settings = left_panel.querySelector('#settings-container');
-    const cont_left_todo_type = left_panel.querySelector('.todo-type-container');
+    const cont_left_todo = left_panel.querySelector('.todo-type-container');
 
     // Create a settings component later
     const finestra_stickies = Finestra({
@@ -132,7 +132,7 @@ function Dashboard() {
     finestra_stickies.addEmptyVisual(SVG.i_note, 'stickies would appear here if there is one...')
 
     BasicSettings.render(cont_settings);
-    finestra_stickies.render(cont_left_todo_type);
+    finestra_stickies.render(cont_left_todo);
     ////////////////// LEFT PANEL //////////////////
 
     ////////////////// MAIN PANEL //////////////////
@@ -209,6 +209,11 @@ function Dashboard() {
     //////////////////////////////
 
     // ALL COMPONENTS FOR RUNTIME //
+    const finestra_todos = Finestra({
+        id: 'todos',
+        windowTitle: `todos | ${account.todo.length}`,
+        titleButtonText: 'see all'
+    });
 
     const componentActions = DashboardRuntime.componentActions;
 
@@ -216,6 +221,7 @@ function Dashboard() {
     componentActions.add('middle-panel', middle_panel);
 
     const todoInterface_btn = TodoInterface.createButton;
+    const finestra_todos_btn_seeAll = finestra_todos.closeButton;
     const finestra_stickies_btn_seeAll = finestra_stickies.closeButton;
     const finestra_projects_btn_seeAll = finestra_projects.closeButton;
 
@@ -225,10 +231,25 @@ function Dashboard() {
         createTodo.modal(main_interface);
     });
 
+    finestra_todos_btn_seeAll.addEventListener('click', () => {
+        console.log('hello');
+    });
+
     finestra_stickies_btn_seeAll.addEventListener('click', () => {
+        finestra_stickies.animate('leave'); // CHANGE LATER
+
         TodoInterface.animate('leave');
 
         ProjectInterface.animate('leave');
+
+        // CHANGE LATER
+        finestra_todos.render(cont_left_todo);
+        finestra_todos.animate('enter');
+
+        // CHANGE LATER
+        setTimeout(() => {
+            finestra_stickies.unrender();
+        }, 210);
 
         StickyInterface.render(middle_panel);
         StickyInterface.animate('enter');
@@ -240,9 +261,20 @@ function Dashboard() {
     });
 
     finestra_projects_btn_seeAll.addEventListener('click', () => {
+        finestra_projects.animate('leave'); // CHANGE LATER
+
         TodoInterface.animate('leave');
 
         StickyInterface.animate('leave');
+
+        // CHANGE LATER
+        finestra_todos.render(cont_right_todo);
+        finestra_todos.animate('enter');
+
+        // CHANGE LATER
+        setTimeout(() => {
+            finestra_projects.unrender();
+        }, 210);
 
         ProjectInterface.render(middle_panel);
         ProjectInterface.animate('enter');
