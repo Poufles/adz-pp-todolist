@@ -20,8 +20,16 @@ const ProjectInterface = function () {
     btn_return.addEventListener('click', () => {
         const middle_panel = DashboardRuntime.componentActions.get('middle-panel') 
 
-        projectInterface.unrender();
+        projectInterface.animate('leave');
+
         TodoInterface.render(middle_panel.component); // CHANGE LATER
+        
+        TodoInterface.animate('enter');
+        
+        setTimeout(() => {
+            projectInterface.unrender();
+            TodoInterface.toggleReturnButton(false);
+        }, 530);
     });
 
     return projectInterface;

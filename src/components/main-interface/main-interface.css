@@ -2,16 +2,33 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    transition-property: transform, opacity;
+    transition-duration: var(--trans-n);
+    transition-delay: 0.05s, 0s;
+    opacity: 1;
 }
 
-.comp.main-interface .return-wrapper button {
-    margin: 0 10px;
+.comp.main-interface.animate-leave {
+    transform: translateY(-100%);
+    position: absolute;
+    opacity: 0;
+}
+
+.comp.main-interface.entering {
+    transform: translateY(100%);
+    transition-delay: 0s;
+}
+
+.comp.main-interface.entering.animate-enter {
+    transform: translateY(0%);
 }
 
 .comp.main-interface .return-wrapper button {
     background-color: transparent;
     border: 0;
     color: var(--black);
+    margin: 0 10px;
+    transition: var(--trans-q);
 }
 
 .comp.main-interface .return-wrapper button:disabled {

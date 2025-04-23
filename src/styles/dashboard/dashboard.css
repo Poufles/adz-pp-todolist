@@ -203,6 +203,8 @@
 #page_dashboard #main-interface #middle-panel {
     flex-basis: 100%;
     flex-shrink: 1;
+
+    position: relative;
 }
 
 #page_dashboard #main-interface #right-panel>* {

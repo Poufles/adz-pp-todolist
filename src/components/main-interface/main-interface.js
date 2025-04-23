@@ -27,6 +27,8 @@ function MainInterface({
     </article>
     `;
 
+    let isAnimating = false;
+
     const range = document.createRange();
     const fragment = range.createContextualFragment(template);
     const component = fragment.querySelector('.main-interface');
@@ -53,10 +55,9 @@ function MainInterface({
      * @returns The component if no parent is provided
      */
     const render = (parent) => {
-        console.log('hello');
         if (!parent) return component;
 
-        parent.appendChild(component);
+        if (!parent.contains(component)) parent.appendChild(component);
     };
 
     /**
@@ -88,7 +89,7 @@ function MainInterface({
     const toggleReturnButton = (toggle) => {
         const btn_return = component.querySelector('.return-wrapper #return');
 
-        btn_return.disabled = toggle;
+        btn_return.disabled = !toggle;
     };
 
     /**
@@ -98,19 +99,51 @@ function MainInterface({
         const allButtons = component.querySelectorAll('button');
 
         allButtons.forEach(button => {
-            button.disabled = 'true';
+            console.log(button);
+            button.disabled = false;
         });
     };
-    
+
     /**
      * Disables the component
      */
     const disable = () => {
         const allButtons = component.querySelectorAll('button');
-    
+
         allButtons.forEach(button => {
-            button.disabled = 'false';
+            button.disabled = true;
         });
+    };
+
+    /**
+     * Animates the component.
+     * @param {string} type - enter || leave
+     * @returns 
+     */
+    const animate = (type) => {
+        if (!component.parentElement) return;
+        if (isAnimating) return;
+
+        isAnimating = true;
+        disable();
+
+        if (type === 'leave')
+            component.classList.add('animate-leave');
+
+        if (type === 'enter') {
+            component.classList.add('entering');
+            setTimeout(() => {
+                component.classList.add('animate-enter');
+            }, 0);
+        };
+
+        setTimeout(() => {
+            isAnimating = false;
+            component.classList.remove('animate-leave');
+            component.classList.remove('entering');
+            component.classList.remove('animate-enter');
+            enable();
+        }, 530);
     };
 
     const getContentArray = () => contentArr;
@@ -139,6 +172,7 @@ function MainInterface({
         toggleReturnButton,
         enable,
         disable,
+        animate,
         getContentArray,
         addContent
     };

@@ -137,7 +137,6 @@ function Dashboard() {
 
     ////////////////// MAIN PANEL //////////////////
     TodoInterface.render(middle_panel);
-    TodoInterface.toggleReturnButton(true);
 
     const todos = CRUD.getTodos();
     const todosArr = [];
@@ -150,7 +149,7 @@ function Dashboard() {
         TodoInterface.addContent(todoBar);
         todosArr.push(todoBar);
     };
-    
+
     ////////////////// MAIN PANEL //////////////////
 
     ////////////////// RIGHT PANEL //////////////////
@@ -212,7 +211,7 @@ function Dashboard() {
     // ALL COMPONENTS FOR RUNTIME //
 
     const componentActions = DashboardRuntime.componentActions;
-    
+
     componentActions.add('main-interface', main_interface);
     componentActions.add('middle-panel', middle_panel);
 
@@ -227,18 +226,31 @@ function Dashboard() {
     });
 
     finestra_stickies_btn_seeAll.addEventListener('click', () => {
-        console.log('hello');
+        TodoInterface.animate('leave');
 
-        TodoInterface.unrender();
-        ProjectInterface.unrender();
+        ProjectInterface.animate('leave');
+
         StickyInterface.render(middle_panel);
+        StickyInterface.animate('enter');
+
+        setTimeout(() => {
+            TodoInterface.unrender();
+            ProjectInterface.unrender();
+        }, 530);
     });
 
     finestra_projects_btn_seeAll.addEventListener('click', () => {
-        console.log('hello');
-        TodoInterface.unrender();
-        StickyInterface.unrender();
+        TodoInterface.animate('leave');
+
+        StickyInterface.animate('leave');
+
         ProjectInterface.render(middle_panel);
+        ProjectInterface.animate('enter');
+
+        setTimeout(() => {
+            TodoInterface.unrender();
+            StickyInterface.unrender();
+        }, 530);
     });
 
     btn_about.addEventListener('click', () => {
