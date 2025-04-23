@@ -1,3 +1,4 @@
+import DashboardRuntime from '../../scripts/dashboard-runtime.js';
 import WordButton from '../buttons/word-button/word-button.js';
 import { ConfirmMessageBox } from '../message-box/message-box.js';
 
@@ -571,6 +572,12 @@ function GetBackgroundOverlay() {
  * @param {boolean} isModal 
  */
 function CloseComponent(component, isModal) {
+    const task_enable = DashboardRuntime.objectActions.get('task-enable');
+
+    if (task_enable) {
+        task_enable();
+    };
+
     if (isModal) {
         const overlay = component.parentElement;
         const parent = overlay.parentElement

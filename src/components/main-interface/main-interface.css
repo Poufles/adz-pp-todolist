@@ -1,3 +1,13 @@
+.comp.main-interface {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.comp.main-interface .return-wrapper button {
+    margin: 0 10px;
+}
+
 .comp.main-interface .return-wrapper button {
     background-color: transparent;
     border: 0;
@@ -11,6 +21,7 @@
 }
 
 .comp.main-interface .top {
+    margin: 0 10px;
     display: flex;
     align-items: end;
     justify-content: space-between;
@@ -40,12 +51,15 @@
 .comp.main-interface #description {
     border-bottom: 2px solid var(--black);
     font-size: var(--fn-xlr);
+    margin: 0 10px;
     padding-bottom: 7px;
 }
 
 .comp.main-interface #sub-section {
     border-bottom: 2px solid var(--black);
-    padding: 12px 0;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    margin: 0 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -69,4 +83,14 @@
 .comp.main-interface #sub-section .action:hover, 
 .comp.main-interface #sub-section .action.selected {
     opacity: 1;
+}
+
+.comp.main-interface #content {
+    flex-grow: 1;
+    padding: 10px 10px 120px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    overflow-x: clip;
+    overflow-y: auto;
 }

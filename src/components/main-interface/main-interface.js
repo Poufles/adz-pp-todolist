@@ -30,9 +30,12 @@ function MainInterface({
     const range = document.createRange();
     const fragment = range.createContextualFragment(template);
     const component = fragment.querySelector('.main-interface');
+    const btn_return = component.querySelector('button#return');
     const cont_top = component.querySelector('.top');
     const cont_description = component.querySelector('#description');
+    const cont_content = component.querySelector('#content');
 
+    const contentArr = [];
     let cont_count;
 
     if (titleCount !== undefined) cont_count = CreateTitleCount(component, title, titleCount);
@@ -50,6 +53,7 @@ function MainInterface({
      * @returns The component if no parent is provided
      */
     const render = (parent) => {
+        console.log('hello');
         if (!parent) return component;
 
         parent.appendChild(component);
@@ -109,15 +113,34 @@ function MainInterface({
         });
     };
 
+    const getContentArray = () => contentArr;
+
+    /**
+     * Adds new content.
+     * @param {object} object 
+     */
+    const addContent = (object) => {
+        if (Object.hasOwn(object, 'render')) {
+            contentArr.push(object);
+            object.render(cont_content);
+        } else {
+            console.error('Error: The given object does not have a render() function.');
+        }
+    };
+
     return {
         component,
+        createButton: button.component,
+        returnButton: btn_return,
         description: cont_description,
         render,
         unrender,
         changeTitleCount,
         toggleReturnButton,
         enable,
-        disable
+        disable,
+        getContentArray,
+        addContent
     };
 };
 

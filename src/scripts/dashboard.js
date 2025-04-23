@@ -13,11 +13,13 @@ import '../components/finestra/basic-settings/basic-settings.css';
 import '../components/auth-interface/auth-interface.css';
 import '../components/message-box/message-box.css';
 import '../components/main-interface/main-interface.css';
+import '../components/todo-bar/todo-bar.css';
 import '../components/userbox/userbox.css';
 import '../components/devtools/devtools.css';
 
 import DevTools from '../components/devtools/devtools.js';
 import DateHandler from './date-handler.js';
+import CRUD from './crud.js';
 import Finestra from '../components/finestra/window.js';
 import WordButton from '../components/buttons/word-button/word-button.js';
 import TypeStats from '../components/type-stats/type-stats.js';
@@ -28,8 +30,12 @@ import BasicSettings from '../components/finestra/basic-settings/basic-settings.
 import UserBox from '../components/userbox/userbox.js';
 import StorageHandler from './storage-handler.js';
 import CreateTodo from '../components/finestra/create-todo/create-todo.js';
+import TodoBar from '../components/todo-bar/todo-bar.js';
+import DashboardRuntime from './dashboard-runtime.js';
+import StickyInterface from '../components/main-interface/sticky-interface/sticky-interface.js';
+import ProjectInterface from '../components/main-interface/project-interface/project-interface.js';
 
-const Dashboard = function () {
+function Dashboard() {
     const account = StorageHandler.GetStorage(true);
     const body = document.body;
     const page_dashboard = body.querySelector('.dashboard');
@@ -132,6 +138,19 @@ const Dashboard = function () {
     ////////////////// MAIN PANEL //////////////////
     TodoInterface.render(middle_panel);
     TodoInterface.toggleReturnButton(true);
+
+    const todos = CRUD.getTodos();
+    const todosArr = [];
+
+    for (let index = 0; index < todos.length; index++) {
+        let todo = todos[index];
+
+        const todoBar = TodoBar(todo);
+
+        TodoInterface.addContent(todoBar);
+        todosArr.push(todoBar);
+    };
+    
     ////////////////// MAIN PANEL //////////////////
 
     ////////////////// RIGHT PANEL //////////////////
@@ -192,24 +211,34 @@ const Dashboard = function () {
 
     // ALL COMPONENTS FOR RUNTIME //
 
-    return {
-        main_interface,
-        btn_about,
-    }
-}();
+    const componentActions = DashboardRuntime.componentActions;
+    
+    componentActions.add('main-interface', main_interface);
+    componentActions.add('middle-panel', middle_panel);
 
-function DashboardRuntime() {
-    const main_interface = Dashboard.main_interface;
+    const todoInterface_btn = TodoInterface.createButton;
+    const finestra_stickies_btn_seeAll = finestra_stickies.closeButton;
+    const finestra_projects_btn_seeAll = finestra_projects.closeButton;
 
-    const todoInterface = TodoInterface.component;
-    const btn_todoInterfaceCreate = todoInterface.querySelector('#box-create');
-
-    const btn_about = Dashboard.btn_about;
-
-    btn_todoInterfaceCreate.addEventListener('click', () => {
+    todoInterface_btn.addEventListener('click', () => {
         const createTodo = CreateTodo();
 
         createTodo.modal(main_interface);
+    });
+
+    finestra_stickies_btn_seeAll.addEventListener('click', () => {
+        console.log('hello');
+
+        TodoInterface.unrender();
+        ProjectInterface.unrender();
+        StickyInterface.render(middle_panel);
+    });
+
+    finestra_projects_btn_seeAll.addEventListener('click', () => {
+        console.log('hello');
+        TodoInterface.unrender();
+        StickyInterface.unrender();
+        ProjectInterface.render(middle_panel);
     });
 
     btn_about.addEventListener('click', () => {
@@ -360,4 +389,4 @@ function GetFragmentFromTemplate(template) {
     return framgent;
 };
 
-DashboardRuntime();
+Dashboard();
