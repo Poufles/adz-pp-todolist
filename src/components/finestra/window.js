@@ -161,15 +161,17 @@ function Finestra({
             return;
         };
 
+        
         let hasInputs = false
         for (let index = 0; index < contentItemsArr.length; index++) {
             const objectItem = contentItemsArr[index];
 
-            if (!Object.hasOwn(objectItem, 'inputComponent')) continue;
+            if (!Object.hasOwn(objectItem, 'hasInputs')) continue;
 
-            const input = objectItem.inputComponent;
+            const input = objectItem.hasInputs();
+            const inputComponent = objectItem.inputComponent;
 
-            if (input.value && input.type !== 'button') {
+            if (input.status && inputComponent.type !== 'button') {
                 hasInputs = true; break;
             };
         };
@@ -269,23 +271,10 @@ function Finestra({
         for (let index = 0; index < contentItemsArr.length; index++) {
             const objectItem = contentItemsArr[index];
 
-            // TIME INPUTS
-            if (Object.hasOwn(objectItem, 'inputComponent')) {
-                const inputObject = objectItem.inputComponent;
-                const inputArr = inputObject.querySelectorAll('input')
+            if (Object.hasOwn(objectItem, 'hasInputs')) {
+                const inputObject = objectItem.hasInputs();
 
-                inputArr.forEach(input => {
-                    if (input.value === '') {
-                        hasValue = false;
-                        objectItem.requiredMessage();
-                    };
-                });
-            };
-
-            if (Object.hasOwn(objectItem, 'inputComponent') && Object.hasOwn(objectItem, 'requiredMessage') && Object.hasOwn(objectItem, 'isOptional')) {
-                const input = objectItem.inputComponent;
-
-                if (input.value === '' && !objectItem.isOptional) {
+                if (!inputObject.status) {
                     hasValue = false;
                     objectItem.requiredMessage();
                 };
