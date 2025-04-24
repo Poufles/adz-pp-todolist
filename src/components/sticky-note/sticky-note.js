@@ -1,3 +1,6 @@
+import CRUD from "../../scripts/crud.js";
+import DashboardRuntime from "../../scripts/dashboard-runtime.js";
+
 function StickyNote(stickyObject) {
     const template = `
         <div class="sticky-note-shadow">
@@ -38,10 +41,91 @@ function StickyNote(stickyObject) {
     </div>
     `;
 
+    const template_overlay = `
+        <div class="overlay"></div>
+    `;
+
+    let currentState;
+
     const range = document.createRange();
     const fragment = range.createContextualFragment(template);
+    const fragmentOverlay = range.createContextualFragment(template_overlay);
+    const overlay = fragmentOverlay.querySelector('div');
     const component = fragment.querySelector('.sticky-note-shadow');
     const componentMainArticle = component.querySelector('.comp.sticky-note');
+    const textarea = componentMainArticle.querySelector('textarea#note');
+    const actions = componentMainArticle.querySelector('#crud');
+    const btn_view = actions.querySelector('#view');
+    const btn_edit = actions.querySelector('#edit');
+    const btn_delete = actions.querySelector('#delete');
+
+    componentMainArticle.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+
+    textarea.addEventListener('keydown', (e) => {
+        e.stopPropagation();
+
+        if (e.key === 'Enter') {
+            stickyObject.desc = textarea.value;
+            CRUD.updateSticky(stickyObject)
+        };
+    });
+
+    textarea.addEventListener('blur', (e) => {
+        e.stopPropagation();
+
+        stickyObject.desc = textarea.value;
+        CRUD.updateSticky(stickyObject)
+    });
+
+    overlay.addEventListener('click', (e) => {
+        e.stopPropagation();
+
+        const main_interface = DashboardRuntime.componentActions.get('main-interface').component;
+        const mainRect = main_interface.getBoundingClientRect();
+        const componentRect = component.getBoundingClientRect();
+        const compRect = componentMainArticle.getBoundingClientRect();
+        const actualWidth = component.offsetWidth;
+        const component_pos = `--parent-top: ${componentRect.top - mainRect.top}px; --parent-left: ${componentRect.left - mainRect.left}px`;
+        const starting_style = `--starting-top: ${compRect.top - mainRect.top}px; --starting-left: ${compRect.left - mainRect.left}px`;
+
+        componentMainArticle.classList.remove('view');
+        componentMainArticle.classList.add('return');
+
+        componentMainArticle.setAttribute('style', starting_style + '; ' + component_pos + '; --actual-width: ' + actualWidth + 'px');
+
+        overlay.classList.remove('show');
+        main_interface.appendChild(componentMainArticle);
+        main_interface.removeChild(overlay);
+        setTimeout(() => {
+            componentMainArticle.classList.remove('return');
+            component.appendChild(componentMainArticle);
+            currentState = undefined;
+        }, 170);
+    });
+
+    btn_view.addEventListener('click', (e) => {
+        e.stopPropagation();
+
+        if (currentState === 'view') return;
+
+        currentState = 'view';
+
+        const main_interface = DashboardRuntime.componentActions.get('main-interface').component;
+        const mainRect = main_interface.getBoundingClientRect();
+        const compRect = component.getBoundingClientRect()
+        const actualWidth = component.offsetWidth;
+        const starting_style = `--starting-top: ${compRect.top - mainRect.top}px; --starting-left: ${compRect.left - mainRect.left}px; --actual-width: ${actualWidth}px`;
+
+        main_interface.appendChild(overlay);
+        overlay.classList.add('show');
+
+        component.removeChild(componentMainArticle);
+        overlay.appendChild(componentMainArticle);
+        componentMainArticle.classList.add('view');
+        componentMainArticle.setAttribute('style', starting_style);
+    })
 
     /**
      * Renders the component
