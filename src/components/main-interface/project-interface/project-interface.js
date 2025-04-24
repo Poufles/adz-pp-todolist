@@ -1,6 +1,7 @@
 import DashboardRuntime from "../../../scripts/dashboard-runtime.js";
 import StorageHandler from "../../../scripts/storage-handler.js";
 import MainInterface from "../main-interface.js";
+import StickyInterface from "../sticky-interface/sticky-interface.js";
 import TodoInterface from "../todo-interface/todo-interface.js";
 
 const ProjectInterface = function () {
@@ -18,18 +19,24 @@ const ProjectInterface = function () {
     const btn_return = projectInterface.returnButton;
     
     btn_return.addEventListener('click', () => {
-        const middle_panel = DashboardRuntime.componentActions.get('middle-panel') 
+        const finestra_todos = DashboardRuntime.componentActions.get('finestra-todos').object;
+        const finestra_stickies = DashboardRuntime.componentActions.get('finestra-stickies').object;
+        const finestra_projects = DashboardRuntime.componentActions.get('finestra-projects').object;
 
-        projectInterface.animate('leave');
-
-        TodoInterface.render(middle_panel.component); // CHANGE LATER
-        
-        TodoInterface.animate('enter');
-        
-        setTimeout(() => {
-            projectInterface.unrender();
-            TodoInterface.toggleReturnButton(false);
-        }, 530);
+        DashboardRuntime.switchPanel({
+            fromFinestra: finestra_todos,
+            toInterface: TodoInterface,
+            oppositeInterfacesNWindows: {
+                firstAlt: {
+                    finestra: finestra_stickies,
+                    interface: StickyInterface
+                },
+                secondAlt: {
+                    finestra: finestra_projects,
+                    interface: ProjectInterface
+                },
+            }
+        });
     });
 
     return projectInterface;

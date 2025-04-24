@@ -224,11 +224,16 @@ function Dashboard() {
     componentActions.add('middle-panel', middle_panel);
     componentActions.add('container-left-todo', cont_left_todo);
     componentActions.add('container-right-todo', cont_right_todo);
+    componentActions.add('finestra-todos', undefined, finestra_todos);
+    componentActions.add('finestra-stickies', undefined, finestra_stickies);
+    componentActions.add('finestra-projects', undefined, finestra_projects);
 
     const todoInterface_btn = TodoInterface.createButton;
     const finestra_todos_btn_seeAll = finestra_todos.closeButton;
     const finestra_stickies_btn_seeAll = finestra_stickies.closeButton;
     const finestra_projects_btn_seeAll = finestra_projects.closeButton;
+    const finestra_overdues_btn_seeAll = finestra_overdue.closeButton;
+    const finestra_archives_btn_seeAll = finestra_archives.closeButton;
 
     todoInterface_btn.addEventListener('click', () => {
         const createTodo = CreateTodo();
@@ -237,7 +242,7 @@ function Dashboard() {
     });
 
     finestra_todos_btn_seeAll.addEventListener('click', () => {
-        switchPanel({
+        DashboardRuntime.switchPanel({
             fromFinestra: finestra_todos,
             toInterface: TodoInterface,
             oppositeInterfacesNWindows: {
@@ -254,7 +259,7 @@ function Dashboard() {
     });
 
     finestra_stickies_btn_seeAll.addEventListener('click', () => {
-        switchPanel({
+        DashboardRuntime.switchPanel({
             fromFinestra: finestra_stickies,
             toInterface: StickyInterface,
             oppositeInterfacesNWindows: {
@@ -271,7 +276,7 @@ function Dashboard() {
     });
 
     finestra_projects_btn_seeAll.addEventListener('click', () => {
-        switchPanel({
+        DashboardRuntime.switchPanel({
             fromFinestra: finestra_projects,
             toInterface: ProjectInterface,
             oppositeInterfacesNWindows: {
@@ -285,6 +290,40 @@ function Dashboard() {
                 },
             }
         });
+    });
+
+    finestra_archives_btn_seeAll.addEventListener('click', () => {
+        // switchPanel({
+        //     fromFinestra: finestra_projects,
+        //     toInterface: ProjectInterface,
+        //     oppositeInterfacesNWindows: {
+        //         firstAlt: {
+        //             finestra: finestra_todos,
+        //             interface: TodoInterface
+        //         },
+        //         secondAlt: {
+        //             finestra: finestra_stickies,
+        //             interface: StickyInterface
+        //         },
+        //     }
+        // });
+    });
+
+    finestra_archives_btn_seeAll.addEventListener('click', () => {
+        // switchPanel({
+        //     fromFinestra: finestra_projects,
+        //     toInterface: ProjectInterface,
+        //     oppositeInterfacesNWindows: {
+        //         firstAlt: {
+        //             finestra: finestra_todos,
+        //             interface: TodoInterface
+        //         },
+        //         secondAlt: {
+        //             finestra: finestra_stickies,
+        //             interface: StickyInterface
+        //         },
+        //     }
+        // });
     });
 
     btn_about.addEventListener('click', () => {

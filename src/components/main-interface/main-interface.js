@@ -28,6 +28,7 @@ function MainInterface({
     `;
 
     let isAnimating = false;
+    let isReturnButtonToggled = true;
 
     const range = document.createRange();
     const fragment = range.createContextualFragment(template);
@@ -90,6 +91,7 @@ function MainInterface({
         const btn_return = component.querySelector('.return-wrapper #return');
 
         btn_return.disabled = !toggle;
+        isReturnButtonToggled = toggle;
     };
 
     /**
@@ -97,8 +99,11 @@ function MainInterface({
      */
     const enable = () => {
         const allButtons = component.querySelectorAll('button');
+        const btn_return = component.querySelector('.return-wrapper #return');
 
         allButtons.forEach(button => {
+            if (!isReturnButtonToggled && button === btn_return) return;
+
             button.disabled = false;
         });
     };
