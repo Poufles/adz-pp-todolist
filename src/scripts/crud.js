@@ -4,6 +4,25 @@ import StorageHandler from "./storage-handler.js";
 const CRUD = function () {
     const account = StorageHandler.GetStorage(true);
 
+     /**
+     * Retrieves all tasks from its type
+     * @param {string} type - todo || sticky || project  
+     * @returns An array
+     */
+     const getTasks = (type) => {
+        const tasks = account[type];
+        const tasksLength = tasks.length;
+        const tasksArr = [];
+
+        for (let index = 0; index < tasksLength; index++) {
+            let task = tasks[index];
+
+            tasksArr.push(task);
+        };
+
+        return tasksArr;
+    };
+
     const createTodo = (name, deadline, project, color) => {
         const todos = account.todo;
         const todosLength = todos.length;
@@ -14,13 +33,13 @@ const CRUD = function () {
         // Verify date
         if (!DateHandler.isValidateFullTime(deadline)) {
             console.error('Invalid time.');
-            
+
             return {
                 status: 't-invalid',
                 inputs: undefined
             };
         };
-        
+
         // Verify if todo already exists
         if (todosLength !== 0) {
             for (let index = 0; index < todosLength; index++) {
@@ -58,24 +77,6 @@ const CRUD = function () {
         };
     };
 
-    /**
-     * Retrieves all todos.
-     * @returns An array of JSON objects containing information about each todos.
-     */
-    const getTodos = () => {
-        const todos = account.todo;
-        const todosLength = todos.length;
-        const todosArr = [];
-
-        for (let index = 0; index < todosLength; index++) {
-            let todo = todos[index];
-
-            todosArr.push(todo);
-        };
-
-        return todosArr;
-    };
-
     const updateTodo = (id, name, deadline, project, color, status) => {
         const todos = account.todo;
         const todosLength = todos.length;
@@ -88,7 +89,7 @@ const CRUD = function () {
 
         for (let index = 0; index < todosLength; index++) {
             let todoInTodos = todos[index];
-            
+
             if (todoInTodos.id === id) {
                 originalTodo = todoInTodos;
                 break;
@@ -125,7 +126,7 @@ const CRUD = function () {
         // Verify date
         if (!isSameDeadline || !DateHandler.isValidateFullTime(deadline)) {
             console.error('Invalid time.');
-            
+
             return {
                 status: 't-invalid',
                 inputs: undefined
@@ -165,7 +166,7 @@ const CRUD = function () {
 
         for (let index = 0; index < todosLength; index++) {
             let todoInTodos = todos[index];
-            
+
             if (todoInTodos.id === id) {
                 todo = todoInTodos;
                 break;
@@ -176,11 +177,91 @@ const CRUD = function () {
         StorageHandler.UpdateStorage();
     };
 
+    /**
+     * 
+     * @param {string} color 
+     * @param {string} project 
+     * @returns {{
+     * status: string,
+     * inputs: object
+     * }} An object containing two properties.
+     */
+    const createSticky = (color, project = '') => {
+        const notes = account.sticky;
+
+        if (color === '') {
+            console.error('Error in sticky creation: color has no arguments.');
+
+            return {
+                status: 'c-invalid',
+                inputs: undefined
+            };
+        };
+
+        let id;
+
+        if (notes.length === 0) id = 0;
+        else id = notes[notes.length - 1].id + 1
+
+        const objectTemplate = {
+            id,
+            type: 'sticky',
+            project: project || 'none',
+            color,
+            desc: '',
+        };
+
+        notes.push(objectTemplate);
+        StorageHandler.UpdateStorage();
+
+        return {
+            status: 'success',
+            inputs: objectTemplate
+        };
+    };
+
+    const updateSticky = (stickyInfo) => {
+        const notes = account.sticky;
+
+        for (let index = 0; index < notes.length; index++) {
+            const note = notes[index];
+
+            if (note.id === stickyInfo.id) {
+                note.desc = stickyInfo.desc;
+                note.color = stickyInfo.color;
+                note.project = stickyInfo.project;
+
+                const objectTemplate = {
+                    id: note.id,
+                    type: note.type,
+                    project: note.project,
+                    color: note.color,
+                    desc: note.desc,
+                };
+
+                StorageHandler.UpdateStorage();
+
+                return {
+                    status: 'success',
+                    inputs: objectTemplate
+                };
+            };
+        };
+
+        console.error('Error in update: Note does not exist.')
+        return {
+            status: 'e-invalid',
+            inputs: undefined
+        };
+    };
+
     return {
+        getTasks,
         createTodo,
-        getTodos,
         updateTodo,
-        updateTodoStatus
+        updateTodoStatus,
+        createSticky,
+        updateSticky
     }
 }();
 

@@ -1,0 +1,189 @@
+.overlay {
+    background-color: rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(3px);
+    width: 100%;
+    height: 100%;
+    display: none;
+    position: absolute;
+    transition-behavior: allow-discrete;
+    transition-property: opacity, display;
+    transition-duration: var(--trans-q), var(--trans-q);
+    opacity: 0;
+}
+
+.overlay.show {
+    display: block;
+    opacity: 1;
+    z-index: 1;
+
+    @starting-style {
+        opacity: 0;
+    }
+}
+
+.sticky-note-shadow {
+    background-color: rgba(0, 0, 0, 0.2);
+    position: relative;
+    width: 100%;
+    height: 300px;
+    min-width: 230px;
+    transition: var(--trans-q);
+    display: flex;
+}
+
+.comp.sticky-note {
+    height: 300px;
+    width: 100%;
+    min-width: 230px;
+    transform: translate(0%, 0%);
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    transition: var(--trans-q);
+}
+
+.comp.sticky-note.view {
+    max-width: var(--actual-width);
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+
+    @starting-style {
+        top: var(--starting-top);
+        left: var(--starting-left);
+        transform: translate(0%, 0%);
+    }
+}
+
+.comp.sticky-note.return {
+    max-width: var(--actual-width);
+    transform: translate(0%, 0%);
+    top: var(--parent-top);
+    left: var(--parent-left);
+    z-index: 2;
+
+    @starting-style {
+        top: var(--starting-top);
+        left: var(--starting-left);
+    }
+}
+
+.comp.sticky-note .info-wrapper {
+    --padding: 10px;
+
+    background-color: var(--accent-color-1);
+    /* CHANGE LATER */
+    border: 2px solid black;
+    height: 100%;
+    padding: var(--padding);
+    display: flex;
+    transition: var(--trans-q);
+}
+
+.comp.sticky-note .info-wrapper:hover {
+    transform: translateY(-7px) scale(1.02);
+}
+
+.comp.sticky-note.view .info-wrapper {
+    transform: translateY(0px) scale(1.05);
+}
+
+.comp.sticky-note:has(.info-wrapper:hover) {
+    z-index: 2;
+}
+
+.comp.sticky-note .main-content {
+    width: 100%;
+    display: flex;
+    position: relative;
+}
+
+/* ADD RESPONSIVENESS LATER FOR MOBILE */
+.comp.sticky-note .main-content #actions {
+    position: absolute;
+    top: 50px;
+    left: calc(100% + var(--padding));
+    z-index: 1;
+    display: none;
+    opacity: 0;
+    transition-behavior: allow-discrete;
+    transition-property: display, opacity, top;
+    transition-duration: var(--trans-q), var(--trans-q), var(--trans-q);
+}
+
+.comp.sticky-note:hover .main-content #actions {
+    top: calc(-1 * var(--padding) - 2px);
+    display: block;
+    opacity: 1;
+
+    @starting-style {
+        opacity: 0;
+        top: -50px;
+    }
+}
+
+.comp.sticky-note.view .main-content #actions {
+    top: calc(-1 * var(--padding) - 2px);
+    display: block;
+    opacity: 1;
+}
+
+.comp.sticky-note .main-content #crud {
+    border: 2px solid var(--black);
+    display: flex;
+    flex-direction: column;
+}
+
+.comp.sticky-note .main-content #crud button {
+    background-color: transparent;
+    border: 0;
+    height: 37px;
+    width: 37px;
+    padding: 7px;
+    min-height: max-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.comp.sticky-note .main-content #crud button svg {
+    width: 20px;
+    height: 20px;
+}
+
+.comp.sticky-note .main-content #crud button:nth-of-type(1) {
+    background-color: var(--accent-color-2);
+    font-weight: bolder;
+}
+
+.comp.sticky-note .main-content #crud button:nth-of-type(2) {
+    background-color: orange;
+    border-top: 2px solid var(--black);
+    border-bottom: 2px solid var(--black);
+    height: calc(37px + 4px);
+}
+
+.comp.sticky-note .main-content #crud button:nth-of-type(3) {
+    background-color: red;
+}
+
+.comp.sticky-note .main-content #crud button:not(:nth-of-type(1)) svg {
+    fill: var(--primary-color);
+}
+
+.comp.sticky-note .main-content #note {
+    background-color: transparent;
+    border: 0;
+    width: 100%;
+    resize: none;
+    overflow-y: auto;
+    scrollbar-width: none;
+    outline: 0;
+    white-space: pre-line;
+}
+
+.comp.sticky-note .main-content #note::selection {
+    background-color: var(--black);
+    color: var(--accent-color-1); /* CHANGE LATER */
+}

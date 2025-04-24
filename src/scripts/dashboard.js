@@ -13,18 +13,17 @@ import '../components/finestra/basic-settings/basic-settings.css';
 import '../components/auth-interface/auth-interface.css';
 import '../components/message-box/message-box.css';
 import '../components/main-interface/main-interface.css';
+import '../components/main-interface/sticky-interface/sticky-interface.css';
 import '../components/todo-bar/todo-bar.css';
+import '../components/sticky-note/sticky-note.css';
 import '../components/userbox/userbox.css';
-import '../components/devtools/devtools.css';
 
-import DevTools from '../components/devtools/devtools.js';
 import DateHandler from './date-handler.js';
 import CRUD from './crud.js';
 import Finestra from '../components/finestra/window.js';
 import WordButton from '../components/buttons/word-button/word-button.js';
 import TypeStats from '../components/type-stats/type-stats.js';
 import SVG from '../scripts/svg.js';
-import MainInterface from '../components/main-interface/main-interface.js';
 import TodoInterface from '../components/main-interface/todo-interface/todo-interface.js';
 import BasicSettings from '../components/finestra/basic-settings/basic-settings.js';
 import UserBox from '../components/userbox/userbox.js';
@@ -34,6 +33,8 @@ import TodoBar from '../components/todo-bar/todo-bar.js';
 import DashboardRuntime from './dashboard-runtime.js';
 import StickyInterface from '../components/main-interface/sticky-interface/sticky-interface.js';
 import ProjectInterface from '../components/main-interface/project-interface/project-interface.js';
+import CreateSticky from '../components/finestra/create-note/create-note.js';
+import StickyNote from '../components/sticky-note/sticky-note.js';
 
 function Dashboard() {
     const account = StorageHandler.GetStorage(true);
@@ -138,7 +139,7 @@ function Dashboard() {
     ////////////////// MAIN PANEL //////////////////
     TodoInterface.render(middle_panel);
 
-    const todos = CRUD.getTodos();
+    const todos = CRUD.getTasks('todo');
     const todosArr = [];
 
     for (let index = 0; index < todos.length; index++) {
@@ -148,6 +149,18 @@ function Dashboard() {
 
         TodoInterface.addContent(todoBar);
         todosArr.push(todoBar);
+    };
+
+    const stickies = CRUD.getTasks('sticky');
+    const stickiesArr = [];
+
+    for (let index = 0; index < stickies.length; index++) {
+        let sticky = stickies[index];
+
+        const stickyNote = StickyNote(sticky);
+
+        StickyInterface.addContent(stickyNote);
+        stickiesArr.push(stickyNote);
     };
 
     ////////////////// MAIN PANEL //////////////////
@@ -215,15 +228,26 @@ function Dashboard() {
         titleButtonText: 'see all'
     });
 
+    finestra_todos.addEmptyVisual(SVG.i_complete, 'there are no todos! you did well!');
+
     const componentActions = DashboardRuntime.componentActions;
 
     componentActions.add('main-interface', main_interface);
     componentActions.add('middle-panel', middle_panel);
+    componentActions.add('container-left-todo', cont_left_todo);
+    componentActions.add('container-right-todo', cont_right_todo);
+    componentActions.add('finestra-todos', undefined, finestra_todos);
+    componentActions.add('finestra-stickies', undefined, finestra_stickies);
+    componentActions.add('finestra-projects', undefined, finestra_projects);
 
     const todoInterface_btn = TodoInterface.createButton;
+    const stickyInterface_btn = StickyInterface.createButton;
+
     const finestra_todos_btn_seeAll = finestra_todos.closeButton;
     const finestra_stickies_btn_seeAll = finestra_stickies.closeButton;
     const finestra_projects_btn_seeAll = finestra_projects.closeButton;
+    const finestra_overdues_btn_seeAll = finestra_overdue.closeButton;
+    const finestra_archives_btn_seeAll = finestra_archives.closeButton;
 
     todoInterface_btn.addEventListener('click', () => {
         const createTodo = CreateTodo();
@@ -231,58 +255,69 @@ function Dashboard() {
         createTodo.modal(main_interface);
     });
 
+    stickyInterface_btn.addEventListener('click', () => {
+        const createSticky = CreateSticky();
+
+        createSticky.modal(main_interface);
+    });
+
     finestra_todos_btn_seeAll.addEventListener('click', () => {
-        console.log('hello');
+        DashboardRuntime.switchPanel({
+            fromFinestra: finestra_todos,
+            toInterface: TodoInterface,
+            oppositeInterfacesNWindows: {
+                firstAlt: {
+                    finestra: finestra_stickies,
+                    interface: StickyInterface
+                },
+                secondAlt: {
+                    finestra: finestra_projects,
+                    interface: ProjectInterface
+                },
+            }
+        });
     });
 
     finestra_stickies_btn_seeAll.addEventListener('click', () => {
-        finestra_stickies.animate('leave'); // CHANGE LATER
-
-        TodoInterface.animate('leave');
-
-        ProjectInterface.animate('leave');
-
-        // CHANGE LATER
-        finestra_todos.render(cont_left_todo);
-        finestra_todos.animate('enter');
-
-        // CHANGE LATER
-        setTimeout(() => {
-            finestra_stickies.unrender();
-        }, 210);
-
-        StickyInterface.render(middle_panel);
-        StickyInterface.animate('enter');
-
-        setTimeout(() => {
-            TodoInterface.unrender();
-            ProjectInterface.unrender();
-        }, 530);
+        DashboardRuntime.switchPanel({
+            fromFinestra: finestra_stickies,
+            toInterface: StickyInterface,
+            oppositeInterfacesNWindows: {
+                firstAlt: {
+                    finestra: finestra_todos,
+                    interface: TodoInterface
+                },
+                secondAlt: {
+                    finestra: finestra_projects,
+                    interface: ProjectInterface
+                },
+            }
+        });
     });
 
     finestra_projects_btn_seeAll.addEventListener('click', () => {
-        finestra_projects.animate('leave'); // CHANGE LATER
+        DashboardRuntime.switchPanel({
+            fromFinestra: finestra_projects,
+            toInterface: ProjectInterface,
+            oppositeInterfacesNWindows: {
+                firstAlt: {
+                    finestra: finestra_todos,
+                    interface: TodoInterface
+                },
+                secondAlt: {
+                    finestra: finestra_stickies,
+                    interface: StickyInterface
+                },
+            }
+        });
+    });
 
-        TodoInterface.animate('leave');
+    finestra_overdues_btn_seeAll.addEventListener('click', () => {
+        
+    });
 
-        StickyInterface.animate('leave');
-
-        // CHANGE LATER
-        finestra_todos.render(cont_right_todo);
-        finestra_todos.animate('enter');
-
-        // CHANGE LATER
-        setTimeout(() => {
-            finestra_projects.unrender();
-        }, 210);
-
-        ProjectInterface.render(middle_panel);
-        ProjectInterface.animate('enter');
-
-        setTimeout(() => {
-            TodoInterface.unrender();
-            StickyInterface.unrender();
-        }, 530);
+    finestra_archives_btn_seeAll.addEventListener('click', () => {
+        
     });
 
     btn_about.addEventListener('click', () => {

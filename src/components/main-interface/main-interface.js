@@ -28,6 +28,7 @@ function MainInterface({
     `;
 
     let isAnimating = false;
+    let isReturnButtonToggled = true;
 
     const range = document.createRange();
     const fragment = range.createContextualFragment(template);
@@ -83,13 +84,20 @@ function MainInterface({
     };
 
     /**
+     * Changes the text of return button
+     * @param {string} text - New text button. 
+     */
+    const changeReturnButtonText = (text) => {
+        btn_return.textContent = `< ${text}`;
+    };
+
+    /**
      * Toggles return button
      * @param {boolean} toggle - Boolean value to toggle the return button above the component 
      */
     const toggleReturnButton = (toggle) => {
-        const btn_return = component.querySelector('.return-wrapper #return');
-
         btn_return.disabled = !toggle;
+        isReturnButtonToggled = toggle;
     };
 
     /**
@@ -99,7 +107,8 @@ function MainInterface({
         const allButtons = component.querySelectorAll('button');
 
         allButtons.forEach(button => {
-            console.log(button);
+            if (!isReturnButtonToggled && button === btn_return) return;
+
             button.disabled = false;
         });
     };
@@ -169,6 +178,7 @@ function MainInterface({
         render,
         unrender,
         changeTitleCount,
+        changeReturnButtonText,
         toggleReturnButton,
         enable,
         disable,

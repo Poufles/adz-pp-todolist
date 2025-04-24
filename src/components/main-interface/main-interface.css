@@ -27,7 +27,7 @@
     background-color: transparent;
     border: 0;
     color: var(--black);
-    margin: 0 10px;
+    margin: 0 50px;
     transition: var(--trans-q);
 }
 
@@ -38,7 +38,7 @@
 }
 
 .comp.main-interface .top {
-    margin: 0 10px;
+    margin: 0 50px;
     display: flex;
     align-items: end;
     justify-content: space-between;
@@ -68,7 +68,7 @@
 .comp.main-interface #description {
     border-bottom: 2px solid var(--black);
     font-size: var(--fn-xlr);
-    margin: 0 10px;
+    margin: 0 50px;
     padding-bottom: 7px;
 }
 
@@ -76,7 +76,7 @@
     border-bottom: 2px solid var(--black);
     padding-top: 12px;
     padding-bottom: 12px;
-    margin: 0 10px;
+    margin: 0 50px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -104,7 +104,7 @@
 
 .comp.main-interface #content {
     flex-grow: 1;
-    padding: 10px 10px 120px 10px;
+    padding: 10px 50px 120px 50px;
     display: flex;
     flex-direction: column;
     gap: 7px;
