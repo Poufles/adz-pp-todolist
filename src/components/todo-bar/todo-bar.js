@@ -78,7 +78,6 @@ function TodoBar(todoObject) {
     };
 
     component.addEventListener('click', () => {
-        console.log(todoObject);
         if (!isEnabled) return;
 
         disable();

@@ -420,7 +420,7 @@ function Finestra({
             component.classList.remove('entering');
             component.classList.remove('animate-enter');
             enable();
-        }, 240);
+        }, 530);
     };
 
     return {

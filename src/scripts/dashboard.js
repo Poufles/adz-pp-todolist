@@ -36,6 +36,7 @@ import StickyInterface from '../components/main-interface/sticky-interface/stick
 import ProjectInterface from '../components/main-interface/project-interface/project-interface.js';
 
 function Dashboard() {
+    const animateSeconds = 500;
     const account = StorageHandler.GetStorage(true);
     const body = document.body;
     const page_dashboard = body.querySelector('.dashboard');
@@ -221,6 +222,8 @@ function Dashboard() {
 
     componentActions.add('main-interface', main_interface);
     componentActions.add('middle-panel', middle_panel);
+    componentActions.add('container-left-todo', cont_left_todo);
+    componentActions.add('container-right-todo', cont_right_todo);
 
     const todoInterface_btn = TodoInterface.createButton;
     const finestra_todos_btn_seeAll = finestra_todos.closeButton;
@@ -234,62 +237,105 @@ function Dashboard() {
     });
 
     finestra_todos_btn_seeAll.addEventListener('click', () => {
-        console.log('hello');
+        switchPanel({
+            fromFinestra: finestra_todos,
+            toInterface: TodoInterface,
+            oppositeInterfacesNWindows: {
+                firstAlt: {
+                    finestra: finestra_stickies,
+                    interface: StickyInterface
+                },
+                secondAlt: {
+                    finestra: finestra_projects,
+                    interface: ProjectInterface
+                },
+            }
+        });
     });
 
     finestra_stickies_btn_seeAll.addEventListener('click', () => {
-        finestra_stickies.animate('leave'); // CHANGE LATER
-
-        TodoInterface.animate('leave');
-
-        ProjectInterface.animate('leave');
-
-        // CHANGE LATER
-        finestra_todos.render(cont_left_todo);
-        finestra_todos.animate('enter');
-
-        // CHANGE LATER
-        setTimeout(() => {
-            finestra_stickies.unrender();
-        }, 210);
-
-        StickyInterface.render(middle_panel);
-        StickyInterface.animate('enter');
-
-        setTimeout(() => {
-            TodoInterface.unrender();
-            ProjectInterface.unrender();
-        }, 530);
+        switchPanel({
+            fromFinestra: finestra_stickies,
+            toInterface: StickyInterface,
+            oppositeInterfacesNWindows: {
+                firstAlt: {
+                    finestra: finestra_todos,
+                    interface: TodoInterface
+                },
+                secondAlt: {
+                    finestra: finestra_projects,
+                    interface: ProjectInterface
+                },
+            }
+        });
     });
 
     finestra_projects_btn_seeAll.addEventListener('click', () => {
-        finestra_projects.animate('leave'); // CHANGE LATER
-
-        TodoInterface.animate('leave');
-
-        StickyInterface.animate('leave');
-
-        // CHANGE LATER
-        finestra_todos.render(cont_right_todo);
-        finestra_todos.animate('enter');
-
-        // CHANGE LATER
-        setTimeout(() => {
-            finestra_projects.unrender();
-        }, 210);
-
-        ProjectInterface.render(middle_panel);
-        ProjectInterface.animate('enter');
-
-        setTimeout(() => {
-            TodoInterface.unrender();
-            StickyInterface.unrender();
-        }, 530);
+        switchPanel({
+            fromFinestra: finestra_projects,
+            toInterface: ProjectInterface,
+            oppositeInterfacesNWindows: {
+                firstAlt: {
+                    finestra: finestra_todos,
+                    interface: TodoInterface
+                },
+                secondAlt: {
+                    finestra: finestra_stickies,
+                    interface: StickyInterface
+                },
+            }
+        });
     });
 
     btn_about.addEventListener('click', () => {
         console.log('About Section later lol');
     });
+};
+
+/**
+ * Switches the panels.
+ * @param {object} options 
+ */
+function switchPanel({
+    fromFinestra,
+    toInterface,
+    oppositeInterfacesNWindows,
+}) {
+    const animateDuration = 500;
+    const componentActions = DashboardRuntime.componentActions;
+    const middlePanel = componentActions.get('middle-panel').component;
+    const currentMiddlePanelChild = middlePanel.firstElementChild;
+    const leftContainer = componentActions.get('container-left-todo').component;
+    const rightContainer = componentActions.get('container-right-todo').component;
+
+    const isLeft = fromFinestra.component === leftContainer.firstElementChild;
+
+    fromFinestra.animate('leave');
+    toInterface.render(middlePanel);
+    toInterface.animate('enter');
+
+    const targetContainer = isLeft ? leftContainer : rightContainer;
+
+    const {firstAlt, secondAlt} = oppositeInterfacesNWindows;
+
+    if (currentMiddlePanelChild === firstAlt.interface.component) {
+        firstAlt.finestra.render(targetContainer);
+        firstAlt.finestra.animate('enter');
+        firstAlt.interface.animate('leave');
+    } else {
+        secondAlt.finestra.render(targetContainer);
+        secondAlt.finestra.animate('enter');
+        secondAlt.interface.animate('leave');
+    }
+
+    setTimeout(() => {
+        fromFinestra.unrender();
+    }, animateDuration);
+
+    setTimeout(() => {
+        firstAlt.interface.unrender();
+        secondAlt.interface.unrender();
+    }, animateDuration);
 };
 
 /**
