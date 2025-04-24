@@ -13,18 +13,17 @@ import '../components/finestra/basic-settings/basic-settings.css';
 import '../components/auth-interface/auth-interface.css';
 import '../components/message-box/message-box.css';
 import '../components/main-interface/main-interface.css';
+import '../components/main-interface/sticky-interface/sticky-interface.css';
 import '../components/todo-bar/todo-bar.css';
+import '../components/sticky-note/sticky-note.css';
 import '../components/userbox/userbox.css';
-import '../components/devtools/devtools.css';
 
-import DevTools from '../components/devtools/devtools.js';
 import DateHandler from './date-handler.js';
 import CRUD from './crud.js';
 import Finestra from '../components/finestra/window.js';
 import WordButton from '../components/buttons/word-button/word-button.js';
 import TypeStats from '../components/type-stats/type-stats.js';
 import SVG from '../scripts/svg.js';
-import MainInterface from '../components/main-interface/main-interface.js';
 import TodoInterface from '../components/main-interface/todo-interface/todo-interface.js';
 import BasicSettings from '../components/finestra/basic-settings/basic-settings.js';
 import UserBox from '../components/userbox/userbox.js';
@@ -34,9 +33,10 @@ import TodoBar from '../components/todo-bar/todo-bar.js';
 import DashboardRuntime from './dashboard-runtime.js';
 import StickyInterface from '../components/main-interface/sticky-interface/sticky-interface.js';
 import ProjectInterface from '../components/main-interface/project-interface/project-interface.js';
+import CreateSticky from '../components/finestra/create-note/create-note.js';
+import StickyNote from '../components/sticky-note/sticky-note.js';
 
 function Dashboard() {
-    const animateSeconds = 500;
     const account = StorageHandler.GetStorage(true);
     const body = document.body;
     const page_dashboard = body.querySelector('.dashboard');
@@ -139,7 +139,7 @@ function Dashboard() {
     ////////////////// MAIN PANEL //////////////////
     TodoInterface.render(middle_panel);
 
-    const todos = CRUD.getTodos();
+    const todos = CRUD.getTasks('todo');
     const todosArr = [];
 
     for (let index = 0; index < todos.length; index++) {
@@ -149,6 +149,18 @@ function Dashboard() {
 
         TodoInterface.addContent(todoBar);
         todosArr.push(todoBar);
+    };
+
+    const stickies = CRUD.getTasks('sticky');
+    const stickiesArr = [];
+
+    for (let index = 0; index < stickies.length; index++) {
+        let sticky = stickies[index];
+
+        const stickyNote = StickyNote(sticky);
+
+        StickyInterface.addContent(stickyNote);
+        stickiesArr.push(stickyNote);
     };
 
     ////////////////// MAIN PANEL //////////////////
@@ -229,6 +241,8 @@ function Dashboard() {
     componentActions.add('finestra-projects', undefined, finestra_projects);
 
     const todoInterface_btn = TodoInterface.createButton;
+    const stickyInterface_btn = StickyInterface.createButton;
+
     const finestra_todos_btn_seeAll = finestra_todos.closeButton;
     const finestra_stickies_btn_seeAll = finestra_stickies.closeButton;
     const finestra_projects_btn_seeAll = finestra_projects.closeButton;
@@ -239,6 +253,12 @@ function Dashboard() {
         const createTodo = CreateTodo();
 
         createTodo.modal(main_interface);
+    });
+
+    stickyInterface_btn.addEventListener('click', () => {
+        const createSticky = CreateSticky();
+
+        createSticky.modal(main_interface);
     });
 
     finestra_todos_btn_seeAll.addEventListener('click', () => {
@@ -293,88 +313,16 @@ function Dashboard() {
     });
 
     finestra_overdues_btn_seeAll.addEventListener('click', () => {
-        // switchPanel({
-        //     fromFinestra: finestra_projects,
-        //     toInterface: ProjectInterface,
-        //     oppositeInterfacesNWindows: {
-        //         firstAlt: {
-        //             finestra: finestra_todos,
-        //             interface: TodoInterface
-        //         },
-        //         secondAlt: {
-        //             finestra: finestra_stickies,
-        //             interface: StickyInterface
-        //         },
-        //     }
-        // });
+        
     });
 
     finestra_archives_btn_seeAll.addEventListener('click', () => {
-        // switchPanel({
-        //     fromFinestra: finestra_projects,
-        //     toInterface: ProjectInterface,
-        //     oppositeInterfacesNWindows: {
-        //         firstAlt: {
-        //             finestra: finestra_todos,
-        //             interface: TodoInterface
-        //         },
-        //         secondAlt: {
-        //             finestra: finestra_stickies,
-        //             interface: StickyInterface
-        //         },
-        //     }
-        // });
+        
     });
 
     btn_about.addEventListener('click', () => {
         console.log('About Section later lol');
     });
-};
-
-/**
- * Switches the panels.
- * @param {object} options 
- */
-function switchPanel({
-    fromFinestra,
-    toInterface,
-    oppositeInterfacesNWindows,
-}) {
-    const animateDuration = 500;
-    const componentActions = DashboardRuntime.componentActions;
-    const middlePanel = componentActions.get('middle-panel').component;
-    const currentMiddlePanelChild = middlePanel.firstElementChild;
-    const leftContainer = componentActions.get('container-left-todo').component;
-    const rightContainer = componentActions.get('container-right-todo').component;
-
-    const isLeft = fromFinestra.component === leftContainer.firstElementChild;
-
-    fromFinestra.animate('leave');
-    toInterface.render(middlePanel);
-    toInterface.animate('enter');
-
-    const targetContainer = isLeft ? leftContainer : rightContainer;
-
-    const {firstAlt, secondAlt} = oppositeInterfacesNWindows;
-
-    if (currentMiddlePanelChild === firstAlt.interface.component) {
-        firstAlt.finestra.render(targetContainer);
-        firstAlt.finestra.animate('enter');
-        firstAlt.interface.animate('leave');
-    } else {
-        secondAlt.finestra.render(targetContainer);
-        secondAlt.finestra.animate('enter');
-        secondAlt.interface.animate('leave');
-    }
-
-    setTimeout(() => {
-        fromFinestra.unrender();
-    }, animateDuration);
-
-    setTimeout(() => {
-        firstAlt.interface.unrender();
-        secondAlt.interface.unrender();
-    }, animateDuration);
 };
 
 /**

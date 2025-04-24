@@ -218,12 +218,8 @@
 
         overlay.addEventListener('click', () => {
             const parentRec = component_shadow.getBoundingClientRect();
-            console.log(parentRec.top);
-            console.log(parentRec.left);
             const childRect = component.getBoundingClientRect();
             const parent_pos = `--parent-top: ${parentRec.top}px; --parent-left: ${parentRec.left}px`;
-            console.log(childRect.top);
-            console.log(childRect.left);
             const starting_style = `--starting-top: ${childRect.top}px; --starting-left: ${childRect.left}px`;
 
             component.classList.remove('view');

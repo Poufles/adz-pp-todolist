@@ -1,0 +1,9 @@
+.comp.main-interface#interface-stickies #content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    grid-template-rows: auto auto 1fr;
+    gap: 15px;
+    scrollbar-width: none;
+    position: static;
+    z-index: 1;
+}

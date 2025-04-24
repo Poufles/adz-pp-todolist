@@ -4,7 +4,6 @@ import { InformMessageBox } from '../../message-box/message-box.js';
 import CRUD from '../../../scripts/crud.js';
 import DateHandler from '../../../scripts/date-handler.js';
 import TodoBar from '../../todo-bar/todo-bar.js';
-import DashboardRuntime from '../../../scripts/dashboard-runtime.js';
 import TodoInterface from '../../main-interface/todo-interface/todo-interface.js';
 
 // CHANGE LATER
