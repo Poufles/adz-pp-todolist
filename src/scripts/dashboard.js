@@ -292,7 +292,7 @@ function Dashboard() {
         });
     });
 
-    finestra_archives_btn_seeAll.addEventListener('click', () => {
+    finestra_overdues_btn_seeAll.addEventListener('click', () => {
         // switchPanel({
         //     fromFinestra: finestra_projects,
         //     toInterface: ProjectInterface,

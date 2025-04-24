@@ -16,6 +16,7 @@ const ProjectInterface = function () {
         buttonId: 'create'
     });
 
+    projectInterface.changeReturnButtonText('go back to todos');
     const btn_return = projectInterface.returnButton;
     
     btn_return.addEventListener('click', () => {

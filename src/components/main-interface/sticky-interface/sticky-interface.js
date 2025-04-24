@@ -16,6 +16,7 @@ const StickyInterface = function () {
         buttonId: 'create'
     });
 
+    stickyInterface.changeReturnButtonText('go back to todos');
     const btn_return = stickyInterface.returnButton;
 
     btn_return.addEventListener('click', () => {
