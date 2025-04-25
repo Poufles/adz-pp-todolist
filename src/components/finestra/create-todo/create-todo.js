@@ -6,8 +6,6 @@ import DateHandler from '../../../scripts/date-handler.js';
 import TodoBar from '../../todo-bar/todo-bar.js';
 import TodoInterface from '../../main-interface/todo-interface/todo-interface.js';
 
-// CHANGE LATER
-// IF THIS SHOULD REALLY BE A IIFE
 function CreateTodo() {
     let isEdit = false;
     let todoObject;
@@ -27,7 +25,7 @@ function CreateTodo() {
         hint: {
             hasHint: true,
             title: 'Max character',
-            message: '40 characters'
+            message: '60 characters'
         }
     });
 
@@ -78,8 +76,11 @@ function CreateTodo() {
     finestra.addBottomMessage('experience to earn: 5xp');
 
     const finestraButtons = finestra.componentButtonsArr;
+    const finestraContentArr = finestra.contentItemsArr;
     const btn_close = finestra.closeButton;
-    let btn_reset, btn_create;
+    const contentInputElementArr = [];
+
+    let btn_reset, btn_create, timeInputsArr;
 
     for (let index = 0; index < finestraButtons.length; index++) {
         const button = finestraButtons[index].component;
@@ -96,6 +97,107 @@ function CreateTodo() {
             break;
         };
     };
+
+    finestraContentArr.map(content => {
+        if (content.timeInputs) {
+            contentInputElementArr.push(content.timeInputs);
+        } else {
+            contentInputElementArr.push(content.inputComponent);
+        };
+    });
+
+    for (let index = 0; index < finestraContentArr.length; index++) {
+        const inputObject = finestraContentArr[index];
+
+        if (inputObject.timeInputs) {
+            timeInputsArr = inputObject.timeInputs;
+            continue;
+        };
+
+        /** @type {HTMLInputElement} */
+        const input = inputObject.inputComponent;
+
+        input.addEventListener('keydown', (e) => {
+            e.stopPropagation();
+
+            const inputIndex = index;
+            const prevInputElement = contentInputElementArr[inputIndex - 1];
+            const nextInputElement = contentInputElementArr[inputIndex + 1];
+
+            if (e.key === 'ArrowUp') {
+
+                if (!prevInputElement) return;
+
+                if (prevInputElement instanceof HTMLInputElement) {
+                    console.log('coucou');
+                    prevInputElement.focus();
+                    VerifyCursorOnFocus(prevInputElement);
+                } else {
+
+                    const length = prevInputElement.length
+                    for (let jndex = 0; jndex < length; jndex++) {
+                        const timeInput = prevInputElement[jndex];
+
+                        if (timeInput.type !== 'button' && timeInput.value === '') {
+                            timeInput.focus();
+
+                            return;
+                        }
+                    };
+
+                    prevInputElement.focus();
+                    VerifyCursorOnFocus(prevInputElement);
+                };
+
+                return;
+            };
+
+            if (e.key === 'ArrowDown') {
+
+                if (!nextInputElement) return;
+
+                if (prevInputElement instanceof HTMLInputElement) {
+                    nextInputElement.focus();
+                    VerifyCursorOnFocus(nextInputElement);
+                } else {
+
+                    const length = nextInputElement.length
+                    for (let jndex = 0; jndex < length; jndex++) {
+                        const timeInput = nextInputElement[jndex];
+
+                        if (timeInput.type !== 'button' && timeInput.value === '') {
+                            timeInput.focus();
+
+                            return;
+                        }
+                    };
+
+                    nextInputElement.focus();
+                    VerifyCursorOnFocus(nextInputElement);
+                };
+            };
+        });
+    };
+
+    timeInputsArr.forEach(timeInput => {
+        timeInput.addEventListener('keydown', (e) => {
+
+
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+
+                contentInputElementArr[0].focus();
+                VerifyCursorOnFocus(contentInputElementArr[0])
+            };
+            
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+
+                contentInputElementArr[2].focus();
+                VerifyCursorOnFocus(contentInputElementArr[2])
+            };
+        });
+    });
 
     btn_reset.addEventListener('click', () => {
         if (isEdit) {
@@ -155,6 +257,12 @@ function CreateTodo() {
                 finestra.enable();
             };
 
+            return;
+        };
+
+        if (responseVerify.status === 's-invalid') {
+            finestra.unrenderModal(true);
+            todoObjectUpdateFunction(responseVerify.inputs);
             return;
         };
 
@@ -286,6 +394,18 @@ function VerifyInputs(name, deadline, project, color, id = undefined, isEdit = f
         status: todo.status,
         inputs: todo.inputs
     };
+};
+
+/**
+ * Puts the cursor on the right spot
+ * @param {HTMLInputElement} input 
+ */
+function VerifyCursorOnFocus(input) {
+    const inputLength = input.value.length;
+
+    requestAnimationFrame(() => {
+        input.setSelectionRange(inputLength, inputLength);
+    });
 };
 
 export default CreateTodo;

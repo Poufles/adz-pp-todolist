@@ -1,5 +1,6 @@
 import CRUD from "../../scripts/crud.js";
 import DashboardRuntime from "../../scripts/dashboard-runtime.js";
+import CreateSticky from "../finestra/create-note/create-note.js";
 
 function StickyNote(stickyObject) {
     const template = `
@@ -108,7 +109,7 @@ function StickyNote(stickyObject) {
     btn_view.addEventListener('click', (e) => {
         e.stopPropagation();
 
-        if (currentState === 'view') return;
+        if (currentState !== undefined) return;
 
         currentState = 'view';
 
@@ -126,6 +127,23 @@ function StickyNote(stickyObject) {
         componentMainArticle.classList.add('view');
         componentMainArticle.setAttribute('style', starting_style);
     })
+
+    btn_edit.addEventListener('click', (e) => {
+        e.stopPropagation();
+
+        if (currentState !== undefined) return; 
+
+        currentState = 'edit';
+
+        const mainInterfaceObj = DashboardRuntime.componentActions.get('main-interface');
+
+        const createSticky = CreateSticky();
+
+        // createSticky.editMode(stickyObject, updateInfo);
+        createSticky.editMode(stickyObject);
+        createSticky.modal(mainInterfaceObj.component);
+        // DashboardRuntime.objectActions.add('task-enable', enable)
+    });
 
     /**
      * Renders the component

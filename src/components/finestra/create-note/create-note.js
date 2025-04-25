@@ -8,6 +8,7 @@ import Finestra from "../window.js";
 function CreateSticky() {
     let isEdit = false;
     let stickyObject;
+    let stickyObjectUpdateFunction;
 
     const finestra = Finestra({
         hasActions: true,
@@ -92,16 +93,39 @@ function CreateSticky() {
             return;
         };
 
-        const response = CRUD.createSticky(color, project);
+        const crudResponse = CRUD.createSticky(color, project);
 
-        if (response.status === 'success') {
-            stickyObject = response.inputs;
+        if (crudResponse.status === 'success') {
+            let messageBox;
+            const overlay = finestra.component.parentElement;
 
-            const stickyNote = StickyNote(stickyObject);
+            messageBox = InformMessageBox('Success!', 'A new sticky has been successfully created!');
 
-            StickyInterface.addContent(stickyNote);
+            const response = await messageBox.modal(overlay);
+
+            if (response) {
+                finestra.unrenderModal(true);
+                stickyObject = crudResponse.inputs;
+
+                const stickyNote = StickyNote(stickyObject);
+                StickyInterface.addContent(stickyNote);
+            };
         };
     });
+
+    /**
+     * To edit a todo information
+     */
+    const editMode = (stickyUpdateInfo, updateInfo) => {
+        isEdit = true;
+        stickyObject = stickyUpdateInfo;
+        // stickyObjectUpdateFunction = updateInfo;
+
+        input_color.inputComponent.value = stickyObject.color;
+        input_project.inputComponent.value = stickyObject.project;
+    };
+
+    finestra.editMode = editMode;
 
     return finestra;
 };

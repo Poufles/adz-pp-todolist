@@ -54,27 +54,13 @@ function TodoBar(todoObject) {
     const btn_project_span = btn_project.querySelector('#project');
     const cont_time = component.querySelector('.time-container');
     const span_due = cont_time.querySelector('#due-date');
-    const due_message = cont_time.querySelector('#due-message');
 
     if (btn_project_span) cont_mid.removeChild(btn_project);
 
-    const timeDifference = DateHandler.timeDifference(todoObject.deadline);
-    const isToday = timeDifference.isThisTimeToday;
-    const milliseconds = timeDifference.millisecDifference;
-    const days = timeDifference.daysDifference;
-    const hours = timeDifference.hoursDifference;
+    UpdateDeadlineMessage(cont_time, todoObject.deadline);
 
-    if (isToday) {
-        due_message.classList.add('today');
-        due_message.textContent = '> Due today!';
-    } else if (days > 3) {
-        cont_time.removeChild(due_message);
-    } else if (days >= 3 || hours <= 24 && milliseconds > 0) {
-        due_message.classList.add('soon');
-        due_message.textContent = '> Due soon!';
-    } else if (milliseconds < 0) {
-        due_message.classList.add('overdue');
-        due_message.textContent = 'Overdue...';
+    if (todoObject.status) {
+        checkbox.prepend(checkIcon);
     };
 
     component.addEventListener('click', () => {
@@ -84,7 +70,7 @@ function TodoBar(todoObject) {
 
         const mainInterfaceObj = componentActions.get('main-interface');
 
-        const createTodo = CreateTodo(true);
+        const createTodo = CreateTodo();
 
         createTodo.editMode(todoObject, updateInfo);
         createTodo.modal(mainInterfaceObj.component);
@@ -203,9 +189,10 @@ function TodoBar(todoObject) {
             };
         };
 
-        p_name.textContent = todoObject.name;        
-        btn_project_span.textContent = todoObject.project;        
-        span_due.textContent = DateHandler.getTimeSlice(todoObject.deadline, 'hour'); 
+        p_name.textContent = todoObject.name;
+        btn_project_span.textContent = todoObject.project;
+        span_due.textContent = DateHandler.getTimeSlice(todoObject.deadline, 'hour');
+        UpdateDeadlineMessage(cont_time, todoObject.deadline);
     };
 
     return {
@@ -215,6 +202,33 @@ function TodoBar(todoObject) {
         disable,
         updateInfo
     }
+};
+
+function UpdateDeadlineMessage(timeContainer, deadline) {
+    const due_message = timeContainer.querySelector('#due-message');
+
+    const timeDifference = DateHandler.timeDifference(deadline);
+    const isToday = timeDifference.isThisTimeToday;
+    const milliseconds = timeDifference.millisecDifference;
+    const days = timeDifference.daysDifference;
+    const hours = timeDifference.hoursDifference;
+    
+    due_message.classList.remove('today');
+    due_message.classList.remove('soon');
+    due_message.classList.remove('overdue');
+
+    if (isToday) {
+        due_message.classList.add('today');
+        due_message.textContent = '> Due today!';
+    } else if (days > 3) {
+        timeContainer.removeChild(due_message);
+    } else if (days >= 3 || hours <= 24 && milliseconds > 0) {
+        due_message.classList.add('soon');
+        due_message.textContent = '> Due soon!';
+    } else if (milliseconds < 0) {
+        due_message.classList.add('overdue');
+        due_message.textContent = 'Overdue...';
+    };
 };
 
 function SortDeadlines() {

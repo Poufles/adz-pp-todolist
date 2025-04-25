@@ -127,6 +127,7 @@
     flex-shrink: 1;
 
     width: 100%;
+    min-width: 0;
     padding-right: 30px;
     display: flex;
     flex-direction: column;
@@ -134,8 +135,20 @@
 }
 
 .comp.todo-bar .mid-container .todo-container {
+    flex-shrink: 1;
+    flex-basis: 60%;
+
     width: 100%;
     max-width: 300px;
+    min-width: 0;
+}
+
+.comp.todo-bar .mid-container .todo-container p {
+    width: 100%;
+    min-width: 0;
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .comp.todo-bar .folder-container {

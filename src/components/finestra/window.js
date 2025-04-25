@@ -172,9 +172,15 @@ function Finestra({
             const inputComponent = objectItem.inputComponent;
 
             if (input.status && inputComponent.type !== 'button') {
+                console.log(input.status);
+                console.log(input.value);
+                console.log(inputComponent);
+                console.log(inputComponent.type);
                 hasInputs = true; break;
             };
         };
+
+        console.log(hasInputs);
 
         if (!hasInputs) {
             CloseComponent(component, true);
@@ -211,15 +217,6 @@ function Finestra({
             console.log(`Object element has no render()`);
         };
     };
-
-    // const removeContent = (element) => {
-    //     if (Object.hasOwn(element, 'unrender')) {
-    //         element.unrender();
-    //         contentItemsArr.splice(element);
-    //     } else {
-    //         console.log(`Object element has no render()`);
-    //     };
-    // };
 
     /**
      * Adds a status and keyboard hints 
@@ -274,7 +271,7 @@ function Finestra({
             if (Object.hasOwn(objectItem, 'hasInputs')) {
                 const inputObject = objectItem.hasInputs();
 
-                if (!inputObject.status) {
+                if (!inputObject.status && !inputObject.isOptional) {
                     hasValue = false;
                     objectItem.requiredMessage();
                 };
@@ -416,6 +413,7 @@ function Finestra({
         component,
         closeButton: btn_title,
         componentButtonsArr,
+        contentItemsArr,
         render,
         unrender,
         modal,

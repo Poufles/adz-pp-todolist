@@ -112,7 +112,7 @@ const CRUD = function () {
         if (todosLength !== 0) {
             for (let index = 0; index < todosLength; index++) {
                 let todo = todos[index];
-                if (todo.name === name) {
+                if (todo.name === name && todo.id !== id) {
                     console.error('Name already exists.');
 
                     return {
@@ -124,7 +124,7 @@ const CRUD = function () {
         };
 
         // Verify date
-        if (!isSameDeadline || !DateHandler.isValidateFullTime(deadline)) {
+        if (!isSameDeadline && !DateHandler.isValidateFullTime(deadline)) {
             console.error('Invalid time.');
 
             return {

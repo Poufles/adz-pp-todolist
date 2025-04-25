@@ -256,7 +256,6 @@ function InputBlock({
 
             for (let index = 0; index < timeInputs.length; index++) {
                 const input = timeInputs[index].value
-                console.log(input);
 
                 if (input !== '' && !input.includes('m')) {
                     hasInput = true;
@@ -266,24 +265,24 @@ function InputBlock({
 
             const timeValue = hasInput ? `${timeInputs[0].value}${timeInputs[1].value}:${timeInputs[2].value}${timeInputs[3].value}${timeInputs[4].value} @ ${timeInputs[5].value}${timeInputs[6].value}/${timeInputs[7].value}${timeInputs[8].value}/${timeInputs[9].value}${timeInputs[10].value}${timeInputs[11].value}${timeInputs[12].value}` : undefined;
 
-            console.log(hasInput);
-
             return {
+                isOptional,
                 status: hasInput,
                 value: timeValue
             };
+        };
 
-        } else {
-            return {
-                status: inputComponent.value !== '' ? true : false,
-                value: inputComponent.value
-            };
+        return {
+            isOptional,
+            status: inputComponent.value !== '' ? true : false,
+            value: inputComponent.value
         };
     };
 
     return {
         component,
         inputComponent,
+        timeInputs,
         isOptional,
         render,
         unrender,
