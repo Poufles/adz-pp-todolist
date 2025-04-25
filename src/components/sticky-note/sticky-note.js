@@ -115,9 +115,9 @@ function StickyNote(stickyObject) {
 
         const main_interface = DashboardRuntime.componentActions.get('main-interface').component;
         const mainRect = main_interface.getBoundingClientRect();
-        const compRect = component.getBoundingClientRect()
+        const compShadowRect = component.getBoundingClientRect()
         const actualWidth = component.offsetWidth;
-        const starting_style = `--starting-top: ${compRect.top - mainRect.top}px; --starting-left: ${compRect.left - mainRect.left}px; --actual-width: ${actualWidth}px`;
+        const starting_style = `--starting-top: ${compShadowRect.top - mainRect.top}px; --starting-left: ${compShadowRect.left - mainRect.left}px; --actual-width: ${actualWidth}px`;
 
         main_interface.appendChild(overlay);
         overlay.classList.add('show');
@@ -126,7 +126,7 @@ function StickyNote(stickyObject) {
         overlay.appendChild(componentMainArticle);
         componentMainArticle.classList.add('view');
         componentMainArticle.setAttribute('style', starting_style);
-    })
+    });
 
     btn_edit.addEventListener('click', (e) => {
         e.stopPropagation();

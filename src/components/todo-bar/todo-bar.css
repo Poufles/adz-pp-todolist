@@ -1,9 +1,55 @@
+.todo-shadow {
+    background-color: rgba(0, 0, 0, 0.2);
+    width: 100%;
+    height: 100%;
+    max-height: 80px;
+    min-width: 230px;
+    transition: var(--trans-q);
+    display: flex;
+    position: relative;
+}
+
+.todo-shadow:not(:has(.todo-bar)) {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
 .comp.todo-bar {
-    background-color: rgba(0, 0, 0, 1);
+    /* background-color: rgba(0, 0, 0, 1); */
     height: 100%;
     width: 100%;
     max-height: 80px;
+    transform: translate(0%, 0%);
+    position: absolute;
+    top: 0%;
+    left: 0%;
     transition: var(--trans-q);
+}
+
+.comp.todo-bar.view {
+    max-width: var(--actual-width);
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+
+    @starting-style {
+        top: var(--starting-top);
+        left: var(--starting-left);
+        transform: translate(0%, 0%);
+    }
+}
+
+.comp.todo-bar.return {
+    max-width: var(--actual-width);
+    transform: translate(0%, 0%);
+    top: var(--parent-top);
+    left: var(--parent-left);
+    z-index: 2;
+
+    @starting-style {
+        top: var(--starting-top);
+        left: var(--starting-left);
+    }
 }
 
 .comp.todo-bar .info-wrapper {
@@ -19,11 +65,15 @@
 }
 
 .comp.todo-bar:has(.info-wrapper:hover) {
-    background-color: rgba(0, 0, 0, 0.2);
+    /* background-color: rgba(0, 0, 0, 0.2); */
 }
 
 .comp.todo-bar .info-wrapper:hover {
     transform: translateY(-5px) scale(1.02);
+}
+
+.comp.todo-bar.view .info-wrapper {
+    transform: translateY(0px) scale(1.05);
 }
 
 .comp.todo-bar.click-hold>.info-wrapper:hover {
@@ -31,7 +81,7 @@
 }
 
 .comp.todo-bar.click-hold {
-    background-color: rgba(0, 0, 0, 1);
+    /* background-color: rgba(0, 0, 0, 1); */
 }
 
 .comp.todo-bar .check-container {
@@ -75,8 +125,9 @@
 }
 
 .comp.todo-bar .check-container .custom-checkbox #hint {
-    background-color: var(--accent-color-1); /* CHANGE COLOR */
+    background-color: var(--black); /* CHANGE COLOR */
     border: 2px solid var(--black);
+    color: var(--primary-color);
     height: max-content;
     width: 0%;
     max-width: max-content;
@@ -209,4 +260,55 @@
 
 .comp.todo-bar .time-container #due-message.overdue {
     color: gray;
+}
+
+#todo-bar-actions {
+    width: 290px;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: var(--position);
+    left: 50%;
+    transition: var(--trans-q);
+    opacity: 0;
+}
+
+#todo-bar-actions.show {
+    opacity: 1;
+
+    @starting-style {
+        opacity: 0;
+    }
+}
+
+#todo-bar-actions button {
+    width: 110px;
+}
+
+#todo-bar-actions button#delete {
+    background-color: red;
+    color: var(--primary-color);
+}
+
+#todo-bar-actions button#edit {
+    background-color: orange;
+    color: var(--primary-color);
+}
+
+.overlay .message-box {
+    transform: translate(-50%, -50%) scale(0);
+    top: 50%;
+    left: 50%;
+    z-index: 3;
+}
+
+.overlay .message-box.opening {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.overlay .message-box.closing {
+    transform: translate(-50%, -50%) scale(0);
 }

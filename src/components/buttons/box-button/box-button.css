@@ -3,7 +3,7 @@
     transition: var(--trans-q);
 }
 
-.box-button>button {
+.box-button-main {
     background-color: var(--accent-color-1);
     border: 2px solid var(--black);
     color: var(--black); /* CHANGE LATER */
@@ -12,15 +12,15 @@
     transition: var(--trans-q);
 }
 
-.box-button:has(button:hover) {
+.box-button:has(.box-button-main:hover) {
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-.box-button>button:hover {
+.box-button>.box-button-main:hover {
     transform: scale(1.065) translateY(-5px);
 }
 
-.box-button.click-hold>button:hover {
+.box-button.click-hold>.box-button-main:hover {
     transform: none;
 }
 

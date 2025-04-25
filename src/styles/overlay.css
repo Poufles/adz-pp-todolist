@@ -1,0 +1,22 @@
+.overlay {
+    background-color: rgba(0, 0, 0, 0.02);
+    backdrop-filter: blur(2px);
+    width: 100%;
+    height: 100%;
+    display: none;
+    position: absolute;
+    transition-behavior: allow-discrete;
+    transition-property: opacity, display;
+    transition-duration: var(--trans-q), var(--trans-q);
+    opacity: 0;
+}
+
+.overlay.show {
+    display: block;
+    opacity: 1;
+    z-index: 1;
+
+    @starting-style {
+        opacity: 0;
+    }
+}

@@ -1,14 +1,28 @@
 import Button from "../button.js";
 
-function BoxButton({ text = 'button', id = 'button' } = {}) {
-    const template =
+function BoxButton({ text = 'button', id = 'button', isButtonOnly = false } = {}) {
+    let template 
+
+    const template_1 =
     `
     <div class="comp box-button select-none">
-        <button type="button" class="btn" id="box-${id}">
+        <button type="button" class="btn box-button-main" id="box-${id}">
             ${text}
         </button>
-    </div>
+        </div>
     `;
+
+    const template_2 = `
+        <button type="button" class="btn box-button-main" id="box-${id}">
+            ${text}
+        </button>
+    `;
+
+    if (isButtonOnly) {
+        template = template_2;
+    } else {
+        template = template_1;
+    };
 
     const button = Button({
         id,
