@@ -252,7 +252,7 @@ function Dashboard() {
     todoInterface_btn.addEventListener('click', () => {
         const createTodo = CreateTodo();
 
-        createTodo.modal(main_interface);
+        createTodo.modal(main_interface, 'todo');
     });
 
     stickyInterface_btn.addEventListener('click', () => {

@@ -21,7 +21,7 @@ function CreateTodo() {
     const input_name = InputBlock({
         inputType: 'multi',
         inputId: 'item-name',
-        title: 'Todo name',
+        title: 'Todo description',
         hint: {
             hasHint: true,
             title: 'Max character',
@@ -293,6 +293,25 @@ function CreateTodo() {
     });
 
     btn_close.addEventListener('click', () => {
+        if (isEdit) {
+            let isSameName, isSameDeadline, isSameColor, isSameProject;
+
+            const timeInputObj = input_deadline.hasInputs();
+            const timeString = timeInputObj.value;
+
+            console.log(todoObject.name);
+            console.log(input_name.inputComponent.value);
+            if (todoObject.name === input_name.inputComponent.value) isSameName = true;
+
+            if (todoObject.deadline === timeString) isSameDeadline = true;
+            if (todoObject.project === input_project.inputComponent.value) isSameProject = true;
+            if (todoObject.color === input_color.inputComponent.value) isSameColor = true;
+
+            if (isSameName && isSameDeadline && isSameColor && isSameProject) {
+                finestra.unrenderModal(true); return;
+            };
+        };
+
         finestra.unrenderModal();
     });
 

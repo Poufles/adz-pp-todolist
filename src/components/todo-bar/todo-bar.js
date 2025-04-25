@@ -63,7 +63,9 @@ function TodoBar(todoObject) {
         checkbox.prepend(checkIcon);
     };
 
-    component.addEventListener('click', () => {
+    component.addEventListener('click', (e) => {
+        e.stopPropagation();
+
         if (!isEnabled) return;
 
         disable();
@@ -73,7 +75,7 @@ function TodoBar(todoObject) {
         const createTodo = CreateTodo();
 
         createTodo.editMode(todoObject, updateInfo);
-        createTodo.modal(mainInterfaceObj.component);
+        createTodo.modal(mainInterfaceObj.component, 'todo', true);
         DashboardRuntime.objectActions.add('task-enable', enable)
     });
 

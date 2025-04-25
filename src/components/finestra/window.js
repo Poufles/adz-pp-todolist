@@ -35,6 +35,7 @@ function Finestra({
 
     let isAnimating, visualComponent;
     let awaiting = false;
+    let editMode;
 
     const templateFragment = GetTemplateFragment(template);
     const component = templateFragment.querySelector('.window-component');
@@ -120,16 +121,28 @@ function Finestra({
     /**
      * Creates a render of the component in a modal.
      * @param {HTMLElement} parent - The parent component to where the overlay must be appended.
+     * @param {string} type - Type of task to edit. ( todo || sticky || project )
+     * @param {boolean} isEdit
      */
-    const modal = (parent) => {
+    const modal = (parent, type, isEdit = false) => {
         if (!parent) {
             console.error('Error: parent parameter does not exist');
 
             return;
         };
 
+        let title;
+        
+        if (isEdit) {
+            title = `Edit ${type}...`;
+        } else {
+            title = `Create ${type}...`;
+        }
+        
         enable();
-        // CHANGE LATER IF PROMISE MUST BE USED
+        changeTitle(title);
+        editMode = isEdit;
+
         const overlay = GetBackgroundOverlay();
 
         overlay.appendChild(component);
@@ -161,7 +174,6 @@ function Finestra({
             return;
         };
 
-        
         let hasInputs = false
         for (let index = 0; index < contentItemsArr.length; index++) {
             const objectItem = contentItemsArr[index];
@@ -172,15 +184,9 @@ function Finestra({
             const inputComponent = objectItem.inputComponent;
 
             if (input.status && inputComponent.type !== 'button') {
-                console.log(input.status);
-                console.log(input.value);
-                console.log(inputComponent);
-                console.log(inputComponent.type);
                 hasInputs = true; break;
             };
         };
-
-        console.log(hasInputs);
 
         if (!hasInputs) {
             CloseComponent(component, true);
@@ -188,7 +194,15 @@ function Finestra({
             return;
         };
 
-        const messageBox = ConfirmMessageBox('Cancel creation?', 'Are you sure you want to cancel?');
+        let title;
+
+        if (editMode) {
+            title = 'Cancel edit?';
+        } else {
+            title = 'Cancel creation?'
+        };
+
+        const messageBox = ConfirmMessageBox(title, 'Are you sure you want to cancel?');
 
         const response = await messageBox.modal(overlay);
 
@@ -225,8 +239,6 @@ function Finestra({
      */
     const addKeyboardAndStatusTip = (statusMessage, ...keyboardHints) => {
         const keyboardNStats = GetKeyboardNStatus(statusMessage, keyboardHints);
-        // const section_content = component.querySelector('section#content');
-        // const cont_content = section_content.querySelector('.content-container');
 
         cont_content.appendChild(keyboardNStats);
     };
