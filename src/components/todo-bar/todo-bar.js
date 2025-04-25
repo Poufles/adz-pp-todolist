@@ -192,10 +192,10 @@ function TodoBar(todoObject) {
         if (!isEnabled) return;
 
         disable();
-        
+
         if (isViewed) {
             ExitAnimation(component, componentShadow, cont_actions, overlay);
-            
+
             setTimeout(() => {
                 isViewed = false;
             }, 200);
@@ -270,15 +270,26 @@ function TodoBar(todoObject) {
 
     /**
      * Automatically unrenders the component from its parent
+     * @param {string} animationType - none | exit | switch-enter
      */
-    const unrender = () => {
-        ExitAnimation(component, componentShadow, cont_actions, overlay);
-
-        setTimeout(() => {
+    const unrender = (animationType = 'none') => {
+        if (animationType === 'none') {
             const parent = componentShadow.parentElement;
-    
+
             if (parent && parent.contains(componentShadow)) parent.removeChild(componentShadow);
-        }, 600);
+
+            return;
+        };
+
+        if (animationType === 'exit') {
+            ExitAnimation(component, componentShadow, cont_actions, overlay);
+
+            setTimeout(() => {
+                const parent = componentShadow.parentElement;
+
+                if (parent && parent.contains(componentShadow)) parent.removeChild(componentShadow);
+            }, 600);
+        };
     };
 
     /**
@@ -370,31 +381,31 @@ function DeadlineCheckerLoop() {
 
 function ExitAnimation(component, componentShadow, actionContainer, overlay) {
     const main_interface = DashboardRuntime.componentActions.get('main-interface').component;
-        const mainRect = main_interface.getBoundingClientRect();
-        const mainComponentRect = component.getBoundingClientRect();
-        const compShadowRect = componentShadow.getBoundingClientRect();
-        const actualWidth = component.offsetWidth;
-        const component_pos = `--parent-top: ${compShadowRect.top - mainRect.top}px; --parent-left: ${compShadowRect.left - mainRect.left}px`;
-        const starting_style = `--starting-top: ${mainComponentRect.top - mainRect.top}px; --starting-left: ${mainComponentRect.left - mainRect.left}px`;
+    const mainRect = main_interface.getBoundingClientRect();
+    const mainComponentRect = component.getBoundingClientRect();
+    const compShadowRect = componentShadow.getBoundingClientRect();
+    const actualWidth = component.offsetWidth;
+    const component_pos = `--parent-top: ${compShadowRect.top - mainRect.top}px; --parent-left: ${compShadowRect.left - mainRect.left}px`;
+    const starting_style = `--starting-top: ${mainComponentRect.top - mainRect.top}px; --starting-left: ${mainComponentRect.left - mainRect.left}px`;
 
-        component.classList.remove('view');
-        component.classList.add('return');
+    component.classList.remove('view');
+    component.classList.add('return');
 
-        component.setAttribute('style', starting_style + '; ' + component_pos + '; --actual-width: ' + actualWidth + 'px');
+    component.setAttribute('style', starting_style + '; ' + component_pos + '; --actual-width: ' + actualWidth + 'px');
 
-        actionContainer.classList.remove('show');
-        setTimeout(() => {
-            if (overlay.contains(actionContainer)) overlay.removeChild(actionContainer);
-            overlay.classList.remove('show');
+    actionContainer.classList.remove('show');
+    setTimeout(() => {
+        if (overlay.contains(actionContainer)) overlay.removeChild(actionContainer);
+        overlay.classList.remove('show');
 
-            if (main_interface.contains(overlay)) main_interface.removeChild(overlay);
-        }, 200);
-        main_interface.appendChild(component);
-        setTimeout(() => {
-            component.classList.remove('return');
+        if (main_interface.contains(overlay)) main_interface.removeChild(overlay);
+    }, 200);
+    main_interface.appendChild(component);
+    setTimeout(() => {
+        component.classList.remove('return');
 
-            if (!componentShadow.contains(component)) componentShadow.appendChild(component);
-        }, 170);
+        if (!componentShadow.contains(component)) componentShadow.appendChild(component);
+    }, 170);
 };
 
 export default TodoBar;

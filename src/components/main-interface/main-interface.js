@@ -170,18 +170,40 @@ function MainInterface({
         };
     };
 
-    const removeContent = (id) => {
+    /**
+     * Removes content from the interface.
+     * @param {{
+     * id: number,
+     * all: boolean,
+     * animation: string
+     * }} options 
+     * @returns 
+     */
+    const removeContent = ({ id = undefined, all = false, animation = 'none' } = {}) => {
+        if (all) {
+
+            while (contentArr.length != 0) {
+                let content = contentArr.shift();
+
+                if (Object.hasOwn(content, 'unrender')) {
+                    content.unrender(animation);
+                };
+            };
+
+            return;
+        };
+
         for (let index = 0; index < contentArr.length; index++) {
             let content = contentArr[index];
 
             if (Object.hasOwn(content, 'information')) {
-                
+
                 let information = content.information;
                 let infoId = information.id;
 
                 if (infoId === id) {
                     contentArr.splice(index, 1);
-                    content.unrender();
+                    content.unrender(animation);
 
                     return;
                 };

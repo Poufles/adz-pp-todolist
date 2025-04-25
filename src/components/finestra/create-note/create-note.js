@@ -67,17 +67,19 @@ function CreateSticky() {
         };
     };
 
-    async function CheckValuesBeforeBack() {
-        let isSameColor, isSameProject;
-
-        const todoColor = input_color.inputComponent.value;
-        const todoProject = input_project.inputComponent.value;
-
-        if (stickyObject.color === todoColor) isSameColor = true;
-        if (stickyObject.project === todoProject || (stickyObject.project === 'none' && todoProject === '')) isSameProject = true;
-
-        if (isSameColor && isSameProject) {
-            finestra.unrenderModal(true); return;
+    function CheckValuesBeforeBack() {
+        if (isEdit) {
+            let isSameColor, isSameProject;
+    
+            const todoColor = input_color.inputComponent.value;
+            const todoProject = input_project.inputComponent.value;
+    
+            if (stickyObject.color === todoColor) isSameColor = true;
+            if (stickyObject.project === todoProject || (stickyObject.project === 'none' && todoProject === '')) isSameProject = true;
+    
+            if (isSameColor && isSameProject) {
+                finestra.unrenderModal(true); return;
+            };
         };
 
         finestra.unrenderModal();

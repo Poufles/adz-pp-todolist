@@ -140,20 +140,19 @@ function Dashboard() {
     ////////////////// MAIN PANEL //////////////////
     TodoInterface.render(middle_panel);
 
-    const todos = CRUD.getTasks('todo');
-    const todosArr = [];
+    // const todosArr = [];
 
-    for (let index = 0; index < todos.length; index++) {
-        let todo = todos[index];
+    // for (let index = 0; index < todos.length; index++) {
+    //     let todo = todos[index];
 
-        const todoBar = TodoBar(todo);
+    //     const todoBar = TodoBar(todo);
 
-        TodoInterface.addContent(todoBar);
-        todosArr.push(todoBar);
-    };
+    //     TodoInterface.addContent(todoBar);
+    //     todosArr.push(todoBar);
+    // };
 
     const stickies = CRUD.getTasks('sticky');
-    const stickiesArr = [];
+    // const stickiesArr = [];
 
     for (let index = 0; index < stickies.length; index++) {
         let sticky = stickies[index];
@@ -161,7 +160,7 @@ function Dashboard() {
         const stickyNote = StickyNote(sticky);
 
         StickyInterface.addContent(stickyNote);
-        stickiesArr.push(stickyNote);
+        // stickiesArr.push(stickyNote);
     };
 
     ////////////////// MAIN PANEL //////////////////
@@ -254,12 +253,14 @@ function Dashboard() {
         const createTodo = CreateTodo();
 
         createTodo.modal(main_interface, 'todo');
+        DashboardRuntime.objectActions.add('check-before-back', createTodo.checkValuesBeforeBack)
     });
 
     stickyInterface_btn.addEventListener('click', () => {
         const createSticky = CreateSticky();
 
-        createSticky.modal(main_interface);
+        createSticky.modal(main_interface, 'sticky');
+        DashboardRuntime.objectActions.add('check-before-back', createSticky.checkValuesBeforeBack)
     });
 
     finestra_todos_btn_seeAll.addEventListener('click', () => {
