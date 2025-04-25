@@ -194,9 +194,13 @@ function StickyNote(stickyObject) {
      * Automatically unrenders the component
      */
     const unrender = () => {
-        const parent = component.parentElement;
+        ExitAnimation(componentMainArticle, component, overlay);
 
-        if (parent && parent.contains(component)) parent.removeChild(component);
+        setTimeout(() => {
+            const parent = component.parentElement;
+
+            if (parent && parent.contains(component)) parent.removeChild(component);
+        }, 600);
     };
 
     /**
@@ -265,7 +269,7 @@ function ExitAnimation(component, componentShadow, overlay) {
 
     overlay.classList.remove('show');
     main_interface.appendChild(component);
-    main_interface.removeChild(overlay);
+    if (main_interface.contains(overlay)) main_interface.removeChild(overlay);
     setTimeout(() => {
         component.classList.remove('return');
         componentShadow.appendChild(component);
