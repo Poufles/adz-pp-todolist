@@ -4,6 +4,7 @@ import '../styles/auth/auth-responsiveness.css';
 import '../styles/auth/auth-animate.css';
 import '../styles/dashboard/dashboard.css';
 import '../styles/dashboard/dashboard-responsiveness.css';
+import '../styles/overlay.css';
 import '../components/buttons/simple-button/simple-button.css';
 import '../components/buttons/word-button/word-button.css';
 import '../components/buttons/box-button/box-button.css';
@@ -252,7 +253,7 @@ function Dashboard() {
     todoInterface_btn.addEventListener('click', () => {
         const createTodo = CreateTodo();
 
-        createTodo.modal(main_interface);
+        createTodo.modal(main_interface, 'todo');
     });
 
     stickyInterface_btn.addEventListener('click', () => {

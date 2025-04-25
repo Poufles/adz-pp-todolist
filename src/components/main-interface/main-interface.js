@@ -167,7 +167,29 @@ function MainInterface({
             object.render(cont_content);
         } else {
             console.error('Error: The given object does not have a render() function.');
-        }
+        };
+    };
+
+    const removeContent = (id) => {
+        for (let index = 0; index < contentArr.length; index++) {
+            let content = contentArr[index];
+
+            if (Object.hasOwn(content, 'information')) {
+                
+                let information = content.information;
+                let infoId = information.id;
+
+                if (infoId === id) {
+                    contentArr.splice(index, 1);
+                    content.unrender();
+
+                    return;
+                };
+
+            } else {
+                console.error('Error: The given object does not have an information property.');
+            };
+        };
     };
 
     return {
@@ -184,7 +206,8 @@ function MainInterface({
         disable,
         animate,
         getContentArray,
-        addContent
+        addContent,
+        removeContent
     };
 };
 

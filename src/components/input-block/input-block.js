@@ -63,6 +63,8 @@ function InputBlock({
     };
 
     const inputComponent = objectComponents.input;
+    const timeInputs = objectComponents.timeInputs;
+
     let hintComponent;
 
     if (hint.hasHint) {
@@ -105,7 +107,7 @@ function InputBlock({
         objectComponents.timeInputs.forEach(input => {
             input.addEventListener('focus', (e) => {
                 e.stopPropagation();
-    
+
                 if (optionalComponent && optionalComponent.classList.contains('show')) {
                     optionalComponent.classList.remove('show');
                 };
@@ -241,9 +243,46 @@ function InputBlock({
         inputComponent.placeholder = placeholder;
     };
 
+    /**
+     * Checks if there is an input
+     * @returns {{
+    * status: boolean,
+    * value: string
+    * }} An object containing information.
+    */
+    const hasInputs = () => {
+        if (timeInputs) {
+            let hasInput = false;
+
+            for (let index = 0; index < timeInputs.length; index++) {
+                const input = timeInputs[index].value
+
+                if (input !== '' && !input.includes('m')) {
+                    hasInput = true;
+                    break;
+                };
+            };
+
+            const timeValue = hasInput ? `${timeInputs[0].value}${timeInputs[1].value}:${timeInputs[2].value}${timeInputs[3].value}${timeInputs[4].value} @ ${timeInputs[5].value}${timeInputs[6].value}/${timeInputs[7].value}${timeInputs[8].value}/${timeInputs[9].value}${timeInputs[10].value}${timeInputs[11].value}${timeInputs[12].value}` : undefined;
+
+            return {
+                isOptional,
+                status: hasInput,
+                value: timeValue
+            };
+        };
+
+        return {
+            isOptional,
+            status: inputComponent.value !== '' ? true : false,
+            value: inputComponent.value
+        };
+    };
+
     return {
         component,
         inputComponent,
+        timeInputs,
         isOptional,
         render,
         unrender,
@@ -256,7 +295,8 @@ function InputBlock({
         removeInput,
         requiredMessage,
         removeRequiredMessage,
-        addPlaceholder
+        addPlaceholder,
+        hasInputs
     };
 };
 

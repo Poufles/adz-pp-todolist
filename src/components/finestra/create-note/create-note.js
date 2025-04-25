@@ -1,13 +1,14 @@
 import CRUD from "../../../scripts/crud.js";
 import InputBlock from "../../input-block/input-block.js";
 import StickyInterface from "../../main-interface/sticky-interface/sticky-interface.js";
-import { InformMessageBox } from "../../message-box/message-box.js";
+import { ConfirmMessageBox, InformMessageBox } from "../../message-box/message-box.js";
 import StickyNote from "../../sticky-note/sticky-note.js";
 import Finestra from "../window.js";
 
 function CreateSticky() {
     let isEdit = false;
     let stickyObject;
+    let stickyObjectUpdateFunction;
 
     const finestra = Finestra({
         hasActions: true,
@@ -66,12 +67,28 @@ function CreateSticky() {
         };
     };
 
+    async function CheckValuesBeforeBack() {
+        let isSameColor, isSameProject;
+
+        const todoColor = input_color.inputComponent.value;
+        const todoProject = input_project.inputComponent.value;
+
+        if (stickyObject.color === todoColor) isSameColor = true;
+        if (stickyObject.project === todoProject || (stickyObject.project === 'none' && todoProject === '')) isSameProject = true;
+
+        if (isSameColor && isSameProject) {
+            finestra.unrenderModal(true); return;
+        };
+
+        finestra.unrenderModal();
+    };
+
     btn_reset.addEventListener('click', () => {
         finestra.resetInputs();
     });
 
     btn_close.addEventListener('click', () => {
-        finestra.unrenderModal();
+        CheckValuesBeforeBack();
     });
 
     btn_create.addEventListener('click', async () => {
@@ -91,17 +108,98 @@ function CreateSticky() {
 
             return;
         };
+        
+        if (isEdit) {
 
-        const response = CRUD.createSticky(color, project);
+        let isSameColor, isSameProject;
 
-        if (response.status === 'success') {
-            stickyObject = response.inputs;
+        if (color === stickyObject.color) isSameColor = true;
+        if (project === stickyObject.project) isSameProject = true;
 
-            const stickyNote = StickyNote(stickyObject);
+        if (isSameColor && isSameProject) {
+            finestra.unrenderModal(true); return;
+        };
 
-            StickyInterface.addContent(stickyNote);
+        finestra.disable();
+            const newInputs = {
+                id: stickyObject.id,
+                desc: stickyObject.desc,
+                color,
+                project
+            };
+
+            const responseCRUD = CRUD.updateSticky(newInputs);
+
+            if (responseCRUD.status === 'success') {
+                const overlay = finestra.component.parentElement;
+
+                const messageBox = InformMessageBox('Updated!', 'This sticky has been successfully updated!');
+                
+                const response = await messageBox.modal(overlay);
+                
+                if (response) {
+                    finestra.unrenderModal(true);
+
+                    stickyObject = responseCRUD.inputs;
+                    stickyObjectUpdateFunction(stickyObject);
+                };
+            };
+
+            return;
+        };
+
+        const crudResponse = CRUD.createSticky(color, project);
+
+        if (crudResponse.status === 'success') {
+            let messageBox;
+            const overlay = finestra.component.parentElement;
+
+            messageBox = InformMessageBox('Success!', 'A new sticky has been successfully created!');
+
+            const response = await messageBox.modal(overlay);
+
+            if (response) {
+                finestra.unrenderModal(true);
+                stickyObject = crudResponse.inputs;
+
+                const stickyNote = StickyNote(stickyObject);
+                StickyInterface.addContent(stickyNote);
+            };
         };
     });
+
+    /**
+     * To edit a todo information
+     */
+    const editMode = (stickyUpdateInfo, updateInfo) => {
+        isEdit = true;
+        stickyObject = stickyUpdateInfo;
+        stickyObjectUpdateFunction = updateInfo;
+
+        input_color.inputComponent.value = stickyObject.color;
+        input_project.inputComponent.value = stickyObject.project;
+    };
+
+    const checkValuesBeforeBack = function () {
+        let isSameColor, isSameProject;
+
+        if (isEdit) {
+            const todoColor = input_color.inputComponent.value;
+            const todoProject = input_project.inputComponent.value;
+
+            if (stickyObject.color === todoColor) isSameColor = true;
+            if (stickyObject.project === todoProject || (stickyObject.project === 'none' && todoProject === '')) isSameProject = true;
+
+            if (isSameColor && isSameProject) {
+                finestra.unrenderModal(true); return;
+            };
+        };
+
+        finestra.unrenderModal();
+    };
+
+    finestra.editMode = editMode;
+    finestra.checkValuesBeforeBack = checkValuesBeforeBack;
 
     return finestra;
 };

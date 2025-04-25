@@ -82,7 +82,7 @@ function MessageBox({ htmlTemplate, onCreate }) {
     /**
      * Removes the component from its parent automatically
      */
-    const unrender = () => {
+    const unrender = (interfaceElement) => {
         const parent = component.parentElement;
 
         component.classList.add('animate');
@@ -94,6 +94,7 @@ function MessageBox({ htmlTemplate, onCreate }) {
 
         setTimeout(() => {
             if (parent) parent.removeChild(component);
+            if (interfaceElement) interfaceElement.removeChild(parent);
         }, 200);
     };
 
@@ -115,9 +116,18 @@ function MessageBox({ htmlTemplate, onCreate }) {
      * @param {HTMLElement} parent - (Optional) The parent element of the element to where it must be appended. If no parent, it would otherwise create a background to which it would be appended
      * @returns 
      */
-    const modal = async (parent) => {
+    const modal = async (parent, interfaceElement) => {
+        let pseudoParent;
         component.classList.add('modal');
-        parent.appendChild(component);
+
+        if (parent) parent.appendChild(component);
+        else {
+            pseudoParent = document.createElement('div');
+            pseudoParent.id = 'pseudo-parent-overlay';
+            pseudoParent.appendChild(component);
+
+            interfaceElement.appendChild(pseudoParent);
+        };
 
         openingAnimation();
 
@@ -125,11 +135,20 @@ function MessageBox({ htmlTemplate, onCreate }) {
             const btn_confirm = component.querySelector('#window #actions #confirm');
             const btn_cancel = component.querySelector('#window #actions #cancel');
 
+            if (pseudoParent) {
+                pseudoParent.addEventListener('click', (e) => {
+                    e.stopPropagation();
+
+                    unrender(interfaceElement);
+                    resolve('cancel');
+                });
+            };
+
             if (btn_close) {
                 btn_close.addEventListener('click', (e) => {
                     e.stopPropagation();
 
-                    unrender();
+                    unrender(interfaceElement);
                     resolve('close');
                 });
             };
@@ -138,7 +157,7 @@ function MessageBox({ htmlTemplate, onCreate }) {
                 btn_confirm.addEventListener('click', (e) => {
                     e.stopPropagation();
 
-                    unrender();
+                    unrender(interfaceElement);
                     resolve('confirm');
                 });
             };
@@ -147,7 +166,7 @@ function MessageBox({ htmlTemplate, onCreate }) {
                 btn_cancel.addEventListener('click', (e) => {
                     e.stopPropagation();
 
-                    unrender();
+                    unrender(interfaceElement);
                     resolve('cancel');
                 });
             };

@@ -35,6 +35,7 @@ function Finestra({
 
     let isAnimating, visualComponent;
     let awaiting = false;
+    let editMode;
 
     const templateFragment = GetTemplateFragment(template);
     const component = templateFragment.querySelector('.window-component');
@@ -120,16 +121,28 @@ function Finestra({
     /**
      * Creates a render of the component in a modal.
      * @param {HTMLElement} parent - The parent component to where the overlay must be appended.
+     * @param {string} type - Type of task to edit. ( todo || sticky || project )
+     * @param {boolean} isEdit
      */
-    const modal = (parent) => {
+    const modal = (parent, type, isEdit = false) => {
         if (!parent) {
             console.error('Error: parent parameter does not exist');
 
             return;
         };
 
+        let title;
+        
+        if (isEdit) {
+            title = `Edit ${type}...`;
+        } else {
+            title = `Create ${type}...`;
+        }
+        
         enable();
-        // CHANGE LATER IF PROMISE MUST BE USED
+        changeTitle(title);
+        editMode = isEdit;
+
         const overlay = GetBackgroundOverlay();
 
         overlay.appendChild(component);
@@ -144,7 +157,9 @@ function Finestra({
 
             if (awaiting) return;
 
-            unrenderModal();
+            const checkBeforeBack = DashboardRuntime.objectActions.get('check-before-back');
+
+            checkBeforeBack();
         });
     };
 
@@ -165,11 +180,12 @@ function Finestra({
         for (let index = 0; index < contentItemsArr.length; index++) {
             const objectItem = contentItemsArr[index];
 
-            if (!Object.hasOwn(objectItem, 'inputComponent')) continue;
+            if (!Object.hasOwn(objectItem, 'hasInputs')) continue;
 
-            const input = objectItem.inputComponent;
+            const input = objectItem.hasInputs();
+            const inputComponent = objectItem.inputComponent;
 
-            if (input.value && input.type !== 'button') {
+            if (input.status && inputComponent.type !== 'button') {
                 hasInputs = true; break;
             };
         };
@@ -180,7 +196,15 @@ function Finestra({
             return;
         };
 
-        const messageBox = ConfirmMessageBox('Cancel creation?', 'Are you sure you want to cancel?');
+        let title;
+
+        if (editMode) {
+            title = 'Cancel edit?';
+        } else {
+            title = 'Cancel creation?'
+        };
+
+        const messageBox = ConfirmMessageBox(title, 'Are you sure you want to cancel?');
 
         const response = await messageBox.modal(overlay);
 
@@ -210,15 +234,6 @@ function Finestra({
         };
     };
 
-    // const removeContent = (element) => {
-    //     if (Object.hasOwn(element, 'unrender')) {
-    //         element.unrender();
-    //         contentItemsArr.splice(element);
-    //     } else {
-    //         console.log(`Object element has no render()`);
-    //     };
-    // };
-
     /**
      * Adds a status and keyboard hints 
      * @param {string} statusMessage - Message to show in the status 
@@ -226,8 +241,6 @@ function Finestra({
      */
     const addKeyboardAndStatusTip = (statusMessage, ...keyboardHints) => {
         const keyboardNStats = GetKeyboardNStatus(statusMessage, keyboardHints);
-        // const section_content = component.querySelector('section#content');
-        // const cont_content = section_content.querySelector('.content-container');
 
         cont_content.appendChild(keyboardNStats);
     };
@@ -269,23 +282,10 @@ function Finestra({
         for (let index = 0; index < contentItemsArr.length; index++) {
             const objectItem = contentItemsArr[index];
 
-            // TIME INPUTS
-            if (Object.hasOwn(objectItem, 'inputComponent')) {
-                const inputObject = objectItem.inputComponent;
-                const inputArr = inputObject.querySelectorAll('input')
+            if (Object.hasOwn(objectItem, 'hasInputs')) {
+                const inputObject = objectItem.hasInputs();
 
-                inputArr.forEach(input => {
-                    if (input.value === '') {
-                        hasValue = false;
-                        objectItem.requiredMessage();
-                    };
-                });
-            };
-
-            if (Object.hasOwn(objectItem, 'inputComponent') && Object.hasOwn(objectItem, 'requiredMessage') && Object.hasOwn(objectItem, 'isOptional')) {
-                const input = objectItem.inputComponent;
-
-                if (input.value === '' && !objectItem.isOptional) {
+                if (!inputObject.status && !inputObject.isOptional) {
                     hasValue = false;
                     objectItem.requiredMessage();
                 };
@@ -427,6 +427,7 @@ function Finestra({
         component,
         closeButton: btn_title,
         componentButtonsArr,
+        contentItemsArr,
         render,
         unrender,
         modal,
