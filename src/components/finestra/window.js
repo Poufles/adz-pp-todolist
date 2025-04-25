@@ -157,7 +157,9 @@ function Finestra({
 
             if (awaiting) return;
 
-            unrenderModal();
+            const checkBeforeBack = DashboardRuntime.objectActions.get('check-before-back');
+
+            checkBeforeBack();
         });
     };
 

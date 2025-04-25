@@ -194,23 +194,23 @@ const CRUD = function () {
      * Deletes todo
      * @param {Number} id 
      */
-    const deleteTodo = (id) => {
-        const todos = account.todo;
+    // const deleteTodo = (id) => {
+    //     const todos = account.todo;
 
-        for (let index = 0; index < todos.length; index++) {
-            let todo = todos[index];
+    //     for (let index = 0; index < todos.length; index++) {
+    //         let todo = todos[index];
 
-            if (todo.id === id) {
-                todos.splice(index, 1);
-                StorageHandler.UpdateStorage();
+    //         if (todo.id === id) {
+    //             todos.splice(index, 1);
+    //             StorageHandler.UpdateStorage();
 
-                return { status: 'success' }
-            };
-        };
+    //             return { status: 'success' }
+    //         };
+    //     };
 
-        console.error('Error in deletion: This todo does not exist(?)')
-        return { status: 'u-invalid' };
-    };
+    //     console.error('Error in deletion: This todo does not exist(?)')
+    //     return { status: 'u-invalid' };
+    // };
 
     /**
      * Registers a new sticky.
@@ -290,14 +290,38 @@ const CRUD = function () {
         };
     };
 
+    /**
+     * Deletes a todo type
+     * @param {Number} id 
+     * @param {string} type
+     */
+    const deleteTask = (id, type) => {
+        const tasks = account[type];
+
+        for (let index = 0; index < tasks.length; index++) {
+            let task = tasks[index];
+
+            if (task.id === id) {
+                tasks.splice(index, 1);
+                StorageHandler.UpdateStorage();
+
+                return { status: 'success' }
+            };
+        };
+
+        console.error('Error in deletion: This todo does not exist(?)')
+        return { status: 'u-invalid' };
+    };
+
     return {
         getTasks,
         createTodo,
         updateTodo,
-        deleteTodo,
+        // deleteTodo,
         updateTodoStatus,
         createSticky,
-        updateSticky
+        updateSticky,
+        deleteTask
     }
 }();
 

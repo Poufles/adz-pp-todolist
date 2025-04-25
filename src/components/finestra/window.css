@@ -155,3 +155,7 @@
     align-items: center;
     justify-content: space-between;
 }
+
+.window-component input:disabled {
+    color: var(--black);
+}

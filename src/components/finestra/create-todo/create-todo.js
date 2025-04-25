@@ -293,26 +293,7 @@ function CreateTodo() {
     });
 
     btn_close.addEventListener('click', () => {
-        if (isEdit) {
-            let isSameName, isSameDeadline, isSameColor, isSameProject;
-
-            const timeInputObj = input_deadline.hasInputs();
-            const timeString = timeInputObj.value;
-
-            console.log(todoObject.name);
-            console.log(input_name.inputComponent.value);
-            if (todoObject.name === input_name.inputComponent.value) isSameName = true;
-
-            if (todoObject.deadline === timeString) isSameDeadline = true;
-            if (todoObject.project === input_project.inputComponent.value) isSameProject = true;
-            if (todoObject.color === input_color.inputComponent.value) isSameColor = true;
-
-            if (isSameName && isSameDeadline && isSameColor && isSameProject) {
-                finestra.unrenderModal(true); return;
-            };
-        };
-
-        finestra.unrenderModal();
+        checkValuesBeforeBack();
     });
 
     /**
@@ -326,7 +307,32 @@ function CreateTodo() {
         EditTodo(todoObject, input_name, input_deadline, input_project, input_color);
     };
 
+    const checkValuesBeforeBack = function () {
+        if (isEdit) {
+            let isSameName, isSameDeadline, isSameColor, isSameProject;
+
+            const timeInputObj = input_deadline.hasInputs();
+            const timeString = timeInputObj.value;
+
+            const todoName = input_name.inputComponent.value;
+            const todoColor = input_color.inputComponent.value;
+            const todoProject = input_project.inputComponent.value;
+
+            if (todoObject.name === todoName) isSameName = true;
+            if (todoObject.deadline === timeString) isSameDeadline = true;
+            if (todoObject.color === todoColor) isSameColor = true;
+            if (todoObject.project === todoProject || (todoObject.project === 'none' && todoProject === '')) isSameProject = true;
+
+            if (isSameName && isSameDeadline && isSameColor && isSameProject) {
+                finestra.unrenderModal(true); return;
+            };
+        };
+
+        finestra.unrenderModal();
+    };
+
     finestra.editMode = editMode;
+    finestra.checkValuesBeforeBack = checkValuesBeforeBack;
 
     return finestra;
 };

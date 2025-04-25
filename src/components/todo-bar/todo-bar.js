@@ -41,18 +41,18 @@ function TodoBar(todoObject) {
             </div>
         </article>
     </div>
-    `;//
+    `;
 
     const template_overlay = `
         <div class="overlay"></div>
-    `;//
+    `;
 
     const template_actions = `
         <div id="todo-bar-actions"></div>
-    `;//
+    `;
 
     let isEnabled = true;
-    let isViewed = false;//
+    let isViewed = false;
     let isBeingDeleted = false;
 
     const componentActions = DashboardRuntime.componentActions;
@@ -147,7 +147,9 @@ function TodoBar(todoObject) {
 
         ExitAnimation(component, componentShadow, cont_actions, overlay);
 
-        isViewed = false;
+        setTimeout(() => {
+            isViewed = false;
+        }, 200);
     });
 
     btn_project.addEventListener('click', () => {
@@ -174,7 +176,7 @@ function TodoBar(todoObject) {
             return;
         };
 
-        const status = CRUD.deleteTodo(todoObject.id);
+        const status = CRUD.deleteTask(todoObject.id, 'todo');
 
         if (status === 'u-invalid') {
             return;
@@ -189,12 +191,15 @@ function TodoBar(todoObject) {
 
         if (!isEnabled) return;
 
-        isViewed = false;
-
         disable();
-
-        ExitAnimation(component, componentShadow, cont_actions, overlay);
-
+        
+        if (isViewed) {
+            ExitAnimation(component, componentShadow, cont_actions, overlay);
+            
+            setTimeout(() => {
+                isViewed = false;
+            }, 200);
+        };
 
         const mainInterfaceObj = componentActions.get('main-interface');
 
@@ -203,6 +208,7 @@ function TodoBar(todoObject) {
         createTodo.editMode(todoObject, updateInfo);
         createTodo.modal(mainInterfaceObj.component, 'todo', true);
         DashboardRuntime.objectActions.add('task-enable', enable);
+        DashboardRuntime.objectActions.add('check-before-back', createTodo.checkValuesBeforeBack)
     });
 
     checkbox.addEventListener('click', (e) => {
@@ -255,11 +261,11 @@ function TodoBar(todoObject) {
      */
     const render = (parent) => {
         // if (!parent) return component;
-        if (!parent) return componentShadow;//
+        if (!parent) return componentShadow;
 
 
         // parent.appendChild(component);
-        parent.appendChild(componentShadow);//
+        parent.appendChild(componentShadow);
     };
 
     /**

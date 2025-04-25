@@ -1,6 +1,8 @@
 import CRUD from "../../scripts/crud.js";
 import DashboardRuntime from "../../scripts/dashboard-runtime.js";
 import CreateSticky from "../finestra/create-note/create-note.js";
+import StickyInterface from "../main-interface/sticky-interface/sticky-interface.js";
+import { ConfirmMessageBox } from "../message-box/message-box.js";
 
 function StickyNote(stickyObject) {
     const template = `
@@ -46,7 +48,9 @@ function StickyNote(stickyObject) {
         <div class="overlay"></div>
     `;
 
-    let currentState;
+    let isEnabled = true;
+    let isViewed = false;
+    let isBeingDeleted = false;
 
     const range = document.createRange();
     const fragment = range.createContextualFragment(template);
@@ -80,38 +84,28 @@ function StickyNote(stickyObject) {
         CRUD.updateSticky(stickyObject)
     });
 
-    overlay.addEventListener('click', (e) => {
+    overlay.addEventListener('click', async (e) => {
         e.stopPropagation();
 
-        const main_interface = DashboardRuntime.componentActions.get('main-interface').component;
-        const mainRect = main_interface.getBoundingClientRect();
-        const componentRect = component.getBoundingClientRect();
-        const compRect = componentMainArticle.getBoundingClientRect();
-        const actualWidth = component.offsetWidth;
-        const component_pos = `--parent-top: ${componentRect.top - mainRect.top}px; --parent-left: ${componentRect.left - mainRect.left}px`;
-        const starting_style = `--starting-top: ${compRect.top - mainRect.top}px; --starting-left: ${compRect.left - mainRect.left}px`;
+        if (isBeingDeleted) {
 
-        componentMainArticle.classList.remove('view');
-        componentMainArticle.classList.add('return');
+        };
 
-        componentMainArticle.setAttribute('style', starting_style + '; ' + component_pos + '; --actual-width: ' + actualWidth + 'px');
+        if (isViewed) {
+            ExitAnimation(componentMainArticle, component, overlay);
 
-        overlay.classList.remove('show');
-        main_interface.appendChild(componentMainArticle);
-        main_interface.removeChild(overlay);
-        setTimeout(() => {
-            componentMainArticle.classList.remove('return');
-            component.appendChild(componentMainArticle);
-            currentState = undefined;
-        }, 170);
+            setTimeout(() => {
+                isViewed = false;
+            }, 200);
+        };
     });
 
     btn_view.addEventListener('click', (e) => {
         e.stopPropagation();
 
-        if (currentState !== undefined) return;
+        if (isViewed) return;
 
-        currentState = 'view';
+        isViewed = true;
 
         const main_interface = DashboardRuntime.componentActions.get('main-interface').component;
         const mainRect = main_interface.getBoundingClientRect();
@@ -131,18 +125,58 @@ function StickyNote(stickyObject) {
     btn_edit.addEventListener('click', (e) => {
         e.stopPropagation();
 
-        if (currentState !== undefined) return; 
+        if (!isEnabled) return;
 
-        currentState = 'edit';
+        disable();
+
+        if (isViewed) {
+            ExitAnimation(componentMainArticle, component, overlay);
+
+            setTimeout(() => {
+                isViewed = false;
+            }, 200);
+        };
 
         const mainInterfaceObj = DashboardRuntime.componentActions.get('main-interface');
 
         const createSticky = CreateSticky();
 
-        // createSticky.editMode(stickyObject, updateInfo);
-        createSticky.editMode(stickyObject);
-        createSticky.modal(mainInterfaceObj.component);
-        // DashboardRuntime.objectActions.add('task-enable', enable)
+        createSticky.editMode(stickyObject, updateInfo);
+        createSticky.modal(mainInterfaceObj.component, 'sticky', true);
+        DashboardRuntime.objectActions.add('task-enable', enable)
+        DashboardRuntime.objectActions.add('check-before-back', createSticky.checkValuesBeforeBack)
+    });
+
+    btn_delete.addEventListener('click', async (e) => {
+        e.stopPropagation();
+
+        if (isBeingDeleted) return;
+
+        disable();
+
+        isBeingDeleted = true;
+
+        const messageBox = ConfirmMessageBox('Delete todo?', 'This todo will be sent to the archives.');
+
+        const main_interface = DashboardRuntime.componentActions.get('main-interface').component;
+
+        const response = await messageBox.modal(undefined, main_interface);
+
+        if (response !== 'confirm') {
+            enable();
+            isBeingDeleted = false;
+
+            return;
+        };
+
+        const status = CRUD.deleteTask(stickyObject.id, 'sticky');
+
+        if (status === 'u-invalid') {
+            return;
+        };
+
+        disable();
+        StickyInterface.removeContent(stickyObject.id);
     });
 
     /**
@@ -162,15 +196,80 @@ function StickyNote(stickyObject) {
     const unrender = () => {
         const parent = component.parentElement;
 
-        if (parent && !parent.contains(component));
+        if (parent && parent.contains(component)) parent.removeChild(component);
+    };
+
+    /**
+     * Enables the component
+     */
+    const enable = () => {
+        isEnabled = true;
+
+        btn_view.disabled = false;
+        btn_edit.disabled = false;
+        btn_delete.disabled = false;
+        textarea.disabled = false;
+    };
+
+    /**
+     * Disables the component
+     */
+    const disable = () => {
+        isEnabled = false;
+
+        btn_view.disabled = true;
+        btn_edit.disabled = true;
+        btn_delete.disabled = true;
+        textarea.disabled = true;
+    };
+
+    /**
+     * Updates the todo information object of the component and its visuals 
+     * @param {object} newInfo 
+     */
+    const updateInfo = (newInfo) => {
+        enable();
+
+        for (const key in newInfo) {
+            if (stickyObject.hasOwnProperty(key)) {
+                stickyObject[key] = newInfo[key];
+            };
+        };
     };
 
     return {
+        information: stickyObject,
         component,
         componentMainArticle,
         render,
-        unrender
+        unrender,
+        enable,
+        disable,
+        updateInfo
     }
+};
+
+function ExitAnimation(component, componentShadow, overlay) {
+    const main_interface = DashboardRuntime.componentActions.get('main-interface').component;
+    const mainRect = main_interface.getBoundingClientRect();
+    const compShadowRect = componentShadow.getBoundingClientRect();
+    const compRect = component.getBoundingClientRect();
+    const actualWidth = component.offsetWidth;
+    const component_pos = `--parent-top: ${compShadowRect.top - mainRect.top}px; --parent-left: ${compShadowRect.left - mainRect.left}px`;
+    const starting_style = `--starting-top: ${compRect.top - mainRect.top}px; --starting-left: ${compRect.left - mainRect.left}px`;
+
+    component.classList.remove('view');
+    component.classList.add('return');
+
+    component.setAttribute('style', starting_style + '; ' + component_pos + '; --actual-width: ' + actualWidth + 'px');
+
+    overlay.classList.remove('show');
+    main_interface.appendChild(component);
+    main_interface.removeChild(overlay);
+    setTimeout(() => {
+        component.classList.remove('return');
+        componentShadow.appendChild(component);
+    }, 170);
 };
 
 export default StickyNote;
