@@ -1,4 +1,4 @@
-import { format, parse, isBefore, isValid, isToday, differenceInMilliseconds, differenceInMinutes, differenceInHours, differenceInDays } from "date-fns";
+import { format, parse, isBefore, isValid, isToday, isTomorrow, differenceInMilliseconds, differenceInMinutes, differenceInHours, differenceInDays } from "date-fns";
 
 // import { format, parse, differenceInMilliseconds, differenceInMinutes, differenceInHours, differenceInDays } from "https://esm.sh/date-fns";
 
@@ -71,6 +71,7 @@ const DateHandler = function () {
         const formattedDate = parse(`${date} ${hour}`, 'MM/dd/yyyy hh:mma', new Date());
 
         const isThisTimeToday = isToday(parse(date, 'MM/dd/yyyy', new Date()));
+        const isThisTimeTomorrow = isTomorrow(parse(date, 'MM/dd/yyyy', new Date()))
         const daysDifference = differenceInDays(formattedDate, now);
         const hoursDifference = differenceInHours(formattedDate, now);
         const minutesDifference = differenceInMinutes(formattedDate, now);
@@ -78,6 +79,7 @@ const DateHandler = function () {
 
         return {
             isThisTimeToday,
+            isThisTimeTomorrow,
             daysDifference,
             hoursDifference,
             minutesDifference,

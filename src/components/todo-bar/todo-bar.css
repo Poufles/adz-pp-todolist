@@ -254,7 +254,7 @@
     color: red;
 }
 
-.comp.todo-bar .time-container #due-message.soon {
+.comp.todo-bar .time-container #due-message.tomorrow {
     color: orange;
 }
 

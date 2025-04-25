@@ -337,22 +337,23 @@ function UpdateDeadlineMessage(timeContainer, deadline) {
 
     const timeDifference = DateHandler.timeDifference(deadline);
     const isToday = timeDifference.isThisTimeToday;
+    const isTomorrow = timeDifference.isThisTimeTomorrow;
     const milliseconds = timeDifference.millisecDifference;
     const days = timeDifference.daysDifference;
     const hours = timeDifference.hoursDifference;
 
     due_message.classList.remove('today');
-    due_message.classList.remove('soon');
+    due_message.classList.remove('tomorrow');
     due_message.classList.remove('overdue');
 
     if (isToday) {
         due_message.classList.add('today');
         due_message.textContent = '> Due today!';
-    } else if (days > 3) {
-        timeContainer.removeChild(due_message);
-    } else if (days >= 3 || hours <= 24 && milliseconds > 0) {
-        due_message.classList.add('soon');
-        due_message.textContent = '> Due soon!';
+    } else if (isTomorrow) {
+        due_message.classList.add('tomorrow');
+        due_message.textContent = '> Due tomorrow!';
+    } else if (days > 1) {
+        due_message.textContent = '';
     } else if (milliseconds < 0) {
         due_message.classList.add('overdue');
         due_message.textContent = 'Overdue...';
