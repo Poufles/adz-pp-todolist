@@ -94,9 +94,9 @@ function ButtonSwitcher(btnArr, button, type, switchContent) {
 
         button.classList.add('selected');
         switchContent(type);
-        
+
     });
-}
+};
 
 function UpdateInfo(todoInterface, todayArr, tomorrowArr, upcomingArr, subSection) {
     const todos = CRUD.getTasks('todo');
@@ -108,25 +108,29 @@ function UpdateInfo(todoInterface, todayArr, tomorrowArr, upcomingArr, subSectio
 
         if (dates.isThisTimeToday) {
             const todoBar = TodoBar(todo);
-            todayArr.push(todoBar); 
+            todayArr.push(todoBar);
 
             continue;
         };
 
         if (dates.isThisTimeTomorrow) {
             const todoBar = TodoBar(todo);
-            tomorrowArr.push(todoBar); 
-            
+            tomorrowArr.push(todoBar);
+
             continue;
         }
 
-        if (dates.daysDifference > 0 || dates.hoursDifference <= 24) {
+        if (dates.daysDifference > 0 || dates.hoursDifference <= 24 && dates.millisecDifference >= 0) {
             const todoBar = TodoBar(todo);
-            upcomingArr.push(todoBar); 
-            
+            upcomingArr.push(todoBar);
+
             continue;
         };
     };
+
+    SortDeadlines(todayArr);
+    SortDeadlines(tomorrowArr);
+    SortDeadlines(upcomingArr);
 
     const todayCount = todayArr.length;
     const tomorrowCount = tomorrowArr.length;
@@ -138,9 +142,38 @@ function UpdateInfo(todoInterface, todayArr, tomorrowArr, upcomingArr, subSectio
     const span_upcomingCount = subSection.querySelector('#upcoming .count');
 
     todoInterface.changeTitleCount(allTodosCount);
-    span_todayCount.textContent = todayCount;
-    span_tomorrowCount.textContent = tomorrowCount;
-    span_upcomingCount.textContent = upcomingCount;
+    span_todayCount.textContent = `| ${todayCount}`;
+    span_tomorrowCount.textContent = `| ${tomorrowCount}`;
+    span_upcomingCount.textContent = `| ${upcomingCount}`;
+};
+
+/**
+ * 
+ * @param {Array} arr 
+ */
+function SortDeadlines(arr) {
+    let isSorted = false;
+
+    while (!isSorted) {
+        isSorted = true;
+
+        for (let index = 0; index < arr.length - 1; index++) {
+            const currentElement = arr[index];
+            const nextElement = arr[index + 1];
+
+            const currentMS = DateHandler.timeDifference(currentElement.information.deadline);
+            const nextMS = DateHandler.timeDifference(nextElement.information.deadline);
+            
+            if (currentMS.millisecDifference < nextMS.millisecDifference) {
+                const temp = arr[index];
+
+                arr[index] = nextElement;
+                arr[index + 1] = temp;
+
+                isSorted = false;
+            };
+        };
+    };
 };
 
 function SwitchContent(type, todoInterface, todayArr, tomorrowArr, upcomingArr) {

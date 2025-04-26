@@ -34,7 +34,6 @@ function TodoBar(todoObject) {
                 </div>
                 <div class="time-container">
                     <span class="" id="due-date">
-                    ${DateHandler.getTimeSlice(todoObject.deadline, 'hour')}
                     </span>
                     <span class="" id="due-message"></span>
                 </div>
@@ -74,6 +73,17 @@ function TodoBar(todoObject) {
     const btn_project_span = btn_project.querySelector('#project');
     const cont_time = component.querySelector('.time-container');
     const span_due = cont_time.querySelector('#due-date');
+
+    const deadline = todoObject.deadline
+    const dates = DateHandler.timeDifference(deadline);
+
+    if (dates.isThisTimeToday) {
+        span_due.textContent = DateHandler.getTimeSlice(todoObject.deadline, 'hour');
+    } else if (dates.isThisTimeTomorrow) {
+        span_due.textContent = DateHandler.getTimeSlice(todoObject.deadline, 'hour');
+    } else if (dates.daysDifference > 0 || dates.hoursDifference <= 24 && dates.millisecDifference >= 0) {
+        span_due.textContent = DateHandler.getTimeSlice(todoObject.deadline, 'date-no-year');
+    };
 
     const deleteButton = BoxButton({
         text: 'delete',

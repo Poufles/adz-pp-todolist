@@ -236,9 +236,9 @@ function Dashboard() {
     componentActions.add('middle-panel', middle_panel);
     componentActions.add('container-left-todo', cont_left_todo);
     componentActions.add('container-right-todo', cont_right_todo);
-    componentActions.add('finestra-todos', undefined, finestra_todos);
-    componentActions.add('finestra-stickies', undefined, finestra_stickies);
-    componentActions.add('finestra-projects', undefined, finestra_projects);
+    componentActions.add('finestra-todos', finestra_todos.component, finestra_todos);
+    componentActions.add('finestra-stickies', finestra_stickies.component, finestra_stickies);
+    componentActions.add('finestra-projects', finestra_projects.component, finestra_projects);
 
     const todoInterface_btn = TodoInterface.createButton;
     const stickyInterface_btn = StickyInterface.createButton;
