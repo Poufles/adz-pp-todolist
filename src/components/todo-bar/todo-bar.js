@@ -174,7 +174,7 @@ function TodoBar(todoObject) {
 
         isBeingDeleted = true;
 
-        const messageBox = ConfirmMessageBox('Delete todo?', 'This todo will be sent to the archives.');
+        const messageBox = ConfirmMessageBox('Delete todo?', 'This will be permanently deleted. Are you sure?');
 
         const response = await messageBox.modal(overlay);
 
@@ -446,8 +446,6 @@ function ExitAnimation(component, componentShadow, actionContainer, overlay) {
 };
 
 function TransitionToInterface(finestraTodo) {
-    const main_interface = DashboardRuntime.componentActions.get('main-interface').component;
-
     const finestra_stickies = DashboardRuntime.componentActions.get('finestra-stickies').object;
     const finestra_projects = DashboardRuntime.componentActions.get('finestra-projects').object;
 

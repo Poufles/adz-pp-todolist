@@ -52,6 +52,7 @@ function MessageBox({ htmlTemplate, onCreate }) {
 
     cont_titlebar.addEventListener('mouseup', (e) => {
         e.stopPropagation();
+        
         document.body.style.userSelect = "";
 
         isGrabbing = false;

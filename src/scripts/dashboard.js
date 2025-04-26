@@ -254,6 +254,12 @@ function Dashboard() {
         };
     };
 
+    StickyInterface.getContentArray().forEach(content => {
+        const notes = StickyNote(content.information);
+
+        finestra_stickies.addContent(notes);
+    });
+
     todoInterface_btn.addEventListener('click', () => {
         const createTodo = CreateTodo();
 
