@@ -2,6 +2,7 @@
     background-color: rgba(0, 0, 0, 0.2);
     width: 100%;
     height: 300px;
+    min-height: 300px;
     min-width: 230px;
     transition: var(--trans-q);
     display: flex;
@@ -163,4 +164,24 @@
 .comp.sticky-note .main-content #note::selection {
     background-color: var(--black);
     color: var(--accent-color-1); /* CHANGE LATER */
+}
+
+.window-component #content .comp.sticky-note {
+    cursor: pointer;
+}
+
+.window-component #content .comp.sticky-note .info-wrapper {
+    background-color: var(--secondary-color);
+}
+
+.window-component #content .comp.sticky-note:hover .main-content #actions {
+    display: none;
+}
+
+.window-component #content .comp.sticky-note .info-wrapper:hover {
+    transform: none;
+}
+
+.window-component #content .comp.sticky-note .main-content #note {
+    cursor: inherit;
 }

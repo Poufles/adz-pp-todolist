@@ -654,9 +654,9 @@ function LoadComponentElements(component) {
     a_instagram.href = 'https://www.instagram.com/poufsadev/';
     a_twitter.href = 'https://x.com/Vqliant';
 
-    a_github.appendChild(SVG.i_github);
-    a_instagram.appendChild(SVG.i_instagram);
-    a_twitter.appendChild(SVG.i_twitter);
+    a_github.appendChild(SVG.githubIcon());
+    a_instagram.appendChild(SVG.instagramIcon());
+    a_twitter.appendChild(SVG.twitterIcon());
 
     cont_socmed.appendChild(a_github);
     cont_socmed.appendChild(a_instagram);

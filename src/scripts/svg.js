@@ -66,24 +66,24 @@ const complete =
 const SVG = function(){
     const range = document.createRange();
 
-    const i_github = range.createContextualFragment(github).querySelector('svg');
-    const i_instagram = range.createContextualFragment(instagram).querySelector('svg');
-    const i_twitter = range.createContextualFragment(twitter).querySelector('svg');
-    const i_todo = range.createContextualFragment(todo).querySelector('svg');
-    const i_note = range.createContextualFragment(note).querySelector('svg');
-    const i_project = range.createContextualFragment(project).querySelector('svg');
-    const i_check = range.createContextualFragment(check).querySelector('svg');
-    const i_complete = range.createContextualFragment(complete).querySelector('svg');
+    const githubIcon = () => range.createContextualFragment(github).querySelector('svg');
+    const instagramIcon = () => range.createContextualFragment(instagram).querySelector('svg');
+    const twitterIcon = () => range.createContextualFragment(twitter).querySelector('svg');
+    const todoIcon = () => range.createContextualFragment(todo).querySelector('svg');
+    const noteIcon = () => range.createContextualFragment(note).querySelector('svg');
+    const projectIcon = () => range.createContextualFragment(project).querySelector('svg');
+    const checkIcon = () => range.createContextualFragment(check).querySelector('svg');
+    const completeIcon = () => range.createContextualFragment(complete).querySelector('svg');
 
     return {
-        i_github,
-        i_instagram,
-        i_twitter,
-        i_todo,
-        i_note,
-        i_project,
-        i_check,
-        i_complete
+        githubIcon,
+        instagramIcon,
+        twitterIcon,
+        todoIcon,
+        noteIcon,
+        projectIcon,
+        checkIcon,
+        completeIcon
     }
 }();
 

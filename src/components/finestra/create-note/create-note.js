@@ -1,4 +1,5 @@
 import CRUD from "../../../scripts/crud.js";
+import DashboardRuntime from "../../../scripts/dashboard-runtime.js";
 import InputBlock from "../../input-block/input-block.js";
 import StickyInterface from "../../main-interface/sticky-interface/sticky-interface.js";
 import { ConfirmMessageBox, InformMessageBox } from "../../message-box/message-box.js";
@@ -67,31 +68,39 @@ function CreateSticky() {
         };
     };
 
-    async function CheckValuesBeforeBack() {
-        let isSameColor, isSameProject;
+    function CheckValuesBeforeBack() {
+        if (isEdit) {
+            let isSameColor, isSameProject;
 
-        const todoColor = input_color.inputComponent.value;
-        const todoProject = input_project.inputComponent.value;
+            const todoColor = input_color.inputComponent.value;
+            const todoProject = input_project.inputComponent.value;
 
-        if (stickyObject.color === todoColor) isSameColor = true;
-        if (stickyObject.project === todoProject || (stickyObject.project === 'none' && todoProject === '')) isSameProject = true;
+            if (stickyObject.color === todoColor) isSameColor = true;
+            if (stickyObject.project === todoProject || (stickyObject.project === 'none' && todoProject === '')) isSameProject = true;
 
-        if (isSameColor && isSameProject) {
-            finestra.unrenderModal(true); return;
+            if (isSameColor && isSameProject) {
+                finestra.unrenderModal(true); return;
+            };
         };
 
         finestra.unrenderModal();
     };
 
-    btn_reset.addEventListener('click', () => {
+    btn_reset.addEventListener('click', (e) => {
+        e.stopPropagation();
+
         finestra.resetInputs();
     });
 
-    btn_close.addEventListener('click', () => {
+    btn_close.addEventListener('click', (e) => {
+        e.stopPropagation();
+
         CheckValuesBeforeBack();
     });
 
-    btn_create.addEventListener('click', async () => {
+    btn_create.addEventListener('click', async (e) => {
+        e.stopPropagation();
+
         const color = input_color.inputComponent.value;
         const project = input_project.inputComponent.value;
 
@@ -108,19 +117,19 @@ function CreateSticky() {
 
             return;
         };
-        
+
         if (isEdit) {
 
-        let isSameColor, isSameProject;
+            let isSameColor, isSameProject;
 
-        if (color === stickyObject.color) isSameColor = true;
-        if (project === stickyObject.project) isSameProject = true;
+            if (color === stickyObject.color) isSameColor = true;
+            if (project === stickyObject.project) isSameProject = true;
 
-        if (isSameColor && isSameProject) {
-            finestra.unrenderModal(true); return;
-        };
+            if (isSameColor && isSameProject) {
+                finestra.unrenderModal(true); return;
+            };
 
-        finestra.disable();
+            finestra.disable();
             const newInputs = {
                 id: stickyObject.id,
                 desc: stickyObject.desc,
@@ -134,19 +143,26 @@ function CreateSticky() {
                 const overlay = finestra.component.parentElement;
 
                 const messageBox = InformMessageBox('Updated!', 'This sticky has been successfully updated!');
-                
+
                 const response = await messageBox.modal(overlay);
-                
+
                 if (response) {
                     finestra.unrenderModal(true);
 
                     stickyObject = responseCRUD.inputs;
                     stickyObjectUpdateFunction(stickyObject);
+
+                    const stickyNote = StickyNote(stickyObject);
+                    StickyInterface.addContent(stickyNote);
+
+                    UpdateStickyWindow(stickyObject)
                 };
             };
 
             return;
         };
+
+        finestra.disable();
 
         const crudResponse = CRUD.createSticky(color, project);
 
@@ -164,6 +180,15 @@ function CreateSticky() {
 
                 const stickyNote = StickyNote(stickyObject);
                 StickyInterface.addContent(stickyNote);
+
+                const refreshWindow = DashboardRuntime.refreshWindow;
+                const finestraStickies = DashboardRuntime.componentActions.get('finestra-stickies');
+
+                refreshWindow(StickyInterface.getContentArray(), finestraStickies.object, StickyNote);
+
+                const stickyCount = StickyInterface.count();
+
+                finestraStickies.object.changeTitle(`stickies | ${stickyCount}`);
             };
         };
     });
@@ -202,6 +227,17 @@ function CreateSticky() {
     finestra.checkValuesBeforeBack = checkValuesBeforeBack;
 
     return finestra;
+};
+
+function UpdateStickyWindow() {
+    const refreshWindow = DashboardRuntime.refreshWindow;
+    const finestraStickies = DashboardRuntime.componentActions.get('finestra-stickies');
+
+    refreshWindow(StickyInterface.getContentArray(), finestraStickies.object, StickyNote);
+
+    const stickyCount = StickyInterface.getContentArray().length;
+
+    finestraStickies.object.changeTitle(`stickies | ${stickyCount}`);
 };
 
 export default CreateSticky;

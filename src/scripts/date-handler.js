@@ -42,13 +42,14 @@ const DateHandler = function () {
     /**
      * Retrieves the given time type from a formatted time.
      * @param {string} formattedTime - Time with a format of hh:mma @ MM/dd/yyyy 
-     * @param {string} type - hour || date 
+     * @param {string} type - hour | date | date-no-year
      */
     const getTimeSlice = (formattedTime, type) => {
         const [hour, date] = formattedTime.split(' @ ');
         
         if (type === 'hour') return hour;
         if (type === 'date') return date;
+        if (type === 'date-no-year') return date.slice(0, 5);
     };
 
     /**

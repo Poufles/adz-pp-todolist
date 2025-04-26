@@ -4,6 +4,8 @@ import DateHandler from "../../scripts/date-handler.js";
 import SVG from '../../scripts/svg.js';
 import BoxButton from "../buttons/box-button/box-button.js";
 import CreateTodo from "../finestra/create-todo/create-todo.js";
+import ProjectInterface from "../main-interface/project-interface/project-interface.js";
+import StickyInterface from "../main-interface/sticky-interface/sticky-interface.js";
 import TodoInterface from "../main-interface/todo-interface/todo-interface.js";
 import { ConfirmMessageBox } from "../message-box/message-box.js";
 
@@ -34,7 +36,6 @@ function TodoBar(todoObject) {
                 </div>
                 <div class="time-container">
                     <span class="" id="due-date">
-                    ${DateHandler.getTimeSlice(todoObject.deadline, 'hour')}
                     </span>
                     <span class="" id="due-message"></span>
                 </div>
@@ -56,12 +57,12 @@ function TodoBar(todoObject) {
     let isBeingDeleted = false;
 
     const componentActions = DashboardRuntime.componentActions;
-    const checkIcon = SVG.i_check;
+    const checkIcon = SVG.checkIcon();
     const range = document.createRange();
     const fragment = range.createContextualFragment(template);
-    const fragmentOverlay = range.createContextualFragment(template_overlay);//
-    const fragmentActions = range.createContextualFragment(template_actions);//
-    const componentShadow = fragment.querySelector('.todo-shadow');//
+    const fragmentOverlay = range.createContextualFragment(template_overlay);
+    const fragmentActions = range.createContextualFragment(template_actions);
+    const componentShadow = fragment.querySelector('.todo-shadow');
     const overlay = fragmentOverlay.querySelector('div');
     const cont_actions = fragmentActions.querySelector('#todo-bar-actions');
     const component = fragment.querySelector('article.todo-bar');
@@ -74,6 +75,8 @@ function TodoBar(todoObject) {
     const btn_project_span = btn_project.querySelector('#project');
     const cont_time = component.querySelector('.time-container');
     const span_due = cont_time.querySelector('#due-date');
+
+    DeadlineText(span_due, todoObject.deadline);
 
     const deleteButton = BoxButton({
         text: 'delete',
@@ -99,9 +102,16 @@ function TodoBar(todoObject) {
 
     if (todoObject.status) {
         checkbox.prepend(checkIcon);
+        input_checkbox.checked = todoObject.status;
     };
 
     component.addEventListener('click', (e) => {
+        const finestra_todos = DashboardRuntime.componentActions.get('finestra-todos');
+
+        if (finestra_todos.component.contains(componentShadow)) {
+            TransitionToInterface(finestra_todos); return;
+        };
+
         if (isViewed) return;
 
         isViewed = true;
@@ -165,7 +175,7 @@ function TodoBar(todoObject) {
 
         isBeingDeleted = true;
 
-        const messageBox = ConfirmMessageBox('Delete todo?', 'This todo will be sent to the archives.');
+        const messageBox = ConfirmMessageBox('Delete todo?', 'This will be permanently deleted. Are you sure?');
 
         const response = await messageBox.modal(overlay);
 
@@ -183,7 +193,14 @@ function TodoBar(todoObject) {
         };
 
         disable();
-        TodoInterface.removeContent(todoObject.id);
+
+        TodoInterface.removeContent({
+            animation: 'exit',
+            id: todoObject.id
+        });
+        TodoInterface.updateInfo(todoObject.id);
+
+        UpdateTodoWindow();
     });
 
     btn_edit.addEventListener('click', (e) => {
@@ -192,10 +209,10 @@ function TodoBar(todoObject) {
         if (!isEnabled) return;
 
         disable();
-        
+
         if (isViewed) {
             ExitAnimation(component, componentShadow, cont_actions, overlay);
-            
+
             setTimeout(() => {
                 isViewed = false;
             }, 200);
@@ -214,6 +231,12 @@ function TodoBar(todoObject) {
     checkbox.addEventListener('click', (e) => {
         e.stopPropagation();
 
+        const finestra_todos = DashboardRuntime.componentActions.get('finestra-todos');
+
+        if (finestra_todos.component.contains(componentShadow)) {
+            TransitionToInterface(finestra_todos); return;
+        };
+
         if (!isEnabled) return;
 
         input_checkbox.checked = input_checkbox.checked ? false : true;
@@ -221,7 +244,9 @@ function TodoBar(todoObject) {
 
         CRUD.updateTodoStatus(todoObject.id, todoObject.status);
 
-        if (input_checkbox.checked) {
+        UpdateTodoWindow();
+
+        if (todoObject.status) {
             checkbox_msg.textContent = '> Completed!';
             checkbox.prepend(checkIcon);
         } else {
@@ -270,15 +295,26 @@ function TodoBar(todoObject) {
 
     /**
      * Automatically unrenders the component from its parent
+     * @param {string} animationType - none | exit | switch-enter
      */
-    const unrender = () => {
-        ExitAnimation(component, componentShadow, cont_actions, overlay);
-
-        setTimeout(() => {
+    const unrender = (animationType = 'none') => {
+        if (animationType === 'none') {
             const parent = componentShadow.parentElement;
-    
+
             if (parent && parent.contains(componentShadow)) parent.removeChild(componentShadow);
-        }, 600);
+
+            return;
+        };
+
+        if (animationType === 'exit') {
+            ExitAnimation(component, componentShadow, cont_actions, overlay);
+
+            setTimeout(() => {
+                const parent = componentShadow.parentElement;
+
+                if (parent && parent.contains(componentShadow)) parent.removeChild(componentShadow);
+            }, 600);
+        };
     };
 
     /**
@@ -360,8 +396,16 @@ function UpdateDeadlineMessage(timeContainer, deadline) {
     };
 };
 
-function SortDeadlines() {
+function DeadlineText(span, deadline) {
+    const dates = DateHandler.timeDifference(deadline);
 
+    if (dates.isThisTimeToday) {
+        span.textContent = DateHandler.getTimeSlice(deadline, 'hour');
+    } else if (dates.isThisTimeTomorrow) {
+        span.textContent = DateHandler.getTimeSlice(deadline, 'hour');
+    } else if (dates.daysDifference > 0 || dates.hoursDifference <= 24 && dates.millisecDifference >= 0) {
+        span.textContent = DateHandler.getTimeSlice(deadline, 'date-no-year');
+    };
 };
 
 function DeadlineCheckerLoop() {
@@ -370,31 +414,62 @@ function DeadlineCheckerLoop() {
 
 function ExitAnimation(component, componentShadow, actionContainer, overlay) {
     const main_interface = DashboardRuntime.componentActions.get('main-interface').component;
-        const mainRect = main_interface.getBoundingClientRect();
-        const mainComponentRect = component.getBoundingClientRect();
-        const compShadowRect = componentShadow.getBoundingClientRect();
-        const actualWidth = component.offsetWidth;
-        const component_pos = `--parent-top: ${compShadowRect.top - mainRect.top}px; --parent-left: ${compShadowRect.left - mainRect.left}px`;
-        const starting_style = `--starting-top: ${mainComponentRect.top - mainRect.top}px; --starting-left: ${mainComponentRect.left - mainRect.left}px`;
+    const mainRect = main_interface.getBoundingClientRect();
+    const mainComponentRect = component.getBoundingClientRect();
+    const compShadowRect = componentShadow.getBoundingClientRect();
+    const actualWidth = component.offsetWidth;
+    const component_pos = `--parent-top: ${compShadowRect.top - mainRect.top}px; --parent-left: ${compShadowRect.left - mainRect.left}px`;
+    const starting_style = `--starting-top: ${mainComponentRect.top - mainRect.top}px; --starting-left: ${mainComponentRect.left - mainRect.left}px`;
 
-        component.classList.remove('view');
-        component.classList.add('return');
+    component.classList.remove('view');
+    component.classList.add('return');
 
-        component.setAttribute('style', starting_style + '; ' + component_pos + '; --actual-width: ' + actualWidth + 'px');
+    component.setAttribute('style', starting_style + '; ' + component_pos + '; --actual-width: ' + actualWidth + 'px');
 
-        actionContainer.classList.remove('show');
-        setTimeout(() => {
-            if (overlay.contains(actionContainer)) overlay.removeChild(actionContainer);
-            overlay.classList.remove('show');
+    actionContainer.classList.remove('show');
+    setTimeout(() => {
+        if (overlay.contains(actionContainer)) overlay.removeChild(actionContainer);
+        overlay.classList.remove('show');
 
-            if (main_interface.contains(overlay)) main_interface.removeChild(overlay);
-        }, 200);
-        main_interface.appendChild(component);
-        setTimeout(() => {
-            component.classList.remove('return');
+        if (main_interface.contains(overlay)) main_interface.removeChild(overlay);
+    }, 200);
+    main_interface.appendChild(component);
+    setTimeout(() => {
+        component.classList.remove('return');
 
-            if (!componentShadow.contains(component)) componentShadow.appendChild(component);
-        }, 170);
+        if (!componentShadow.contains(component)) componentShadow.appendChild(component);
+    }, 170);
+};
+
+function TransitionToInterface(finestraTodo) {
+    const finestra_stickies = DashboardRuntime.componentActions.get('finestra-stickies').object;
+    const finestra_projects = DashboardRuntime.componentActions.get('finestra-projects').object;
+
+    DashboardRuntime.switchPanel({
+        fromFinestra: finestraTodo.object,
+        toInterface: TodoInterface,
+        oppositeInterfacesNWindows: {
+            firstAlt: {
+                finestra: finestra_stickies,
+                interface: StickyInterface
+            },
+            secondAlt: {
+                finestra: finestra_projects,
+                interface: ProjectInterface
+            },
+        }
+    });
+};
+
+function UpdateTodoWindow() {
+    const refreshWindow = DashboardRuntime.refreshWindow;
+    const finestraTodo = DashboardRuntime.componentActions.get('finestra-todos');
+
+    refreshWindow(TodoInterface.todayTodosArr, finestraTodo.object, TodoBar);
+
+    const todoCount = TodoInterface.count();
+
+    finestraTodo.object.changeTitle(`todos | ${todoCount}`);
 };
 
 export default TodoBar;

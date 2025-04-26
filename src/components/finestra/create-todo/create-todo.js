@@ -5,6 +5,7 @@ import CRUD from '../../../scripts/crud.js';
 import DateHandler from '../../../scripts/date-handler.js';
 import TodoBar from '../../todo-bar/todo-bar.js';
 import TodoInterface from '../../main-interface/todo-interface/todo-interface.js';
+import DashboardRuntime from '../../../scripts/dashboard-runtime.js';
 
 function CreateTodo() {
     let isEdit = false;
@@ -129,7 +130,6 @@ function CreateTodo() {
                 if (!prevInputElement) return;
 
                 if (prevInputElement instanceof HTMLInputElement) {
-                    console.log('coucou');
                     prevInputElement.focus();
                     VerifyCursorOnFocus(prevInputElement);
                 } else {
@@ -189,7 +189,7 @@ function CreateTodo() {
                 contentInputElementArr[0].focus();
                 VerifyCursorOnFocus(contentInputElementArr[0])
             };
-            
+
             if (e.key === 'ArrowDown') {
                 e.preventDefault();
 
@@ -284,9 +284,14 @@ function CreateTodo() {
 
                 if (isEdit) {
                     todoObjectUpdateFunction(responseVerify.inputs);
+                    TodoInterface.updateInfo(responseVerify.inputs.id)
+
+                    UpdateTodoWindow();
+
                 } else {
-                    const todoBar = TodoBar(responseVerify.inputs);
-                    TodoInterface.addContent(todoBar);
+                    TodoInterface.addInfo(responseVerify.inputs);
+
+                    UpdateTodoWindow();
                 };
             };
         };
@@ -431,6 +436,17 @@ function VerifyCursorOnFocus(input) {
     requestAnimationFrame(() => {
         input.setSelectionRange(inputLength, inputLength);
     });
+};
+
+function UpdateTodoWindow() {
+    const refreshWindow = DashboardRuntime.refreshWindow;
+    const finestraTodo = DashboardRuntime.componentActions.get('finestra-todos');
+
+    refreshWindow(TodoInterface.todayTodosArr, finestraTodo.object, TodoBar);
+
+    const todoCount = TodoInterface.count();
+
+    finestraTodo.object.changeTitle(`todos | ${todoCount}`);
 };
 
 export default CreateTodo;

@@ -230,7 +230,25 @@ function Finestra({
         } else {
             cont_content.appendChild(object);
             contentItemsArr.push(object);
-            console.log(`Object element has no render()`);
+            console.error(`Object element has no render()`);
+        };
+
+        if (visualComponent && cont_content.contains(visualComponent)) {
+            cont_content.removeChild(visualComponent);
+        };
+    };
+
+    /**
+     * Removes all content.
+     */
+    const removeContent = () => {
+        while (contentItemsArr.length !== 0) {
+            const item = contentItemsArr.shift();
+            item.unrender();
+        };
+
+        if (visualComponent) {
+            cont_content.appendChild(visualComponent);
         };
     };
 
@@ -433,6 +451,7 @@ function Finestra({
         modal,
         unrenderModal,
         addContent,
+        removeContent,
         inputsHasValue,
         resetInputs,
         addKeyboardAndStatusTip,

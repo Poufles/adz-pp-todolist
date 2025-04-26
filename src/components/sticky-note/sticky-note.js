@@ -1,7 +1,9 @@
 import CRUD from "../../scripts/crud.js";
 import DashboardRuntime from "../../scripts/dashboard-runtime.js";
 import CreateSticky from "../finestra/create-note/create-note.js";
+import ProjectInterface from "../main-interface/project-interface/project-interface.js";
 import StickyInterface from "../main-interface/sticky-interface/sticky-interface.js";
+import TodoInterface from "../main-interface/todo-interface/todo-interface.js";
 import { ConfirmMessageBox } from "../message-box/message-box.js";
 
 function StickyNote(stickyObject) {
@@ -48,6 +50,7 @@ function StickyNote(stickyObject) {
         <div class="overlay"></div>
     `;
 
+    let isMouseDown = false;
     let isEnabled = true;
     let isViewed = false;
     let isBeingDeleted = false;
@@ -66,6 +69,52 @@ function StickyNote(stickyObject) {
 
     componentMainArticle.addEventListener('click', (e) => {
         e.stopPropagation();
+
+        const finestraStickies = DashboardRuntime.componentActions.get('finestra-stickies');
+
+        if (finestraStickies.component.contains(component)) {
+            TransitionToInterface(finestraStickies); return;
+        };
+    });
+
+    textarea.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+
+        const finestraStickies = DashboardRuntime.componentActions.get('finestra-stickies');
+
+        if (finestraStickies.component.contains(component)) {
+            e.preventDefault();
+
+            isMouseDown = true;
+        };
+    });
+
+    textarea.addEventListener('mouseup', (e) => {
+        e.stopPropagation();
+
+        const finestraStickies = DashboardRuntime.componentActions.get('finestra-stickies');
+
+        if (finestraStickies.component.contains(component)) {
+            e.preventDefault();
+
+            if (isMouseDown) {
+                TransitionToInterface(finestraStickies);
+                isMouseDown = false;
+
+                return;
+            };
+        };
+    });
+
+    textarea.addEventListener('mouseleave', (e) => {
+        e.stopPropagation();
+
+        const finestraStickies = DashboardRuntime.componentActions.get('finestra-stickies');
+
+        if (finestraStickies.component.contains(component)) {
+            e.preventDefault();
+            isMouseDown = false;
+        };
     });
 
     textarea.addEventListener('keydown', (e) => {
@@ -73,15 +122,19 @@ function StickyNote(stickyObject) {
 
         if (e.key === 'Enter') {
             stickyObject.desc = textarea.value;
-            CRUD.updateSticky(stickyObject)
+            CRUD.updateSticky(stickyObject);
+
+            UpdateStickyWindow(stickyObject);
         };
     });
-
+    
     textarea.addEventListener('blur', (e) => {
         e.stopPropagation();
-
+        
         stickyObject.desc = textarea.value;
         CRUD.updateSticky(stickyObject)
+        
+        UpdateStickyWindow(stickyObject);
     });
 
     overlay.addEventListener('click', async (e) => {
@@ -156,7 +209,7 @@ function StickyNote(stickyObject) {
 
         isBeingDeleted = true;
 
-        const messageBox = ConfirmMessageBox('Delete todo?', 'This todo will be sent to the archives.');
+        const messageBox = ConfirmMessageBox('Delete todo?', 'This will be permanently deleted. Are you sure?');
 
         const main_interface = DashboardRuntime.componentActions.get('main-interface').component;
 
@@ -176,7 +229,11 @@ function StickyNote(stickyObject) {
         };
 
         disable();
-        StickyInterface.removeContent(stickyObject.id);
+        StickyInterface.removeContent({
+            id: stickyObject.id
+        });
+
+        UpdateStickyWindow();
     });
 
     /**
@@ -274,6 +331,37 @@ function ExitAnimation(component, componentShadow, overlay) {
         component.classList.remove('return');
         componentShadow.appendChild(component);
     }, 170);
+};
+
+function TransitionToInterface(finestraStickies) {
+    const finestraTodos = DashboardRuntime.componentActions.get('finestra-todos').object;
+    const finestra_projects = DashboardRuntime.componentActions.get('finestra-projects').object;
+
+    DashboardRuntime.switchPanel({
+        fromFinestra: finestraStickies.object,
+        toInterface: StickyInterface,
+        oppositeInterfacesNWindows: {
+            firstAlt: {
+                finestra: finestraTodos,
+                interface: TodoInterface
+            },
+            secondAlt: {
+                finestra: finestra_projects,
+                interface: ProjectInterface
+            },
+        }
+    });
+};
+
+function UpdateStickyWindow() {
+    const refreshWindow = DashboardRuntime.refreshWindow;
+    const finestraStickies = DashboardRuntime.componentActions.get('finestra-stickies');
+
+    refreshWindow(StickyInterface.getContentArray(), finestraStickies.object, StickyNote);
+
+    const stickyCount = StickyInterface.getContentArray().length;
+
+    finestraStickies.object.changeTitle(`stickies | ${stickyCount}`);
 };
 
 export default StickyNote;

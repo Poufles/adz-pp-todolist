@@ -84,7 +84,7 @@
 
 .comp.main-interface #sub-section .actions {
     display: flex;
-    gap: 30px;
+    gap: 20px;
     align-items: center;
 }
 
@@ -104,10 +104,13 @@
 
 .comp.main-interface #content {
     flex-grow: 1;
-    padding: 10px 50px 120px 50px;
+
+    height: 100%;
+    padding: 10px 50px 250px 50px;
     display: flex;
     flex-direction: column;
     gap: 7px;
     overflow-x: clip;
     overflow-y: auto;
+    scrollbar-width: none;
 }

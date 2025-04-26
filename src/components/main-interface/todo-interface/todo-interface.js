@@ -1,5 +1,8 @@
 import StorageHandler from "../../../scripts/storage-handler.js";
 import MainInterface from "../main-interface.js";
+import CRUD from "../../../scripts/crud.js";
+import DateHandler from "../../../scripts/date-handler.js";
+import TodoBar from "../../todo-bar/todo-bar.js";
 
 const TodoInterface = function () {
     const account = StorageHandler.GetStorage(true);
@@ -13,21 +16,21 @@ const TodoInterface = function () {
         buttonId: 'create'
     });
 
-    const template_subsection = 
-    `
+    const template_subsection =
+        `
         <div id="sub-section">
             <div class="actions select-none">
                 <button type="button" class="btn action selected" id="today">
-                    <span id="name">today</span>
-                    <span id="count">| 0</span>
+                    <span class="name">today</span>
+                    <span class="count">| 0</span>
                 </button>
                 <button type="button" class="btn action" id="tomorrow">
-                    <span id="name">tomorrow</span>
-                    <span id="count">| 0</span>
+                    <span class="name">tomorrow</span>
+                    <span class="count">| 0</span>
                 </button>
-                <button type="button" class="btn action" id="today">
-                    <span id="name">upcoming</span>
-                    <span id="count">| 0</span>
+                <button type="button" class="btn action" id="upcoming">
+                    <span class="name">upcoming</span>
+                    <span class="count">| 0</span>
                 </button>
             </div>
         </div>
@@ -40,13 +43,222 @@ const TodoInterface = function () {
     const cont_top = component.querySelector('.top');
     const button = cont_top.querySelector('.box-button');
     const content = component.querySelector('#content');
+    const btn_today = subSection.querySelector('#today');
+    const btn_tomorrow = subSection.querySelector('#tomorrow');
+    const btn_upcoming = subSection.querySelector('#upcoming');
+
+    const buttonArr = [];
+    const todayArr = [];
+    const tomorrowArr = [];
+    const upcomingArr = [];
+
+    buttonArr.push(btn_today);
+    buttonArr.push(btn_tomorrow);
+    buttonArr.push(btn_upcoming);
 
     component.insertBefore(subSection, content);
     cont_top.removeChild(button);
     subSection.appendChild(button);
     todoInterface.toggleReturnButton(false);
 
+    const addInfo = (todoInfo) => {
+        AddTodo(todoInfo, todayArr, tomorrowArr, upcomingArr, subSection, todoInterface);
+
+        for (let index = 0; index < buttonArr.length; index++) {
+            const button = buttonArr[index];
+
+            if (button.classList.contains('selected')) {
+                const dayType = button.querySelector('.name').textContent;
+                switchContent(dayType);
+            };
+        };
+    }
+
+    const updateInfo = (todoId) => {
+        UpdateInfo(todoInterface, todoId, todayArr, tomorrowArr, upcomingArr, subSection);
+
+        for (let index = 0; index < buttonArr.length; index++) {
+            const button = buttonArr[index];
+
+            if (button.classList.contains('selected')) {
+                const dayType = button.querySelector('.name').textContent;
+                switchContent(dayType);
+            };
+        };
+    };
+
+    const switchContent = (type) => SwitchContent(type, todoInterface, todayArr, tomorrowArr, upcomingArr)
+
+    todoInterface.addInfo = addInfo;
+    todoInterface.updateInfo = updateInfo;
+    todoInterface.switchContent = switchContent;
+    todoInterface.todayTodosArr = todayArr;
+    todoInterface.tomorrowTodosArr = tomorrowArr;
+    todoInterface.upcomingTodosArr = upcomingArr;
+    todoInterface.count = () => {
+        return todayArr.length + tomorrowArr.length + upcomingArr.length
+    };
+
+    ButtonSwitcher(buttonArr, btn_today, 'today', switchContent);
+    ButtonSwitcher(buttonArr, btn_tomorrow, 'tomorrow', switchContent);
+    ButtonSwitcher(buttonArr, btn_upcoming, 'upcoming', switchContent);
+
     return todoInterface;
 }();
+
+function ButtonSwitcher(btnArr, button, type, switchContent) {
+    button.addEventListener('click', (e) => {
+        e.stopPropagation();
+
+        for (let index = 0; index < btnArr.length; index++) {
+            let btn = btnArr[index];
+
+            if (btn.classList.contains('selected')) {
+                btn.classList.remove('selected');
+                break;
+            };
+        };
+
+        button.classList.add('selected');
+        switchContent(type);
+    });
+};
+
+function AddTodo(todoInfo, todayArr, tomorrowArr, upcomingArr, subSection, todoInterface) {
+    const dates = DateHandler.timeDifference(todoInfo.deadline);
+
+    if (dates.isThisTimeToday && dates.millisecDifference >= 0) {
+        
+        console.log(todoInfo);
+        const todoBar = TodoBar(todoInfo);
+        console.log(todoBar);
+        todayArr.push(todoBar);
+
+    } else if (dates.isThisTimeTomorrow) {
+        
+        const todoBar = TodoBar(todoInfo);
+        tomorrowArr.push(todoBar);
+
+    } else if (dates.daysDifference > 0 || dates.hoursDifference <= 24 && dates.millisecDifference >= 0) {
+        
+        const todoBar = TodoBar(todoInfo);
+        upcomingArr.push(todoBar);
+    
+    };
+
+    SortDeadlines(todayArr);
+    SortDeadlines(tomorrowArr);
+    SortDeadlines(upcomingArr);
+
+    UpdateInterfaceCount(todayArr, tomorrowArr, upcomingArr, subSection, todoInterface);
+};
+
+function UpdateInfo(todoInterface, todoId, todayArr, tomorrowArr, upcomingArr, subSection) {
+    let todo;
+
+    if (!todo) todo = FindTodo(todoId, todayArr);
+
+    if (!todo) todo = FindTodo(todoId, tomorrowArr);
+
+    if (!todo) todo = FindTodo(todoId, upcomingArr);
+
+    const dates = DateHandler.timeDifference(todo.information.deadline);
+
+    if (todo.information.status !== 'deleted') {
+
+        if (dates.isThisTimeToday && dates.millisecDifference >= 0) {
+            todayArr.push(todo);
+        } else if (dates.isThisTimeTomorrow) {
+            tomorrowArr.push(todo);
+        } else if (dates.daysDifference > 0 || dates.hoursDifference <= 24 && dates.millisecDifference >= 0) {
+            upcomingArr.push(todo);
+        };
+
+    };
+
+    // ADD CATCHER FOR OVERDUE  
+
+    SortDeadlines(todayArr);
+    SortDeadlines(tomorrowArr);
+    SortDeadlines(upcomingArr);
+
+    UpdateInterfaceCount(todayArr, tomorrowArr, upcomingArr, subSection, todoInterface);
+};
+
+function FindTodo(todoId, arr) {
+    for (let index = 0; index < arr.length; index++) {
+        const todoObject = arr[index];
+        const todayTodoId = todoObject.information.id;
+
+        if (todoId == todayTodoId) {
+            arr.splice(index, 1);
+            return todoObject;
+        };
+    };
+
+    return undefined;
+};
+
+function UpdateInterfaceCount(todayArr, tomorrowArr, upcomingArr, subSection, todoInterface) {
+    const todayCount = todayArr.length;
+    const tomorrowCount = tomorrowArr.length;
+    const upcomingCount = upcomingArr.length;
+
+    const allTodosCount = todayCount + tomorrowCount + upcomingCount;
+    const span_todayCount = subSection.querySelector('#today .count');
+    const span_tomorrowCount = subSection.querySelector('#tomorrow .count');
+    const span_upcomingCount = subSection.querySelector('#upcoming .count');
+
+    todoInterface.changeTitleCount(allTodosCount);
+    span_todayCount.textContent = `| ${todayCount}`;
+    span_tomorrowCount.textContent = `| ${tomorrowCount}`;
+    span_upcomingCount.textContent = `| ${upcomingCount}`;
+};
+
+/**
+ * Sorts the deadlines of todos
+ * @param {Array} arr 
+ */
+function SortDeadlines(arr) {
+    let isSorted = false;
+
+    while (!isSorted) {
+        isSorted = true;
+
+        for (let index = 0; index < arr.length - 1; index++) {
+            const currentElement = arr[index];
+            const nextElement = arr[index + 1];
+
+            const currentMS = DateHandler.timeDifference(currentElement.information.deadline);
+            const nextMS = DateHandler.timeDifference(nextElement.information.deadline);
+
+            if (currentMS.millisecDifference > nextMS.millisecDifference) {
+                const temp = arr[index];
+
+                arr[index] = nextElement;
+                arr[index + 1] = temp;
+
+                isSorted = false;
+            };
+        };
+    };
+};
+
+function SwitchContent(dayType, todoInterface, todayArr, tomorrowArr, upcomingArr) {
+
+    todoInterface.removeContent({ all: true });
+
+    if (dayType === 'today') {
+        todayArr.forEach(todo => todoInterface.addContent(todo));
+    };
+
+    if (dayType === 'tomorrow') {
+        tomorrowArr.forEach(todo => todoInterface.addContent(todo));
+    };
+
+    if (dayType === 'upcoming') {
+        upcomingArr.forEach(todo => todoInterface.addContent(todo));
+    };
+};
 
 export default TodoInterface

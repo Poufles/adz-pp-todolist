@@ -30,12 +30,12 @@ import BasicSettings from '../components/finestra/basic-settings/basic-settings.
 import UserBox from '../components/userbox/userbox.js';
 import StorageHandler from './storage-handler.js';
 import CreateTodo from '../components/finestra/create-todo/create-todo.js';
-import TodoBar from '../components/todo-bar/todo-bar.js';
 import DashboardRuntime from './dashboard-runtime.js';
 import StickyInterface from '../components/main-interface/sticky-interface/sticky-interface.js';
 import ProjectInterface from '../components/main-interface/project-interface/project-interface.js';
 import CreateSticky from '../components/finestra/create-note/create-note.js';
 import StickyNote from '../components/sticky-note/sticky-note.js';
+import TodoBar from '../components/todo-bar/todo-bar.js';
 
 function Dashboard() {
     const account = StorageHandler.GetStorage(true);
@@ -131,7 +131,7 @@ function Dashboard() {
         titleButtonText: 'see all'
     });
 
-    finestra_stickies.addEmptyVisual(SVG.i_note, 'stickies would appear here if there is one...')
+    finestra_stickies.addEmptyVisual(SVG.noteIcon(), 'stickies would appear here if there is one...')
 
     BasicSettings.render(cont_settings);
     finestra_stickies.render(cont_left_todo);
@@ -140,20 +140,19 @@ function Dashboard() {
     ////////////////// MAIN PANEL //////////////////
     TodoInterface.render(middle_panel);
 
+    // const todosArr = [];
     const todos = CRUD.getTasks('todo');
-    const todosArr = [];
 
     for (let index = 0; index < todos.length; index++) {
         let todo = todos[index];
 
-        const todoBar = TodoBar(todo);
-
-        TodoInterface.addContent(todoBar);
-        todosArr.push(todoBar);
+        TodoInterface.addInfo(todo);
     };
 
+    TodoInterface.switchContent('today');
+
     const stickies = CRUD.getTasks('sticky');
-    const stickiesArr = [];
+    // const stickiesArr = [];
 
     for (let index = 0; index < stickies.length; index++) {
         let sticky = stickies[index];
@@ -161,7 +160,7 @@ function Dashboard() {
         const stickyNote = StickyNote(sticky);
 
         StickyInterface.addContent(stickyNote);
-        stickiesArr.push(stickyNote);
+        // stickiesArr.push(stickyNote);
     };
 
     ////////////////// MAIN PANEL //////////////////
@@ -184,18 +183,10 @@ function Dashboard() {
         titleButtonText: 'see all'
     });
 
-    finestra_projects.addEmptyVisual(SVG.i_project, 'projects seem to be empty... why not create one?');
-
-    const finestra_archives = Finestra({
-        isExpanded: false,
-        id: 'archives',
-        windowTitle: `archives | ${account.archive.length}`,
-        titleButtonText: 'see all'
-    });
+    finestra_projects.addEmptyVisual(SVG.projectIcon(), 'projects seem to be empty... why not create one?');
 
     finestra_overdue.render(cont_overdues);
     finestra_projects.render(cont_right_todo);
-    finestra_archives.render(cont_archives);
     ////////////////// RIGHT PANEL //////////////////
 
     /////////////////////////////////////
@@ -229,7 +220,7 @@ function Dashboard() {
         titleButtonText: 'see all'
     });
 
-    finestra_todos.addEmptyVisual(SVG.i_complete, 'there are no todos! you did well!');
+    finestra_todos.addEmptyVisual(SVG.completeIcon(), 'there are no todos! you did well!');
 
     const componentActions = DashboardRuntime.componentActions;
 
@@ -237,9 +228,9 @@ function Dashboard() {
     componentActions.add('middle-panel', middle_panel);
     componentActions.add('container-left-todo', cont_left_todo);
     componentActions.add('container-right-todo', cont_right_todo);
-    componentActions.add('finestra-todos', undefined, finestra_todos);
-    componentActions.add('finestra-stickies', undefined, finestra_stickies);
-    componentActions.add('finestra-projects', undefined, finestra_projects);
+    componentActions.add('finestra-todos', finestra_todos.component, finestra_todos);
+    componentActions.add('finestra-stickies', finestra_stickies.component, finestra_stickies);
+    componentActions.add('finestra-projects', finestra_projects.component, finestra_projects);
 
     const todoInterface_btn = TodoInterface.createButton;
     const stickyInterface_btn = StickyInterface.createButton;
@@ -248,18 +239,39 @@ function Dashboard() {
     const finestra_stickies_btn_seeAll = finestra_stickies.closeButton;
     const finestra_projects_btn_seeAll = finestra_projects.closeButton;
     const finestra_overdues_btn_seeAll = finestra_overdue.closeButton;
-    const finestra_archives_btn_seeAll = finestra_archives.closeButton;
+
+    const todayTodosArr = TodoInterface.todayTodosArr;
+    // const stickiesArr = StickyInterface.todayTodosArr;
+    // const projectsArr = ProjectInterface.todayTodosArr;
+
+    for (let index = 0; index < todayTodosArr.length; index++) {
+        const todoInfo = todayTodosArr[index].information;
+        const timeDiff = DateHandler.timeDifference(todoInfo.deadline); 
+        if (timeDiff.isThisTimeToday) {
+            const todoBar = TodoBar(todoInfo)
+    
+            finestra_todos.addContent(todoBar);
+        };
+    };
+
+    StickyInterface.getContentArray().forEach(content => {
+        const notes = StickyNote(content.information);
+
+        finestra_stickies.addContent(notes);
+    });
 
     todoInterface_btn.addEventListener('click', () => {
         const createTodo = CreateTodo();
 
         createTodo.modal(main_interface, 'todo');
+        DashboardRuntime.objectActions.add('check-before-back', createTodo.checkValuesBeforeBack)
     });
 
     stickyInterface_btn.addEventListener('click', () => {
         const createSticky = CreateSticky();
 
-        createSticky.modal(main_interface);
+        createSticky.modal(main_interface, 'sticky');
+        DashboardRuntime.objectActions.add('check-before-back', createSticky.checkValuesBeforeBack)
     });
 
     finestra_todos_btn_seeAll.addEventListener('click', () => {
@@ -314,10 +326,6 @@ function Dashboard() {
     });
 
     finestra_overdues_btn_seeAll.addEventListener('click', () => {
-        
-    });
-
-    finestra_archives_btn_seeAll.addEventListener('click', () => {
         
     });
 
