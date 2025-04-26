@@ -18,7 +18,7 @@ const DashboardRuntime = function() {
             },
             get(id) {
                 return components[id];
-            },
+            }, 
             all() {
                 return components;
             }

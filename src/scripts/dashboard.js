@@ -131,7 +131,7 @@ function Dashboard() {
         titleButtonText: 'see all'
     });
 
-    finestra_stickies.addEmptyVisual(SVG.i_note, 'stickies would appear here if there is one...')
+    finestra_stickies.addEmptyVisual(SVG.noteIcon(), 'stickies would appear here if there is one...')
 
     BasicSettings.render(cont_settings);
     finestra_stickies.render(cont_left_todo);
@@ -183,7 +183,7 @@ function Dashboard() {
         titleButtonText: 'see all'
     });
 
-    finestra_projects.addEmptyVisual(SVG.i_project, 'projects seem to be empty... why not create one?');
+    finestra_projects.addEmptyVisual(SVG.projectIcon(), 'projects seem to be empty... why not create one?');
 
     finestra_overdue.render(cont_overdues);
     finestra_projects.render(cont_right_todo);
@@ -220,7 +220,7 @@ function Dashboard() {
         titleButtonText: 'see all'
     });
 
-    finestra_todos.addEmptyVisual(SVG.i_complete, 'there are no todos! you did well!');
+    finestra_todos.addEmptyVisual(SVG.completeIcon(), 'there are no todos! you did well!');
 
     const componentActions = DashboardRuntime.componentActions;
 

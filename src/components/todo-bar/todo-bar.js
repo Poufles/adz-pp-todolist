@@ -57,7 +57,7 @@ function TodoBar(todoObject) {
     let isBeingDeleted = false;
 
     const componentActions = DashboardRuntime.componentActions;
-    const checkIcon = SVG.i_check;
+    const checkIcon = SVG.checkIcon();
     const range = document.createRange();
     const fragment = range.createContextualFragment(template);
     const fragmentOverlay = range.createContextualFragment(template_overlay);
@@ -102,6 +102,7 @@ function TodoBar(todoObject) {
 
     if (todoObject.status) {
         checkbox.prepend(checkIcon);
+        input_checkbox.checked = todoObject.status;
     };
 
     component.addEventListener('click', (e) => {
@@ -199,14 +200,7 @@ function TodoBar(todoObject) {
         });
         TodoInterface.updateInfo(todoObject.id);
 
-        const refreshWindow = DashboardRuntime.refreshWindow;
-        const finestraTodo = DashboardRuntime.componentActions.get('finestra-todos');
-
-        refreshWindow(TodoInterface.todayTodosArr, finestraTodo.object, TodoBar);
-
-        const todoCount = TodoInterface.count();
-
-        finestraTodo.object.changeTitle(`todos | ${todoCount}`);
+        UpdateTodoWindow();
     });
 
     btn_edit.addEventListener('click', (e) => {
@@ -250,7 +244,9 @@ function TodoBar(todoObject) {
 
         CRUD.updateTodoStatus(todoObject.id, todoObject.status);
 
-        if (input_checkbox.checked) {
+        UpdateTodoWindow();
+
+        if (todoObject.status) {
             checkbox_msg.textContent = '> Completed!';
             checkbox.prepend(checkIcon);
         } else {
@@ -463,6 +459,17 @@ function TransitionToInterface(finestraTodo) {
             },
         }
     });
+};
+
+function UpdateTodoWindow() {
+    const refreshWindow = DashboardRuntime.refreshWindow;
+    const finestraTodo = DashboardRuntime.componentActions.get('finestra-todos');
+
+    refreshWindow(TodoInterface.todayTodosArr, finestraTodo.object, TodoBar);
+
+    const todoCount = TodoInterface.count();
+
+    finestraTodo.object.changeTitle(`todos | ${todoCount}`);
 };
 
 export default TodoBar;

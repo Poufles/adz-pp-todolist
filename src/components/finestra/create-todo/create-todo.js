@@ -286,26 +286,12 @@ function CreateTodo() {
                     todoObjectUpdateFunction(responseVerify.inputs);
                     TodoInterface.updateInfo(responseVerify.inputs.id)
 
-                    const refreshWindow = DashboardRuntime.refreshWindow;
-                    const finestraTodo = DashboardRuntime.componentActions.get('finestra-todos');
-
-                    refreshWindow(TodoInterface.todayTodosArr, finestraTodo.object, TodoBar);
-
-                    const todoCount = TodoInterface.count();
-                    
-                    finestraTodo.object.changeTitle(`todos | ${todoCount}`);
+                    UpdateTodoWindow();
 
                 } else {
                     TodoInterface.addInfo(responseVerify.inputs);
 
-                    const refreshWindow = DashboardRuntime.refreshWindow;
-                    const finestraTodo = DashboardRuntime.componentActions.get('finestra-todos');
-
-                    refreshWindow(TodoInterface.todayTodosArr, finestraTodo.object, TodoBar);
-
-                    const todoCount = TodoInterface.count();
-
-                    finestraTodo.object.changeTitle(`todos | ${todoCount}`);
+                    UpdateTodoWindow();
                 };
             };
         };
@@ -450,6 +436,17 @@ function VerifyCursorOnFocus(input) {
     requestAnimationFrame(() => {
         input.setSelectionRange(inputLength, inputLength);
     });
+};
+
+function UpdateTodoWindow() {
+    const refreshWindow = DashboardRuntime.refreshWindow;
+    const finestraTodo = DashboardRuntime.componentActions.get('finestra-todos');
+
+    refreshWindow(TodoInterface.todayTodosArr, finestraTodo.object, TodoBar);
+
+    const todoCount = TodoInterface.count();
+
+    finestraTodo.object.changeTitle(`todos | ${todoCount}`);
 };
 
 export default CreateTodo;

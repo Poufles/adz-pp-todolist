@@ -129,7 +129,9 @@ function AddTodo(todoInfo, todayArr, tomorrowArr, upcomingArr, subSection, todoI
 
     if (dates.isThisTimeToday && dates.millisecDifference >= 0) {
         
+        console.log(todoInfo);
         const todoBar = TodoBar(todoInfo);
+        console.log(todoBar);
         todayArr.push(todoBar);
 
     } else if (dates.isThisTimeTomorrow) {
