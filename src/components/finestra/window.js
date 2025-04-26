@@ -1,3 +1,4 @@
+import Aesthetics from '../../scripts/aesthetics.js';
 import DashboardRuntime from '../../scripts/dashboard-runtime.js';
 import WordButton from '../buttons/word-button/word-button.js';
 import { ConfirmMessageBox } from '../message-box/message-box.js';
@@ -441,6 +442,15 @@ function Finestra({
         }, 530);
     };
 
+    const setCustomColor = (color = Aesthetics.colors.green) => {
+        const lightColor = color.light;
+        const darkColor = color.dark;
+
+        component.setAttribute('style', `--title-color: ${lightColor}; --content-color: ${darkColor}`);
+    };
+
+    setCustomColor();
+
     return {
         component,
         closeButton: btn_title,
@@ -461,7 +471,8 @@ function Finestra({
         changeTitle,
         enable,
         disable,
-        animate
+        animate,
+        setCustomColor
     };
 };
 

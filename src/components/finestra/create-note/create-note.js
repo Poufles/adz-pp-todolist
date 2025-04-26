@@ -186,7 +186,7 @@ function CreateSticky() {
 
                 refreshWindow(StickyInterface.getContentArray(), finestraStickies.object, StickyNote);
 
-                const stickyCount = StickyInterface.count();
+                const stickyCount = StickyInterface.getContentArray().length;
 
                 finestraStickies.object.changeTitle(`stickies | ${stickyCount}`);
             };

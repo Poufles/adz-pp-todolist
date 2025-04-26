@@ -36,8 +36,10 @@ import ProjectInterface from '../components/main-interface/project-interface/pro
 import CreateSticky from '../components/finestra/create-note/create-note.js';
 import StickyNote from '../components/sticky-note/sticky-note.js';
 import TodoBar from '../components/todo-bar/todo-bar.js';
+import Aesthetics from './aesthetics.js';
 
 function Dashboard() {
+    const colors = Aesthetics.colors;
     const account = StorageHandler.GetStorage(true);
     const body = document.body;
     const page_dashboard = body.querySelector('.dashboard');
@@ -132,9 +134,10 @@ function Dashboard() {
     });
 
     finestra_stickies.addEmptyVisual(SVG.noteIcon(), 'stickies would appear here if there is one...')
-
-    BasicSettings.render(cont_settings);
     finestra_stickies.render(cont_left_todo);
+    
+    BasicSettings.render(cont_settings);
+
     ////////////////// LEFT PANEL //////////////////
 
     ////////////////// MAIN PANEL //////////////////
@@ -168,7 +171,6 @@ function Dashboard() {
     ////////////////// RIGHT PANEL //////////////////
     const cont_overdues = right_panel.querySelector('#overdue-container');
     const cont_right_todo = right_panel.querySelector('.todo-type-container');
-    const cont_archives = right_panel.querySelector('#archive-container');
 
     const finestra_overdue = Finestra({
         isExpanded: false,
