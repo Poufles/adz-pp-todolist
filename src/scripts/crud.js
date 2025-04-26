@@ -74,6 +74,7 @@ const CRUD = function () {
             project: project || 'none',
             color,
             status: false,
+            archivestatus: 'none',
         };
 
         todos.push(objectTemplate);
@@ -191,28 +192,6 @@ const CRUD = function () {
     };
 
     /**
-     * Deletes todo
-     * @param {Number} id 
-     */
-    // const deleteTodo = (id) => {
-    //     const todos = account.todo;
-
-    //     for (let index = 0; index < todos.length; index++) {
-    //         let todo = todos[index];
-
-    //         if (todo.id === id) {
-    //             todos.splice(index, 1);
-    //             StorageHandler.UpdateStorage();
-
-    //             return { status: 'success' }
-    //         };
-    //     };
-
-    //     console.error('Error in deletion: This todo does not exist(?)')
-    //     return { status: 'u-invalid' };
-    // };
-
-    /**
      * Registers a new sticky.
      * @param {string} color 
      * @param {string} project 
@@ -291,12 +270,13 @@ const CRUD = function () {
     };
 
     /**
-     * Deletes a todo type
+     * Deletes a task type
      * @param {Number} id 
      * @param {string} type
      */
     const deleteTask = (id, type) => {
         const tasks = account[type];
+        const archive = account.archive
 
         for (let index = 0; index < tasks.length; index++) {
             let task = tasks[index];
@@ -304,6 +284,11 @@ const CRUD = function () {
             if (task.id === id) {
                 tasks.splice(index, 1);
                 StorageHandler.UpdateStorage();
+
+                // For todos and projects
+                if (Object.hasOwn(task, 'status')) {
+                    task.status = 'deleted';
+                };
 
                 return { status: 'success' }
             };
@@ -317,7 +302,6 @@ const CRUD = function () {
         getTasks,
         createTodo,
         updateTodo,
-        // deleteTodo,
         updateTodoStatus,
         createSticky,
         updateSticky,

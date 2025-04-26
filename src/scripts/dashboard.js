@@ -30,7 +30,6 @@ import BasicSettings from '../components/finestra/basic-settings/basic-settings.
 import UserBox from '../components/userbox/userbox.js';
 import StorageHandler from './storage-handler.js';
 import CreateTodo from '../components/finestra/create-todo/create-todo.js';
-import TodoBar from '../components/todo-bar/todo-bar.js';
 import DashboardRuntime from './dashboard-runtime.js';
 import StickyInterface from '../components/main-interface/sticky-interface/sticky-interface.js';
 import ProjectInterface from '../components/main-interface/project-interface/project-interface.js';
@@ -141,15 +140,15 @@ function Dashboard() {
     TodoInterface.render(middle_panel);
 
     // const todosArr = [];
+    const todos = CRUD.getTasks('todo');
 
-    // for (let index = 0; index < todos.length; index++) {
-    //     let todo = todos[index];
+    for (let index = 0; index < todos.length; index++) {
+        let todo = todos[index];
 
-    //     const todoBar = TodoBar(todo);
+        TodoInterface.addInfo(todo);
+    };
 
-    //     TodoInterface.addContent(todoBar);
-    //     todosArr.push(todoBar);
-    // };
+    TodoInterface.switchContent('today');
 
     const stickies = CRUD.getTasks('sticky');
     // const stickiesArr = [];
@@ -185,16 +184,8 @@ function Dashboard() {
 
     finestra_projects.addEmptyVisual(SVG.i_project, 'projects seem to be empty... why not create one?');
 
-    const finestra_archives = Finestra({
-        isExpanded: false,
-        id: 'archives',
-        windowTitle: `archives | ${account.archive.length}`,
-        titleButtonText: 'see all'
-    });
-
     finestra_overdue.render(cont_overdues);
     finestra_projects.render(cont_right_todo);
-    finestra_archives.render(cont_archives);
     ////////////////// RIGHT PANEL //////////////////
 
     /////////////////////////////////////
@@ -247,7 +238,6 @@ function Dashboard() {
     const finestra_stickies_btn_seeAll = finestra_stickies.closeButton;
     const finestra_projects_btn_seeAll = finestra_projects.closeButton;
     const finestra_overdues_btn_seeAll = finestra_overdue.closeButton;
-    const finestra_archives_btn_seeAll = finestra_archives.closeButton;
 
     todoInterface_btn.addEventListener('click', () => {
         const createTodo = CreateTodo();
@@ -315,10 +305,6 @@ function Dashboard() {
     });
 
     finestra_overdues_btn_seeAll.addEventListener('click', () => {
-        
-    });
-
-    finestra_archives_btn_seeAll.addEventListener('click', () => {
         
     });
 

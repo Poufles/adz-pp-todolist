@@ -80,7 +80,7 @@ function MainInterface({
             return;
         };
 
-        cont_count.textContent = ` | ${titleCount} ${title}`;
+        cont_count.textContent = ` | ${newCount} ${title}`;
     };
 
     /**
@@ -201,7 +201,9 @@ function MainInterface({
                 let information = content.information;
                 let infoId = information.id;
 
+                console.log(id);
                 if (infoId === id) {
+                    console.log('hello');
                     contentArr.splice(index, 1);
                     content.unrender(animation);
 

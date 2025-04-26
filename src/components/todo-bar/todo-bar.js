@@ -74,16 +74,7 @@ function TodoBar(todoObject) {
     const cont_time = component.querySelector('.time-container');
     const span_due = cont_time.querySelector('#due-date');
 
-    const deadline = todoObject.deadline
-    const dates = DateHandler.timeDifference(deadline);
-
-    if (dates.isThisTimeToday) {
-        span_due.textContent = DateHandler.getTimeSlice(todoObject.deadline, 'hour');
-    } else if (dates.isThisTimeTomorrow) {
-        span_due.textContent = DateHandler.getTimeSlice(todoObject.deadline, 'hour');
-    } else if (dates.daysDifference > 0 || dates.hoursDifference <= 24 && dates.millisecDifference >= 0) {
-        span_due.textContent = DateHandler.getTimeSlice(todoObject.deadline, 'date-no-year');
-    };
+    DeadlineText(span_due, todoObject.deadline);
 
     const deleteButton = BoxButton({
         text: 'delete',
@@ -193,7 +184,12 @@ function TodoBar(todoObject) {
         };
 
         disable();
-        TodoInterface.removeContent(todoObject.id);
+        TodoInterface.removeContent({
+            animation: 'exit',
+            id: todoObject.id
+        });
+
+        TodoInterface.updateInfo(todoObject.id);
     });
 
     btn_edit.addEventListener('click', (e) => {
@@ -381,8 +377,16 @@ function UpdateDeadlineMessage(timeContainer, deadline) {
     };
 };
 
-function SortDeadlines() {
-
+function DeadlineText(span, deadline) {
+    const dates = DateHandler.timeDifference(deadline);
+    
+    if (dates.isThisTimeToday) {
+        span.textContent = DateHandler.getTimeSlice(deadline, 'hour');
+    } else if (dates.isThisTimeTomorrow) {
+        span.textContent = DateHandler.getTimeSlice(deadline, 'hour');
+    } else if (dates.daysDifference > 0 || dates.hoursDifference <= 24 && dates.millisecDifference >= 0) {
+        span.textContent = DateHandler.getTimeSlice(deadline, 'date-no-year');
+    };
 };
 
 function DeadlineCheckerLoop() {

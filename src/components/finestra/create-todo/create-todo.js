@@ -284,9 +284,9 @@ function CreateTodo() {
 
                 if (isEdit) {
                     todoObjectUpdateFunction(responseVerify.inputs);
+                    TodoInterface.updateInfo(responseVerify.inputs.id)
                 } else {
-                    const todoBar = TodoBar(responseVerify.inputs);
-                    TodoInterface.addContent(todoBar);
+                    TodoInterface.addInfo(responseVerify.inputs);
                 };
             };
         };

@@ -61,14 +61,35 @@ const TodoInterface = function () {
     subSection.appendChild(button);
     todoInterface.toggleReturnButton(false);
 
-    UpdateInfo(todoInterface, todayArr, tomorrowArr, upcomingArr, subSection);
+    const addInfo = (todoInfo) => {
+        AddTodo(todoInfo, todayArr, tomorrowArr, upcomingArr, subSection, todoInterface);
 
-    SwitchContent('today', todoInterface, todayArr, tomorrowArr, upcomingArr)
+        for (let index = 0; index < buttonArr.length; index++) {
+            const button = buttonArr[index];
 
-    const updateInfo = () => UpdateInfo(todoInterface, todayArr, tomorrowArr, upcomingArr, subSection);
+            if (button.classList.contains('selected')) {
+                const dayType = button.querySelector('.name').textContent;
+                switchContent(dayType);
+            };
+        };
+    }
+
+    const updateInfo = (todoId) => {
+        UpdateInfo(todoInterface, todoId, todayArr, tomorrowArr, upcomingArr, subSection);
+
+        for (let index = 0; index < buttonArr.length; index++) {
+            const button = buttonArr[index];
+
+            if (button.classList.contains('selected')) {
+                const dayType = button.querySelector('.name').textContent;
+                switchContent(dayType);
+            };
+        };
+    };
 
     const switchContent = (type) => SwitchContent(type, todoInterface, todayArr, tomorrowArr, upcomingArr)
 
+    todoInterface.addInfo = addInfo;
     todoInterface.updateInfo = updateInfo;
     todoInterface.switchContent = switchContent;
 
@@ -94,44 +115,80 @@ function ButtonSwitcher(btnArr, button, type, switchContent) {
 
         button.classList.add('selected');
         switchContent(type);
-
     });
 };
 
-function UpdateInfo(todoInterface, todayArr, tomorrowArr, upcomingArr, subSection) {
-    const todos = CRUD.getTasks('todo');
+function AddTodo(todoInfo, todayArr, tomorrowArr, upcomingArr, subSection, todoInterface) {
+    const dates = DateHandler.timeDifference(todoInfo.deadline);
 
-    for (let index = 0; index < todos.length; index++) {
-        const todo = todos[index];
-
-        const dates = DateHandler.timeDifference(todo.deadline);
-
-        if (dates.isThisTimeToday) {
-            const todoBar = TodoBar(todo);
-            todayArr.push(todoBar);
-
-            continue;
-        };
-
-        if (dates.isThisTimeTomorrow) {
-            const todoBar = TodoBar(todo);
-            tomorrowArr.push(todoBar);
-
-            continue;
-        }
-
-        if (dates.daysDifference > 0 || dates.hoursDifference <= 24 && dates.millisecDifference >= 0) {
-            const todoBar = TodoBar(todo);
-            upcomingArr.push(todoBar);
-
-            continue;
-        };
+    if (dates.isThisTimeToday && dates.millisecDifference >= 0) {
+        const todoBar = TodoBar(todoInfo);
+        todayArr.push(todoBar);
+    } else if (dates.isThisTimeTomorrow) {
+        const todoBar = TodoBar(todoInfo);
+        tomorrowArr.push(todoBar);
+    } else if (dates.daysDifference > 0 || dates.hoursDifference <= 24 && dates.millisecDifference >= 0) {
+        const todoBar = TodoBar(todoInfo);
+        upcomingArr.push(todoBar);
     };
 
     SortDeadlines(todayArr);
     SortDeadlines(tomorrowArr);
     SortDeadlines(upcomingArr);
 
+    UpdateInterfaceCount(todayArr, tomorrowArr, upcomingArr, subSection, todoInterface);
+};
+
+function UpdateInfo(todoInterface, todoId, todayArr, tomorrowArr, upcomingArr, subSection) {
+    let todo;
+
+    if (!todo) todo = FindTodo(todoId, todayArr);
+
+    if (!todo) todo = FindTodo(todoId, tomorrowArr);
+
+    if (!todo) todo = FindTodo(todoId, upcomingArr);
+
+    const dates = DateHandler.timeDifference(todo.information.deadline);
+
+    if (todo.information.status !== 'deleted') {
+        
+        if (dates.isThisTimeToday && dates.millisecDifference >= 0) {
+            todayArr.push(todo);
+            console.log('today');
+        } else if (dates.isThisTimeTomorrow) {
+            tomorrowArr.push(todo);
+            console.log('tomorrow');
+        } else if (dates.daysDifference > 0 || dates.hoursDifference <= 24 && dates.millisecDifference >= 0) {
+            upcomingArr.push(todo);
+            console.log('upc');
+        };
+
+    };
+
+    // ADD CATCHER FOR OVERDUE  
+
+    SortDeadlines(todayArr);
+    SortDeadlines(tomorrowArr);
+    SortDeadlines(upcomingArr);
+
+    UpdateInterfaceCount(todayArr, tomorrowArr, upcomingArr, subSection, todoInterface);
+};
+
+function FindTodo(todoId, arr) {
+    for (let index = 0; index < arr.length; index++) {
+        const todoObject = arr[index];
+        const todayTodoId = todoObject.information.id;
+
+        if (todoId == todayTodoId) {
+            arr.splice(index, 1);
+            return todoObject;
+        };
+    };
+
+    return undefined;
+};
+
+function UpdateInterfaceCount(todayArr, tomorrowArr, upcomingArr, subSection, todoInterface) {
     const todayCount = todayArr.length;
     const tomorrowCount = tomorrowArr.length;
     const upcomingCount = upcomingArr.length;
@@ -148,7 +205,7 @@ function UpdateInfo(todoInterface, todayArr, tomorrowArr, upcomingArr, subSectio
 };
 
 /**
- * 
+ * Sorts the deadlines of todos
  * @param {Array} arr 
  */
 function SortDeadlines(arr) {
@@ -163,8 +220,8 @@ function SortDeadlines(arr) {
 
             const currentMS = DateHandler.timeDifference(currentElement.information.deadline);
             const nextMS = DateHandler.timeDifference(nextElement.information.deadline);
-            
-            if (currentMS.millisecDifference < nextMS.millisecDifference) {
+
+            if (currentMS.millisecDifference > nextMS.millisecDifference) {
                 const temp = arr[index];
 
                 arr[index] = nextElement;
@@ -176,18 +233,19 @@ function SortDeadlines(arr) {
     };
 };
 
-function SwitchContent(type, todoInterface, todayArr, tomorrowArr, upcomingArr) {
+function SwitchContent(dayType, todoInterface, todayArr, tomorrowArr, upcomingArr) {
+
     todoInterface.removeContent({ all: true });
 
-    if (type === 'today') {
+    if (dayType === 'today') {
         todayArr.forEach(todo => todoInterface.addContent(todo));
     };
 
-    if (type === 'tomorrow') {
+    if (dayType === 'tomorrow') {
         tomorrowArr.forEach(todo => todoInterface.addContent(todo));
     };
 
-    if (type === 'upcoming') {
+    if (dayType === 'upcoming') {
         upcomingArr.forEach(todo => todoInterface.addContent(todo));
     };
 };
