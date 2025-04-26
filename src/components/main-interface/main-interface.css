@@ -84,7 +84,7 @@
 
 .comp.main-interface #sub-section .actions {
     display: flex;
-    gap: 30px;
+    gap: 20px;
     align-items: center;
 }
 

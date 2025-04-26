@@ -35,6 +35,7 @@ import StickyInterface from '../components/main-interface/sticky-interface/stick
 import ProjectInterface from '../components/main-interface/project-interface/project-interface.js';
 import CreateSticky from '../components/finestra/create-note/create-note.js';
 import StickyNote from '../components/sticky-note/sticky-note.js';
+import TodoBar from '../components/todo-bar/todo-bar.js';
 
 function Dashboard() {
     const account = StorageHandler.GetStorage(true);
@@ -238,6 +239,20 @@ function Dashboard() {
     const finestra_stickies_btn_seeAll = finestra_stickies.closeButton;
     const finestra_projects_btn_seeAll = finestra_projects.closeButton;
     const finestra_overdues_btn_seeAll = finestra_overdue.closeButton;
+
+    const todayTodosArr = TodoInterface.todayTodosArr;
+    // const stickiesArr = StickyInterface.todayTodosArr;
+    // const projectsArr = ProjectInterface.todayTodosArr;
+
+    for (let index = 0; index < todayTodosArr.length; index++) {
+        const todoInfo = todayTodosArr[index].information;
+        const timeDiff = DateHandler.timeDifference(todoInfo.deadline); 
+        if (timeDiff.isThisTimeToday) {
+            const todoBar = TodoBar(todoInfo)
+    
+            finestra_todos.addContent(todoBar);
+        };
+    };
 
     todoInterface_btn.addEventListener('click', () => {
         const createTodo = CreateTodo();

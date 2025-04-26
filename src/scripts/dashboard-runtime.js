@@ -6,6 +6,7 @@ const DashboardRuntime = function() {
         toInterface,
         oppositeInterfacesNWindows
     });
+    const refreshWindow = (arr, finestra, component) => RefreshWindow(arr, finestra, component);
 
     return {
         componentActions: {
@@ -33,7 +34,8 @@ const DashboardRuntime = function() {
                 return objects;
             }
         },
-        switchPanel
+        switchPanel,
+        refreshWindow
     };
 }();
 
@@ -77,6 +79,16 @@ function switchPanelAnimation({
         firstAlt.interface.unrender();
         secondAlt.interface.unrender();
     }, animateDuration);
+};
+
+function RefreshWindow(arr, finestra, component) {
+    finestra.removeContent();
+    
+    arr.forEach(element => {
+        const newItem = component(element.information);
+
+        finestra.addContent(newItem);
+    });
 };
 
 export default DashboardRuntime;

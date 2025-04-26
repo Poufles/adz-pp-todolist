@@ -4,6 +4,8 @@ import DateHandler from "../../scripts/date-handler.js";
 import SVG from '../../scripts/svg.js';
 import BoxButton from "../buttons/box-button/box-button.js";
 import CreateTodo from "../finestra/create-todo/create-todo.js";
+import ProjectInterface from "../main-interface/project-interface/project-interface.js";
+import StickyInterface from "../main-interface/sticky-interface/sticky-interface.js";
 import TodoInterface from "../main-interface/todo-interface/todo-interface.js";
 import { ConfirmMessageBox } from "../message-box/message-box.js";
 
@@ -58,9 +60,9 @@ function TodoBar(todoObject) {
     const checkIcon = SVG.i_check;
     const range = document.createRange();
     const fragment = range.createContextualFragment(template);
-    const fragmentOverlay = range.createContextualFragment(template_overlay);//
-    const fragmentActions = range.createContextualFragment(template_actions);//
-    const componentShadow = fragment.querySelector('.todo-shadow');//
+    const fragmentOverlay = range.createContextualFragment(template_overlay);
+    const fragmentActions = range.createContextualFragment(template_actions);
+    const componentShadow = fragment.querySelector('.todo-shadow');
     const overlay = fragmentOverlay.querySelector('div');
     const cont_actions = fragmentActions.querySelector('#todo-bar-actions');
     const component = fragment.querySelector('article.todo-bar');
@@ -103,6 +105,12 @@ function TodoBar(todoObject) {
     };
 
     component.addEventListener('click', (e) => {
+        const finestra_todos = DashboardRuntime.componentActions.get('finestra-todos');
+
+        if (finestra_todos.component.contains(componentShadow)) {
+            TransitionToInterface(finestra_todos); return;
+        };
+
         if (isViewed) return;
 
         isViewed = true;
@@ -184,12 +192,21 @@ function TodoBar(todoObject) {
         };
 
         disable();
+
         TodoInterface.removeContent({
             animation: 'exit',
             id: todoObject.id
         });
-
         TodoInterface.updateInfo(todoObject.id);
+
+        const refreshWindow = DashboardRuntime.refreshWindow;
+        const finestraTodo = DashboardRuntime.componentActions.get('finestra-todos');
+
+        refreshWindow(TodoInterface.todayTodosArr, finestraTodo.object, TodoBar);
+
+        const todoCount = TodoInterface.count();
+
+        finestraTodo.object.changeTitle(`todos | ${todoCount}`);
     });
 
     btn_edit.addEventListener('click', (e) => {
@@ -219,6 +236,12 @@ function TodoBar(todoObject) {
 
     checkbox.addEventListener('click', (e) => {
         e.stopPropagation();
+
+        const finestra_todos = DashboardRuntime.componentActions.get('finestra-todos');
+
+        if (finestra_todos.component.contains(componentShadow)) {
+            TransitionToInterface(finestra_todos); return;
+        };
 
         if (!isEnabled) return;
 
@@ -379,7 +402,7 @@ function UpdateDeadlineMessage(timeContainer, deadline) {
 
 function DeadlineText(span, deadline) {
     const dates = DateHandler.timeDifference(deadline);
-    
+
     if (dates.isThisTimeToday) {
         span.textContent = DateHandler.getTimeSlice(deadline, 'hour');
     } else if (dates.isThisTimeTomorrow) {
@@ -420,6 +443,28 @@ function ExitAnimation(component, componentShadow, actionContainer, overlay) {
 
         if (!componentShadow.contains(component)) componentShadow.appendChild(component);
     }, 170);
+};
+
+function TransitionToInterface(finestraTodo) {
+    const main_interface = DashboardRuntime.componentActions.get('main-interface').component;
+
+    const finestra_stickies = DashboardRuntime.componentActions.get('finestra-stickies').object;
+    const finestra_projects = DashboardRuntime.componentActions.get('finestra-projects').object;
+
+    DashboardRuntime.switchPanel({
+        fromFinestra: finestraTodo.object,
+        toInterface: TodoInterface,
+        oppositeInterfacesNWindows: {
+            firstAlt: {
+                finestra: finestra_stickies,
+                interface: StickyInterface
+            },
+            secondAlt: {
+                finestra: finestra_projects,
+                interface: ProjectInterface
+            },
+        }
+    });
 };
 
 export default TodoBar;

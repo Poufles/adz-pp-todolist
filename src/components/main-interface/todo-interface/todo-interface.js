@@ -92,6 +92,12 @@ const TodoInterface = function () {
     todoInterface.addInfo = addInfo;
     todoInterface.updateInfo = updateInfo;
     todoInterface.switchContent = switchContent;
+    todoInterface.todayTodosArr = todayArr;
+    todoInterface.tomorrowTodosArr = tomorrowArr;
+    todoInterface.upcomingTodosArr = upcomingArr;
+    todoInterface.count = () => {
+        return todayArr.length + tomorrowArr.length + upcomingArr.length
+    };
 
     ButtonSwitcher(buttonArr, btn_today, 'today', switchContent);
     ButtonSwitcher(buttonArr, btn_tomorrow, 'tomorrow', switchContent);
@@ -122,14 +128,20 @@ function AddTodo(todoInfo, todayArr, tomorrowArr, upcomingArr, subSection, todoI
     const dates = DateHandler.timeDifference(todoInfo.deadline);
 
     if (dates.isThisTimeToday && dates.millisecDifference >= 0) {
+        
         const todoBar = TodoBar(todoInfo);
         todayArr.push(todoBar);
+
     } else if (dates.isThisTimeTomorrow) {
+        
         const todoBar = TodoBar(todoInfo);
         tomorrowArr.push(todoBar);
+
     } else if (dates.daysDifference > 0 || dates.hoursDifference <= 24 && dates.millisecDifference >= 0) {
+        
         const todoBar = TodoBar(todoInfo);
         upcomingArr.push(todoBar);
+    
     };
 
     SortDeadlines(todayArr);
@@ -151,16 +163,13 @@ function UpdateInfo(todoInterface, todoId, todayArr, tomorrowArr, upcomingArr, s
     const dates = DateHandler.timeDifference(todo.information.deadline);
 
     if (todo.information.status !== 'deleted') {
-        
+
         if (dates.isThisTimeToday && dates.millisecDifference >= 0) {
             todayArr.push(todo);
-            console.log('today');
         } else if (dates.isThisTimeTomorrow) {
             tomorrowArr.push(todo);
-            console.log('tomorrow');
         } else if (dates.daysDifference > 0 || dates.hoursDifference <= 24 && dates.millisecDifference >= 0) {
             upcomingArr.push(todo);
-            console.log('upc');
         };
 
     };

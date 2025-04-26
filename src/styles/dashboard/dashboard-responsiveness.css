@@ -1,25 +1,7 @@
-@media screen and (max-width: 1500px) {
-    #page_dashboard #main-interface {
-        gap: 40px;
-    }
-
+@media screen and (max-width: 1450px) {
     #page_dashboard #main-interface #left-panel,
     #page_dashboard #main-interface #right-panel {
         width: 300px;
-    }
-}
-
-@media screen and (max-width: 1400px) {
-
-    #page_dashboard #main-interface #left-panel,
-    #page_dashboard #main-interface #right-panel {
-        width: 250px;
-    }
-}
-
-@media screen and (max-width: 1300px) {
-    #page_dashboard #main-interface {
-        gap: 30px;
     }
 }
 

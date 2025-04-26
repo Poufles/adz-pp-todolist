@@ -311,3 +311,17 @@
 .overlay .message-box.closing {
     transform: translate(-50%, -50%) scale(0);
 }
+
+.window-component #content .comp.todo-bar .info-wrapper {
+    background-color: var(--secondary-color);
+    font-size: var(--fn-lr);
+    padding: 0 15px;
+}
+
+.window-component #content .comp.todo-bar .check-container {
+    padding-right: 15px;
+}
+
+.window-component #content .comp.todo-bar .check-container .custom-checkbox #hint-wrapper {
+    display: none;
+}
