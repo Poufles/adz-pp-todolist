@@ -49,26 +49,38 @@ function switchPanelAnimation({
     const middlePanel = componentActions.get('middle-panel').component;
     const currentMiddlePanelChild = middlePanel.firstElementChild;
     const leftContainer = componentActions.get('container-left-todo').component;
-    const rightContainer = componentActions.get('container-right-todo').component;
-
-    const isLeft = fromFinestra.component === leftContainer.firstElementChild;
+    const rightContainer = componentActions.get('container-right-todo-1').component;
+    const rightContainer2 = componentActions.get('container-right-todo-2').component;
 
     fromFinestra.animate('leave');
     toInterface.render(middlePanel);
     toInterface.animate('enter');
+    
+    let targetContainer;
+    const container = fromFinestra.component.parentElement;
 
-    const targetContainer = isLeft ? leftContainer : rightContainer;
+    if (container === leftContainer) {
+        targetContainer = leftContainer;
+    } else if (container === rightContainer) {
+        targetContainer = rightContainer;
+    } else {
+        targetContainer = rightContainer2;
+    };
 
-    const {firstAlt, secondAlt} = oppositeInterfacesNWindows;
-
+    const {firstAlt, secondAlt, thirdAlt} = oppositeInterfacesNWindows;
+    
     if (currentMiddlePanelChild === firstAlt.interface.component) {
         firstAlt.finestra.render(targetContainer);
         firstAlt.finestra.animate('enter');
         firstAlt.interface.animate('leave');
-    } else {
+    } else if (currentMiddlePanelChild === secondAlt.interface.component) {
         secondAlt.finestra.render(targetContainer);
         secondAlt.finestra.animate('enter');
         secondAlt.interface.animate('leave');
+    } else {
+        thirdAlt.finestra.render(targetContainer);
+        thirdAlt.finestra.animate('enter');
+        thirdAlt.interface.animate('leave');
     }
 
     setTimeout(() => {
@@ -78,6 +90,7 @@ function switchPanelAnimation({
     setTimeout(() => {
         firstAlt.interface.unrender();
         secondAlt.interface.unrender();
+        thirdAlt.interface.unrender();
     }, animateDuration);
 };
 

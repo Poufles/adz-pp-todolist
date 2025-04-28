@@ -178,10 +178,6 @@
     display: none;
 }
 
-.window-component #content .comp.sticky-note .info-wrapper:hover {
-    transform: none;
-}
-
 .window-component #content .comp.sticky-note .main-content #note {
     cursor: inherit;
 }

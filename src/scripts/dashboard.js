@@ -37,6 +37,7 @@ import CreateSticky from '../components/finestra/create-note/create-note.js';
 import StickyNote from '../components/sticky-note/sticky-note.js';
 import TodoBar from '../components/todo-bar/todo-bar.js';
 import Aesthetics from './aesthetics.js';
+import OverdueInterface from '../components/main-interface/overdue-interface/overdue-interface.js';
 
 function Dashboard() {
     const colors = Aesthetics.colors;
@@ -135,7 +136,7 @@ function Dashboard() {
 
     finestra_stickies.addEmptyVisual(SVG.noteIcon(), 'stickies would appear here if there is one...')
     finestra_stickies.render(cont_left_todo);
-    
+
     BasicSettings.render(cont_settings);
 
     ////////////////// LEFT PANEL //////////////////
@@ -143,7 +144,6 @@ function Dashboard() {
     ////////////////// MAIN PANEL //////////////////
     TodoInterface.render(middle_panel);
 
-    // const todosArr = [];
     const todos = CRUD.getTasks('todo');
 
     for (let index = 0; index < todos.length; index++) {
@@ -155,7 +155,6 @@ function Dashboard() {
     TodoInterface.switchContent('today');
 
     const stickies = CRUD.getTasks('sticky');
-    // const stickiesArr = [];
 
     for (let index = 0; index < stickies.length; index++) {
         let sticky = stickies[index];
@@ -163,21 +162,30 @@ function Dashboard() {
         const stickyNote = StickyNote(sticky);
 
         StickyInterface.addContent(stickyNote);
-        // stickiesArr.push(stickyNote);
+    };
+
+    for (let index = 0; index < todos.length; index++) {
+        let todo = todos[index];
+        const timeDiff = DateHandler.timeDifference(todo.deadline);
+
+        if (timeDiff.millisecDifference < 0) {
+            OverdueInterface.addInfo(todo);
+        };
     };
 
     ////////////////// MAIN PANEL //////////////////
 
     ////////////////// RIGHT PANEL //////////////////
-    const cont_overdues = right_panel.querySelector('#overdue-container');
+    const cont_right_todo_2 = right_panel.querySelector('#overdue-container');
     const cont_right_todo = right_panel.querySelector('.todo-type-container');
 
     const finestra_overdue = Finestra({
-        isExpanded: false,
         id: 'overdues',
         windowTitle: `overdue | 0`, // CHANGE LATER
         titleButtonText: 'see all'
     });
+
+    finestra_overdue.addEmptyVisual(SVG.overdueIcon(), `that's a good thing... no overdues on the horizon!`);
 
     const finestra_projects = Finestra({
         id: 'projects',
@@ -187,7 +195,7 @@ function Dashboard() {
 
     finestra_projects.addEmptyVisual(SVG.projectIcon(), 'projects seem to be empty... why not create one?');
 
-    finestra_overdue.render(cont_overdues);
+    finestra_overdue.render(cont_right_todo_2);
     finestra_projects.render(cont_right_todo);
     ////////////////// RIGHT PANEL //////////////////
 
@@ -229,13 +237,12 @@ function Dashboard() {
     componentActions.add('main-interface', main_interface);
     componentActions.add('middle-panel', middle_panel);
     componentActions.add('container-left-todo', cont_left_todo);
-    componentActions.add('container-right-todo', cont_right_todo);
+    componentActions.add('container-right-todo-1', cont_right_todo);
+    componentActions.add('container-right-todo-2', cont_right_todo_2);
     componentActions.add('finestra-todos', finestra_todos.component, finestra_todos);
     componentActions.add('finestra-stickies', finestra_stickies.component, finestra_stickies);
     componentActions.add('finestra-projects', finestra_projects.component, finestra_projects);
-
-    const todoInterface_btn = TodoInterface.createButton;
-    const stickyInterface_btn = StickyInterface.createButton;
+    componentActions.add('finestra-overdues', finestra_overdue.component, finestra_overdue);
 
     const finestra_todos_btn_seeAll = finestra_todos.closeButton;
     const finestra_stickies_btn_seeAll = finestra_stickies.closeButton;
@@ -243,38 +250,28 @@ function Dashboard() {
     const finestra_overdues_btn_seeAll = finestra_overdue.closeButton;
 
     const todayTodosArr = TodoInterface.todayTodosArr;
-    // const stickiesArr = StickyInterface.todayTodosArr;
-    // const projectsArr = ProjectInterface.todayTodosArr;
+    const stickiesArr = StickyInterface.getContentArray();
+    const projectsArr = ProjectInterface.getContentArray();
+    const overduesArr = OverdueInterface.overduesArr;
 
-    for (let index = 0; index < todayTodosArr.length; index++) {
-        const todoInfo = todayTodosArr[index].information;
-        const timeDiff = DateHandler.timeDifference(todoInfo.deadline); 
+    todayTodosArr.forEach(content => {
+        const todoInfo = content.information;
+        const timeDiff = DateHandler.timeDifference(todoInfo.deadline);
+
         if (timeDiff.isThisTimeToday) {
             const todoBar = TodoBar(todoInfo)
-    
+
             finestra_todos.addContent(todoBar);
         };
-    };
+    });
 
-    StickyInterface.getContentArray().forEach(content => {
+    stickiesArr.forEach(content => {
         const notes = StickyNote(content.information);
 
         finestra_stickies.addContent(notes);
     });
 
-    todoInterface_btn.addEventListener('click', () => {
-        const createTodo = CreateTodo();
-
-        createTodo.modal(main_interface, 'todo');
-        DashboardRuntime.objectActions.add('check-before-back', createTodo.checkValuesBeforeBack)
-    });
-
-    stickyInterface_btn.addEventListener('click', () => {
-        const createSticky = CreateSticky();
-
-        createSticky.modal(main_interface, 'sticky');
-        DashboardRuntime.objectActions.add('check-before-back', createSticky.checkValuesBeforeBack)
-    });
+    OverdueInterface.updateWindow();
 
     finestra_todos_btn_seeAll.addEventListener('click', () => {
         DashboardRuntime.switchPanel({
@@ -289,6 +286,10 @@ function Dashboard() {
                     finestra: finestra_projects,
                     interface: ProjectInterface
                 },
+                thirdAlt: {
+                    finestra: finestra_overdue,
+                    interface: OverdueInterface
+                }
             }
         });
     });
@@ -306,6 +307,10 @@ function Dashboard() {
                     finestra: finestra_projects,
                     interface: ProjectInterface
                 },
+                thirdAlt: {
+                    finestra: finestra_overdue,
+                    interface: OverdueInterface
+                }
             }
         });
     });
@@ -323,12 +328,33 @@ function Dashboard() {
                     finestra: finestra_stickies,
                     interface: StickyInterface
                 },
+                thirdAlt: {
+                    finestra: finestra_overdue,
+                    interface: OverdueInterface
+                }
             }
         });
     });
 
     finestra_overdues_btn_seeAll.addEventListener('click', () => {
-        
+        DashboardRuntime.switchPanel({
+            fromFinestra: finestra_overdue,
+            toInterface: OverdueInterface,
+            oppositeInterfacesNWindows: {
+                firstAlt: {
+                    finestra: finestra_todos,
+                    interface: TodoInterface
+                },
+                secondAlt: {
+                    finestra: finestra_stickies,
+                    interface: StickyInterface
+                },
+                thirdAlt: {
+                    finestra: finestra_projects,
+                    interface: ProjectInterface
+                }
+            }
+        });
     });
 
     btn_about.addEventListener('click', () => {

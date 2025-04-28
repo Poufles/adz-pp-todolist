@@ -114,3 +114,15 @@
     overflow-y: auto;
     scrollbar-width: none;
 }
+
+.comp.main-interface #box-create {
+    background-color: #F1FFDA;
+}
+
+.comp.main-interface #box-edit {
+    background-color: #FFF8E2;
+}
+
+.comp.main-interface #box-delete {
+    background-color: #FFDADB;
+}

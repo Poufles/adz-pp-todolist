@@ -382,24 +382,26 @@ function UpdateDeadlineMessage(timeContainer, deadline) {
     due_message.classList.remove('tomorrow');
     due_message.classList.remove('overdue');
 
-    if (isToday) {
+    if (milliseconds < 0) {
+        due_message.classList.add('overdue');
+        due_message.textContent = 'Overdue...';
+    } else if (isToday) {
         due_message.classList.add('today');
         due_message.textContent = '> Due today!';
     } else if (isTomorrow) {
         due_message.classList.add('tomorrow');
         due_message.textContent = '> Due tomorrow!';
-    } else if (days > 1) {
+    } else {
         due_message.textContent = '';
-    } else if (milliseconds < 0) {
-        due_message.classList.add('overdue');
-        due_message.textContent = 'Overdue...';
     };
 };
 
 function DeadlineText(span, deadline) {
     const dates = DateHandler.timeDifference(deadline);
 
-    if (dates.isThisTimeToday) {
+    if (dates.millisecDifference < 0) {
+        span.textContent = DateHandler.getTimeSlice(deadline, 'date-no-year');
+    } else if (dates.isThisTimeToday) {
         span.textContent = DateHandler.getTimeSlice(deadline, 'hour');
     } else if (dates.isThisTimeTomorrow) {
         span.textContent = DateHandler.getTimeSlice(deadline, 'hour');

@@ -5,8 +5,6 @@ function MainInterface({
     title,
     titleCount,
     description,
-    buttonText,
-    buttonId,
 } = {}) {
     const template =
         `
@@ -18,6 +16,7 @@ function MainInterface({
             <p class="title-wrapper">
                 <span id="title">${title}</span>
             </p>
+            <div id="actions"></div>
         </div>
         <p class="select-none" id="description">
             ${description}
@@ -35,20 +34,19 @@ function MainInterface({
     const component = fragment.querySelector('.main-interface');
     const btn_return = component.querySelector('button#return');
     const cont_top = component.querySelector('.top');
+    const cont_actions = component.querySelector('#actions');
     const cont_description = component.querySelector('#description');
     const cont_content = component.querySelector('#content');
 
+    const actionButtons = {
+        create: undefined,
+        edit: undefined,
+        delete: undefined
+    };
     const contentArr = [];
     let cont_count;
 
     if (titleCount !== undefined) cont_count = CreateTitleCount(component, title, titleCount);
-
-    const button = BoxButton({
-        text: buttonText,
-        id: buttonId
-    });
-
-    cont_top.appendChild(button.render());
 
     /**
      * Renders the component
@@ -214,9 +212,42 @@ function MainInterface({
         };
     };
 
+    const addCreateButton = (buttonText) => {
+        const button = BoxButton({
+            text: buttonText || 'create',
+            id: 'create'
+        });
+    
+        cont_actions.appendChild(button.render());
+
+        actionButtons.create = button.component;
+    };
+
+    const addEditButton = (buttonText) => {
+        const button = BoxButton({
+            text: buttonText || 'create',
+            id: 'edit'
+        });
+    
+        cont_actions.appendChild(button.render());
+
+        actionButtons.edit = button.component;
+    };
+
+    const addDeleteButton = (buttonText) => {
+        const button = BoxButton({
+            text: buttonText || 'delete',
+            id: 'delete'
+        });
+    
+        cont_actions.appendChild(button.render());
+
+        actionButtons.delete = button.component;
+    };
+
     return {
         component,
-        createButton: button.component,
+        actionButtons,
         returnButton: btn_return,
         description: cont_description,
         render,
@@ -229,7 +260,10 @@ function MainInterface({
         animate,
         getContentArray,
         addContent,
-        removeContent
+        removeContent,
+        addCreateButton,
+        addEditButton,
+        addDeleteButton
     };
 };
 

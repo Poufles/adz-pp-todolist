@@ -3,6 +3,9 @@ import MainInterface from "../main-interface.js";
 import CRUD from "../../../scripts/crud.js";
 import DateHandler from "../../../scripts/date-handler.js";
 import TodoBar from "../../todo-bar/todo-bar.js";
+import CreateTodo from "../../finestra/create-todo/create-todo.js";
+import DashboardRuntime from "../../../scripts/dashboard-runtime.js";
+import OverdueInterface from "../overdue-interface/overdue-interface.js";
 
 const TodoInterface = function () {
     const account = StorageHandler.GetStorage(true);
@@ -10,11 +13,11 @@ const TodoInterface = function () {
     const todoInterface = MainInterface({
         id: 'todos',
         title: 'todos',
-        titleCount: account.todo.length, // CHANGE LATER
+        titleCount: account.todo.length,
         description: 'todos are your tasks to be done. be sure that you will do them in time!',
-        buttonText: 'create',
-        buttonId: 'create'
     });
+
+    todoInterface.addCreateButton();
 
     const template_subsection =
         `
@@ -57,7 +60,6 @@ const TodoInterface = function () {
     buttonArr.push(btn_upcoming);
 
     component.insertBefore(subSection, content);
-    cont_top.removeChild(button);
     subSection.appendChild(button);
     todoInterface.toggleReturnButton(false);
 
@@ -95,6 +97,7 @@ const TodoInterface = function () {
     todoInterface.todayTodosArr = todayArr;
     todoInterface.tomorrowTodosArr = tomorrowArr;
     todoInterface.upcomingTodosArr = upcomingArr;
+    
     todoInterface.count = () => {
         return todayArr.length + tomorrowArr.length + upcomingArr.length
     };
@@ -102,6 +105,16 @@ const TodoInterface = function () {
     ButtonSwitcher(buttonArr, btn_today, 'today', switchContent);
     ButtonSwitcher(buttonArr, btn_tomorrow, 'tomorrow', switchContent);
     ButtonSwitcher(buttonArr, btn_upcoming, 'upcoming', switchContent);
+
+    todoInterface.actionButtons.create.addEventListener('click', (e) => {
+        e.stopPropagation();
+
+        const main_interface = DashboardRuntime.componentActions.get('main-interface').component;
+        const createTodo = CreateTodo();
+
+        createTodo.modal(main_interface, 'todo');
+        DashboardRuntime.objectActions.add('check-before-back', createTodo.checkValuesBeforeBack)
+    });
 
     return todoInterface;
 }();
@@ -164,7 +177,9 @@ function UpdateInfo(todoInterface, todoId, todayArr, tomorrowArr, upcomingArr, s
 
     if (todo.information.status !== 'deleted') {
 
-        if (dates.isThisTimeToday && dates.millisecDifference >= 0) {
+        if (dates.millisecDifference < 0) {
+            OverdueInterface.addInfo(todo.information);
+        } else if (dates.isThisTimeToday && dates.millisecDifference >= 0) {
             todayArr.push(todo);
         } else if (dates.isThisTimeTomorrow) {
             tomorrowArr.push(todo);
@@ -173,8 +188,6 @@ function UpdateInfo(todoInterface, todoId, todayArr, tomorrowArr, upcomingArr, s
         };
 
     };
-
-    // ADD CATCHER FOR OVERDUE  
 
     SortDeadlines(todayArr);
     SortDeadlines(tomorrowArr);
@@ -186,9 +199,9 @@ function UpdateInfo(todoInterface, todoId, todayArr, tomorrowArr, upcomingArr, s
 function FindTodo(todoId, arr) {
     for (let index = 0; index < arr.length; index++) {
         const todoObject = arr[index];
-        const todayTodoId = todoObject.information.id;
+        const todoObjectId = todoObject.information.id;
 
-        if (todoId == todayTodoId) {
+        if (todoId == todoObjectId) {
             arr.splice(index, 1);
             return todoObject;
         };
