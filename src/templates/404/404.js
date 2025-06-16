@@ -1,0 +1,1 @@
+if (location.pathname !== '/404.html') location.replace('/404.html');

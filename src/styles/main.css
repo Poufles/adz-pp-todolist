@@ -1,0 +1,13 @@
+@import 'css-reset-jc.css';
+@import url('https://fonts.googleapis.com/css2?family=Orbit&display=swap');
+
+:root {
+    --background-color: #FFFDF6;
+    --black: #000;
+    font-family: 'Orbit', sans-serif;
+}
+
+body {
+    background-color: var(--background-color);
+    position: relative;
+}
