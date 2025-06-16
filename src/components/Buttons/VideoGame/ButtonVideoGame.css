@@ -1,0 +1,36 @@
+.component.button.video-game {
+    --transition: 0.4s;
+
+    background-color: var(--background-color);
+    width: max-content;
+    display: flex;
+    gap: 0px;
+    align-items: center;
+    justify-content: left;
+    transition: var(--transition);
+}
+
+.component.button.video-game .text {
+    flex-shrink: 0;
+    background-color: inherit;
+    transition: var(--transition);
+}
+
+.component.button.video-game .arrow-wrapper {
+    width: 0%;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.component.button.video-game .arrow-wrapper .arrows {
+    min-width: max-content;
+}
+
+/* ANIMATIONS */
+.component.button.video-game:hover {
+    gap: 10px;
+}
+
+.component.button.video-game:hover .arrow-wrapper {
+    width: 100%;
+}

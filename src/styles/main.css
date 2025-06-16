@@ -11,3 +11,15 @@ body {
     background-color: var(--background-color);
     position: relative;
 }
+
+.title {
+    font-size: 48px;
+}
+
+.sub-title {
+    font-size: 36px;
+}
+
+.text {
+    font-size: 24px;
+}

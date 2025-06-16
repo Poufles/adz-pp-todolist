@@ -1,6 +1,6 @@
 #page__auth {
     height: 100dvh;
-    min-height: 900px;
+    min-height: 720px;
     display: flex;
     flex-direction: column;
 }
@@ -33,5 +33,19 @@
 #page__auth #top-gate .squares .square {
     aspect-ratio: 1;
     background-color: var(--black);
-    height: 50px;
+    height: 40px;
+}
+
+#page__auth #top-gate #web-title {
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    transform: translateX(-50%);
+}
+
+#page__auth #bottom-gate .actions {
+    width: 0px;
+    position: absolute;
+    left: calc(20% - 98px);
+    transform: translateX(-50%);
 }
