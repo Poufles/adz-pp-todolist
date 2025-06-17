@@ -1,5 +1,5 @@
 import '../../styles/main.css';
-import './auth.css'
+import './auth-responsive.css';
 import '../../components/Buttons/ButtonStyle.css';
 
 import ButtonVideoGame from '../../components/Buttons/VideoGame/ButtonVideoGame.js';
