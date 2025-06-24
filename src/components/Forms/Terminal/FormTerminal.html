@@ -84,7 +84,7 @@
         </div>
     </div> -->
     <!-- LOAD FORM -->
-    <div class="component form terminal action">
+    <!-- <div class="component form terminal action">
         <div class="terminal-wrapper">
             <p class="text" id="status">
                 Status: <span id="message">Waiting for input...</span>
@@ -102,6 +102,56 @@
                     <button class="button reset text account-info">
                         <span>longahhusername</span> | <span>lv1</span> | <span>due today: 0</span>
                     </button>
+                </div>
+            </form>
+            <div id="actions">
+                <button type="button" class="button" id="reset">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M10 8H5V3M5.29102 16.3569C6.22284 17.7918 7.59014 18.8902 9.19218 19.4907C10.7942 20.0913 12.547 20.1624 14.1925 19.6937C15.8379 19.225 17.2893 18.2413 18.3344 16.8867C19.3795 15.5321 19.963 13.878 19.9989 12.1675C20.0347 10.4569 19.5211 8.78001 18.5337 7.38281C17.5462 5.98561 16.1366 4.942 14.5122 4.40479C12.8878 3.86757 11.1341 3.86499 9.5083 4.39795C7.88252 4.93091 6.47059 5.97095 5.47949 7.36556"
+                            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+                <button type="button" class="button" id="confirm">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 12L8.94975 16.9497L19.5572 6.34326" stroke="white" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+                <button type="button" class="button" id="cancel">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="white" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div> -->
+    <!-- LOAD FORM -->
+    <div class="component form terminal action login">
+        <div class="terminal-wrapper">
+            <p class="text" id="status">
+                Status: <span id="message">Waiting for input...</span>
+            </p>
+            <div id="tip-message">
+                <p id="title-tip">
+                    Welcome,
+                </p>
+                <p class="text" id="desc-tip">
+                    Jeff!
+                </p>
+            </div>
+            <form action="#">
+                <div class="input-block" id="password-block">
+                    <div class="input-hint">
+                        <p class="hint-text">Please enter your password</p>
+                        <button class="button reset" type="button" id="hide-pass">&lt;/&gt;</button>
+                        <div class="hint-error">| <span>Error Message!</span></div>
+                    </div>
+                    <label for="password">
+                        <span>>></span>
+                        <input class="text" type="password" name="" id="password">
+                    </label>
                 </div>
             </form>
             <div id="actions">

@@ -25,8 +25,7 @@ const Auth = function () {
 
     // TERMINAL INITIALIZATIONS //
 
-    const terminal = FormTerminal();
-    terminal.render(page);
+    FormTerminal.render(page);
 
     // TERMINAL INITIALIZATIONS //
 
@@ -34,9 +33,9 @@ const Auth = function () {
     page.addEventListener('click', (e) => {
         e.stopPropagation();
 
-        if (!terminal.isDefaultState())  {
-            terminal.hideActions();
-            terminal.terminalForm(-1);
+        if (!FormTerminal.isDefaultState())  {
+            FormTerminal.hideActions();
+            FormTerminal.terminalForm(-1);
         };
         
         if (createBtn.isClicked()) createBtn.removeClicked();
@@ -47,56 +46,70 @@ const Auth = function () {
     setupButtonListener(
         createBtn, 
         [loadBtn, settingsBtn], 
-        terminal,
         1
     );
 
     setupButtonListener(
         loadBtn, 
         [createBtn, settingsBtn], 
-        terminal,
         2
     );
 
     setupButtonListener(
         settingsBtn, 
         [loadBtn, createBtn], 
-        terminal,
         3
     );
 
-    terminal.component.addEventListener('click', (e) => {
+    FormTerminal.component.addEventListener('click', (e) => {
         e.stopPropagation();
     });
 
-    terminal.actionButtons.cancel.addEventListener('click', (e) => {
+    FormTerminal.actionButtons.cancel.addEventListener('click', (e) => {
         e.stopPropagation();
+
+        if (FormTerminal.terminalFormStatus === 4) {
+            FormTerminal.terminalForm(2);
+            return;
+        };
 
         if (createBtn.isClicked()) createBtn.removeClicked();
         if (loadBtn.isClicked()) loadBtn.removeClicked();
         if (settingsBtn.isClicked()) settingsBtn.removeClicked();
 
-        terminal.terminalForm(-1);
-        terminal.hideActions();
+        FormTerminal.terminalForm(-1);
     });
 
-    terminal.actionButtons.reset.addEventListener('click', (e) => {
+    FormTerminal.actionButtons.reset.addEventListener('click', (e) => {
         e.stopPropagation();
 
-        terminal.resetForm();
+        FormTerminal.resetForm();
+    });
+
+    FormTerminal.actionButtons.confirm.addEventListener('click', (e) => {
+        e.stopPropagation();
+
+        FormTerminal.confirmForm();
     });
 
     // LISTENERS //
+
+    return {
+        buttons: {
+            createButton: createBtn,
+            loadButton: loadBtn,
+            settingsButton: settingsBtn
+        }
+    };
 }();
 
 /**
  * Setups the listener for buttons
  * @param {HTMLButtonElement} mainBtn 
  * @param {Array} otherBtns 
- * @param {Object} terminal 
  * @param {Number} type
  */
-function setupButtonListener(mainBtn, otherBtns, terminal, type) {
+function setupButtonListener(mainBtn, otherBtns, type) {
     mainBtn.component.addEventListener('click', (e) => {
         e.stopPropagation();
         
@@ -104,6 +117,8 @@ function setupButtonListener(mainBtn, otherBtns, terminal, type) {
             if (btn.isClicked()) btn.removeClicked();
         });
 
-        terminal.terminalForm(type);
+        FormTerminal.terminalForm(type);
     });
 };
+
+export default Auth;

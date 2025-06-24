@@ -1,6 +1,10 @@
 import './FormTerminal.css';
 
-export default function FormTerminal() {
+import DateHandler from '../../../scripts/date-handler.js';
+import StorageHandler from '../../../scripts/storage-handler.js';
+import Auth from '../../../templates/auth/auth.js';
+
+const FormTerminal = function () {
     const template = `
     <div class="component form terminal default">
         <div class="terminal-wrapper">
@@ -54,6 +58,7 @@ export default function FormTerminal() {
     };
 
     let terminalFormStatus = -1;
+    let preLoginAccount;
 
     /**
      * Renders the component to a given parent.
@@ -79,11 +84,7 @@ export default function FormTerminal() {
      * @returns A boolean value.
      */
     const isDefaultState = () => {
-        if (component.classList.contains('default')) {
-            component.classList.add('default');
-            return true;
-        };
-
+        if (terminalFormStatus === -1) return true;
         return false;
     };
 
@@ -120,73 +121,87 @@ export default function FormTerminal() {
     const terminalForm = (type) => {
         if (terminalFormStatus === type) return;
 
-        component.classList.remove('default');
         terminalFormStatus = type;
 
+        CancelLoginAppearanceReset();
+
         if (type === 1) {
-            NewAccountForm(component);
+            NewAccountForm();
             showActions();
         } else if (type === 2) {
-            LoadAccountForm(component);
+            LoadAccountForm();
             hideActions();
         } else if (type === 3) {
-            SettingsForm(component);
+            SettingsForm();
             showActions();
         } else {
-            DefaultForm(component);
+            DefaultForm();
             hideActions();
         };
     };
 
+    /**
+     * Resets the current form.
+     */
     const resetForm = () => {
+        if (terminalFormStatus === 1) NewAccountForm();
+        else if (terminalFormStatus === 2) LoadAccountForm();
+        else if (terminalFormStatus === 3) SettingsForm()
+        else LoginForm(preLoginAccount);
+    };
+
+    /**
+     * Confirms the current form.
+     */
+    const confirmForm = () => {
+        const form = component.querySelector('form');
+
         if (terminalFormStatus === 1) {
-            NewAccountForm(component);
-        } else if (terminalFormStatus === 2) {
-            LoadAccountForm(component);
-        } else {
-            SettingsForm(component);
+            ValidateNewAccountForm(form);
         };
     };
 
     return {
         component,
         actionButtons,
+        get terminalFormStatus() { return terminalFormStatus },
+        set terminalFormStatus(value) { terminalFormStatus = value; },
+        get preLoginAccount() { return preLoginAccount },
+        set preLoginAccount(value) { preLoginAccount = value },
         render,
         unrender,
         isDefaultState,
         hideActions,
         showActions,
         terminalForm,
-        resetForm
+        resetForm,
+        confirmForm
     };
-};
+}();
 
 /**
  * Changes the terminal into default.
- * @param {HTMLElement} component 
  */
-function DefaultForm(component) {
+function DefaultForm() {
     SetTerminalText(
-        component,
         'Waiting for input...',
         '',
         '',
     );
 
-    const form = component.querySelector('form');
+    const form = FormTerminal.component.querySelector('form');
     form.innerHTML = '';
 };
 
 /**
  * Changes the terminal into a new account form.
- * @param {HTMLElement} component 
  */
-function NewAccountForm(component) {
+function NewAccountForm() {
     const template = `
                 <div class="input-block" id="username-block">
                     <div class="input-hint">
                         <p class="hint-text">Username</p>
-                        <div class="hint-error">| <span></span></div>
+                        <div class="hint-error">| <span class="error"></span></div>
                     </div>
                     <label for="username">
                         <span>>></span>
@@ -197,7 +212,7 @@ function NewAccountForm(component) {
                     <div class="input-hint">
                         <p class="hint-text">Password</p>
                         <button class="button reset" type="button" id="hide-pass">&lt;/&gt;</button>
-                        <div class="hint-error">| <span></span></div>
+                        <div class="hint-error">| <span class="error"></span></div>
                     </div>
                     <label for="password">
                         <span>>></span>
@@ -208,7 +223,7 @@ function NewAccountForm(component) {
                     <div class="input-hint">
                         <p class="hint-text">Confirm Password</p>
                         <button class="button reset" type="button" id="hide-conpass">&lt;/&gt;</button>
-                        <div class="hint-error">| <span></span></div>
+                        <div class="hint-error">| <span class="error"></span></div>
                     </div>
                     <label for="conpass">
                         <span>>></span>
@@ -224,13 +239,12 @@ function NewAccountForm(component) {
     const conpassBlock = fragment.querySelector('#conpass-block');
 
     SetTerminalText(
-        component,
         'Creating new account...',
         'Welcome!',
         'The only rule in creating an account is that your password must be at least 10 characters long.',
     );
 
-    const form = component.querySelector('form');
+    const form = FormTerminal.component.querySelector('form');
     form.innerHTML = '';
     form.appendChild(usernameBlock);
 
@@ -255,8 +269,14 @@ function NewAccountForm(component) {
     });
 
     inputUsername.addEventListener('keydown', (e) => {
-        if (inputUsername.value !== '' && e.key === 'Enter') {
+        if (inputUsername.value !== '' && !form.contains(inputPassword) && e.key === 'Enter') {
             form.appendChild(passwordBlock);
+            inputPassword.focus();
+
+            return;
+        };
+
+        if (inputUsername.value !== '' && form.contains(inputPassword) && e.key === 'Enter') {
             inputPassword.focus();
         };
     });
@@ -264,32 +284,68 @@ function NewAccountForm(component) {
     inputUsername.addEventListener('focus', (e) => {
         e.stopPropagation();
 
-        if (form.contains(passwordBlock) && inputPassword.value === '') form.removeChild(passwordBlock);
+        if (form.contains(passwordBlock) && !form.contains(conpassBlock) && inputPassword.value === '') form.removeChild(passwordBlock);
     });
 
     inputPassword.addEventListener('keydown', (e) => {
-        if (inputPassword.value !== '' && e.key === 'Enter') {
+        if (inputPassword.value !== '' && !form.contains(conpassBlock) && e.key === 'Enter') {
             form.appendChild(conpassBlock);
             inputConpass.focus();
+            return;
+        };
+
+        if (inputPassword.value !== '' && form.contains(conpassBlock) && e.key === 'Enter') {
+            inputConpass.focus();
+            return;
+        };
+
+        let hintError = passwordBlock.querySelector('.hint-error');
+        let hintErrorMessage = hintError.querySelector('.error');
+
+        if (hintError.classList.contains('show')) {
+            hintError.classList.remove('show');
+        };
+
+        if (inputPassword.value === '' && e.key === 'Enter') {
+            hintErrorMessage.textContent = 'Required information!';
+            hintError.classList.add('show');
+
+            return;
         };
     });
 
     inputPassword.addEventListener('focus', (e) => {
-        if (form.contains(conpassBlock) && conpassBlock.value === '') form.removeChild(conpassBlock);
+        const hintError = passwordBlock.querySelector('.hint-error');
+
+        if (hintError.classList.contains('show')) hintError.classList.remove('show');
+
+        if (form.contains(conpassBlock) && inputConpass.value === '') form.removeChild(conpassBlock);
+    });
+
+    inputConpass.addEventListener('focus', (e) => {
+        const hintError = conpassBlock.querySelector('.hint-error');
+
+        if (hintError.classList.contains('show')) hintError.classList.remove('show');
+    });
+
+    inputConpass.addEventListener('keydown', (e) => {
+        e.stopPropagation();
+
+        if (e.key === 'Enter') ValidateNewAccountForm(form);
     });
 
     btnHidePass.addEventListener('click', (e) => {
         e.stopPropagation();
-        
+
         HidePasswordToggle(btnHidePass, inputPassword);
     });
 
     btnHideConpass.addEventListener('click', (e) => {
         e.stopPropagation();
-        
+
         HidePasswordToggle(btnHideConpass, inputConpass);
     });
-    
+
     hintTextUsername.addEventListener('click', (e) => {
         e.stopPropagation();
 
@@ -319,7 +375,7 @@ function HidePasswordToggle(button, input) {
         button.textContent = '<o>';
         input.type = 'text';
     } else {
-        button.textContent = '<o>';
+        button.textContent = '</>';
         input.type = 'password';
     };
 
@@ -327,27 +383,223 @@ function HidePasswordToggle(button, input) {
 };
 
 /**
- * Changes the terminal into a load account form.
- * @param {HTMLElement} component 
+ * Validates the new account form.
+ * @param {HTMLFormElement} form 
  */
-function LoadAccountForm(component) {
+function ValidateNewAccountForm(form) {
+    // Load storage
+    const localStore = StorageHandler.getLocalStorage();
+    const accounts = localStore.app.accounts;
+
+    // Load form blocks and validate
+    const usernameBlock = form.querySelector('#username-block');
+    let passwordBlock = form.querySelector('#password-block');
+    let conpassBlock = form.querySelector('#conpass-block');
+
+    // Validate existing username
+    for (let iter = 0; iter < accounts.length; iter++) {
+        const account = accounts[iter];
+        const username = usernameBlock.querySelector('input');
+
+        if (account.username === username.value) {
+            console.error('Username already exists!');
+            return;
+        };
+    };
+
+    // Change the console.error here in a component later
+    if (!passwordBlock) {
+        console.error('Missing information required!');
+        return;
+    };
+
+    // Change the console.error here in a component later
+    if (!conpassBlock) {
+        console.error('Missing information required!');
+        return;
+    };
+
+    // Get passwords
+    const password = passwordBlock.querySelector('input');
+    const conpass = conpassBlock.querySelector('input');
+
+    if (password.value.length < 10) {
+        let hintErrorMessage = passwordBlock.querySelector('.hint-error');
+        let hintError = hintErrorMessage.querySelector('.error');
+
+        hintError.textContent = 'Password is too short!';
+        hintErrorMessage.classList.add('show');
+        return;
+    }
+
+    if (password.value !== conpass.value) {
+        let hintErrorMessage = conpassBlock.querySelector('.hint-error');
+        let hintError = hintErrorMessage.querySelector('.error');
+
+        hintError.textContent = 'Passwords don\'t match!';
+        hintErrorMessage.classList.add('show');
+        return;
+    }
+
+    // Create new account
+    const newAccount = {
+        username: usernameBlock.querySelector('input').value,
+        password: conpassBlock.querySelector('input').value, // Hash password later
+        dateofcreation: DateHandler.getDateToday(),
+        level: 1,
+        insession: false,
+        lastsession: 'n/a',
+        notes: [],
+        tasks: [],
+        projects: [],
+        settings: {
+            darkmode: localStore.app.settings.darkmode,
+            clicksounds: localStore.app.settings.clicksounds,
+            hoversounds: localStore.app.settings.hoversounds,
+            ambientsounds: localStore.app.settings.ambientsounds,
+        }
+    };
+
+    // Register new account
+    accounts.push(newAccount);
+    StorageHandler.updateLocalStorage();
+
+    // ADD A COMPONENT LATER
+
+    FormTerminal.terminalForm(-1);
+    Auth.buttons.createButton.removeClicked();
+};
+
+/**
+ * Changes the terminal into a load account form.
+ */
+function LoadAccountForm() {
+    const template = `
+                <div class="account-block">
+                    <button type="button" class="button reset text account-info">
+                        <span id="username">username</span> | lv<span id="level">1</span> | due today: <span id="due">0</span>
+                    </button>
+                </div>
+    `;
+
     SetTerminalText(
-        component,
         'Choosing account...',
         'Users',
         'Please choose your respective account here.',
     );
 
-    const form = component.querySelector('form');
+    const form = FormTerminal.component.querySelector('form');
     form.innerHTML = '';
 
+    const range = document.createRange();
+    const fragment = range.createContextualFragment(template);
+
+    const localStore = StorageHandler.getLocalStorage();
+    const accounts = localStore.app.accounts;
+
+    for (let iter = 0; iter < accounts.length; iter++) {
+        const account = accounts[iter];
+        const username = account.username;
+        const level = account.level;
+        const tasks = account.tasks;
+
+        const fragmentCopy = fragment.querySelector('.account-block').cloneNode(true);
+        const spanUsername = fragmentCopy.querySelector('#username');
+        const spanLevel = fragmentCopy.querySelector('#level');
+        const spanDue = fragmentCopy.querySelector('#due');
+
+        spanUsername.textContent = username;
+        spanLevel.textContent = level;
+
+
+        if (tasks.length === 0) {
+            spanDue.textContent = 0;
+        } else {
+            // Add functionality later
+        };
+
+        form.appendChild(fragmentCopy);
+
+        const button = fragmentCopy.querySelector('button');
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            LoginForm(account);
+            FormTerminal.preLoginAccount = account;
+        });
+    };
 };
 
 /**
+ * Changes the terminal into a login form after choosing an account from load form
+ * @param {Object} userData 
+*/
+function LoginForm(userData) {
+    const template = `
+    <div class="input-block" id="password-block">
+    <div class="input-hint">
+                        <p class="hint-text">Please enter your password</p>
+                        <button type="button" class="button reset" type="button" id="hide-pass">&lt;/&gt;</button>
+                        <div class="hint-error">| <span>Error Message!</span></div>
+                    </div>
+                    <label for="password">
+                        <span>>></span>
+                        <input class="text" type="password" name="" id="password">
+                    </label>
+                </div>
+                `;
+
+    const range = document.createRange();
+    const fragment = range.createContextualFragment(template);
+    const passwordBlock = fragment.querySelector('#password-block');
+
+    FormTerminal.terminalFormStatus = 4;
+
+    SetTerminalText(
+        'Authenticating...',
+        'Welcome back,',
+        `${userData.username}!`,
+    );
+
+    const tipMessage = FormTerminal.component.querySelector('#tip-message');
+    const pTitleTip = tipMessage.querySelector('#title-tip');
+    const pDescTip = tipMessage.querySelector('#desc-tip');
+
+    pTitleTip.classList.remove('text');
+    pDescTip.classList.add('text');
+
+    const form = FormTerminal.component.querySelector('form');
+
+    form.innerHTML = '';
+    form.appendChild(passwordBlock);
+    FormTerminal.showActions();
+
+    const inputPassword = passwordBlock.querySelector('input');
+    const btnHidePassword = passwordBlock.querySelector('button');
+
+    inputPassword.focus();
+
+    // LISTENERS //
+    btnHidePassword.addEventListener('click', (e) => {
+        HidePasswordToggle(btnHidePassword, inputPassword);
+    });
+};
+
+function CancelLoginAppearanceReset() {
+    FormTerminal.preLoginAccount = undefined;
+
+    const tipMessage = FormTerminal.component.querySelector('#tip-message');
+    const pTitleTip = tipMessage.querySelector('#title-tip');
+    const pDescTip = tipMessage.querySelector('#desc-tip');
+
+    pTitleTip.classList.add('text');
+    pDescTip.classList.remove('text');
+}
+
+/**
  * Changes the terminal into a settings form.
- * @param {HTMLElement} component 
  */
-function SettingsForm(component) {
+function SettingsForm() {
     const template = `
                 <div class="setting-block" id="dark-mode-block">
                     <input type="checkbox" name="" id="dark-mode">
@@ -379,21 +631,18 @@ function SettingsForm(component) {
     const ambientBlock = fragment.querySelector('#ambient-block');
 
     SetTerminalText(
-        component,
         'Configuring settings...',
         'Settings',
         'These are default settings when creating a new account.',
     );
 
-    const form = component.querySelector('form');
+    const form = FormTerminal.component.querySelector('form');
     form.innerHTML = '';
 
     form.appendChild(darkModeBlock);
     form.appendChild(clickBlock);
     form.appendChild(hoverBlock);
     form.appendChild(ambientBlock);
-
-    // ADD FUNCTION FOR SETTINGS LATER
 
     const btnDarkMode = darkModeBlock.querySelector('button');
     const btnClickSound = clickBlock.querySelector('button');
@@ -404,42 +653,76 @@ function SettingsForm(component) {
     const inputHoverSound = hoverBlock.querySelector('input');
     const inputAmbientSound = ambientBlock.querySelector('input');
 
+    // INITIALIZE DEFAULT SETTINGS //
+    const localStore = StorageHandler.getLocalStorage();
+    const localSettings = localStore.app.settings;
+
+    inputDarkMode.checked = localSettings.darkmode;
+    inputClickSound.checked = localSettings.clicksounds;
+    inputHoverSound.checked = localSettings.hoversounds;
+    inputAmbientSound.checked = localSettings.ambientsounds;
+
+    if (inputDarkMode.checked) btnDarkMode.textContent = '[yes]';
+    else btnDarkMode.textContent = '[no]';
+
+    if (inputClickSound.checked) btnClickSound.textContent = '[yes]';
+    else btnClickSound.textContent = '[no]';
+
+    if (inputHoverSound.checked) btnHoverSound.textContent = '[yes]';
+    else btnHoverSound.textContent = '[no]';
+
+    if (inputAmbientSound.checked) btnAmbientSound.textContent = '[yes]';
+    else btnAmbientSound.textContent = '[no]';
+    // INITIALIZE DEFAULT SETTINGS //
+
     btnDarkMode.addEventListener('click', (e) => {
         e.stopPropagation();
 
         inputDarkMode.checked = !inputDarkMode.checked;
         if (inputDarkMode.checked) btnDarkMode.textContent = '[yes]';
         else btnDarkMode.textContent = '[no]';
+
+        localSettings.darkmode = inputDarkMode.checked;
+        StorageHandler.updateLocalStorage();
     });
-    
+
     btnClickSound.addEventListener('click', (e) => {
         e.stopPropagation();
-        
+
         inputClickSound.checked = !inputClickSound.checked;
         if (inputClickSound.checked) btnClickSound.textContent = '[yes]';
         else btnClickSound.textContent = '[no]';
+
+        localSettings.clicksounds = inputClickSound.checked;
+        StorageHandler.updateLocalStorage();
     });
-    
+
     btnHoverSound.addEventListener('click', (e) => {
         e.stopPropagation();
-        
+
         inputHoverSound.checked = !inputHoverSound.checked;
         if (inputHoverSound.checked) btnHoverSound.textContent = '[yes]';
         else btnHoverSound.textContent = '[no]';
+
+        localSettings.hoversounds = inputHoverSound.checked;
+        StorageHandler.updateLocalStorage();
     });
-    
+
     btnAmbientSound.addEventListener('click', (e) => {
         e.stopPropagation();
-        
+
         inputAmbientSound.checked = !inputAmbientSound.checked;
         if (inputAmbientSound.checked) btnAmbientSound.textContent = '[yes]';
         else btnAmbientSound.textContent = '[no]';
+
+        localSettings.ambientsounds = inputAmbientSound.checked;
+        StorageHandler.updateLocalStorage();
     });
 };
 
-function SetTerminalText(component, statusMsg, titleTipMsg, descTipMsg) {
-    const status_message = component.querySelector('#message');
-    const tip_message = component.querySelector('#tip-message');
+function SetTerminalText(statusMsg, titleTipMsg, descTipMsg) {
+    const status_message = FormTerminal.component.querySelector('#message');
+    const tip_message = FormTerminal.component.querySelector('#tip-message');
     const title_tip = tip_message.querySelector('#title-tip');
     const desc_tip = tip_message.querySelector('#desc-tip');
 
@@ -447,3 +730,5 @@ function SetTerminalText(component, statusMsg, titleTipMsg, descTipMsg) {
     title_tip.textContent = titleTipMsg;
     desc_tip.textContent = descTipMsg;
 };
+
+export default FormTerminal;
