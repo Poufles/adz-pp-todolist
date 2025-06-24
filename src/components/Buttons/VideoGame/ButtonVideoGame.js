@@ -41,9 +41,34 @@ export default function ButtonVideoGame(buttonText) {
         if (parent) parent.removeChild(component);
     };
 
+    /**
+     * Check if button is clicked.
+     * @returns A boolean value.
+     */
+    const isClicked = () => {
+        if (component.classList.contains('clicked')) return true;
+        return false;
+    };
+
+    /**
+     * Removes clicked class.
+     */
+    const removeClicked = () => {
+        component.classList.remove('clicked');
+    };
+
+    // LISTENER //
+    component.addEventListener('click', (e) => {
+        e.stopPropagation();
+
+        component.classList.add('clicked');
+    });
+
     return {
         component,
         render,
         unrender,
+        isClicked,
+        removeClicked
     };
 };

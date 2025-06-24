@@ -2,14 +2,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbit&display=swap');
 
 :root {
-    --background-color: #FFFDF6;
+    --background-color: #FFFBFF;
     --black: #000;
+    --reset: #141316;
+    --danger: #F35D60;
+    --confirm: #5DF37E;
+    --light-yellow: #FFFDF6;
     font-family: 'Orbit', sans-serif;
 }
 
 body {
     background-color: var(--background-color);
     position: relative;
+    overflow: hidden;
 }
 
 .title {
@@ -22,4 +27,8 @@ body {
 
 .text {
     font-size: 24px;
+}
+
+.mini-text {
+    font-size: 16px;
 }

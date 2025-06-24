@@ -27,10 +27,12 @@
 }
 
 /* ANIMATIONS */
-.component.button.video-game:hover {
+.component.button.video-game:hover,
+.component.button.clicked.video-game {
     gap: 10px;
 }
 
-.component.button.video-game:hover .arrow-wrapper {
+.component.button.video-game:hover .arrow-wrapper,
+.component.button.clicked.video-game .arrow-wrapper {
     width: 100%;
 }

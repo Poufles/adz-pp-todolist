@@ -3,6 +3,7 @@
     min-height: 720px;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 #page__auth .gate {
@@ -90,6 +91,13 @@
     position: absolute;
     left: calc(27% - 98px);
     transform: translateX(-50%);
+}
+
+#page__auth .component.terminal {
+    position: absolute;
+    top: 50%;
+    left: calc(60%);
+    transform: translateY(-50%) translateX(-100px);
 }
 
 /* ANIMATIONS */
