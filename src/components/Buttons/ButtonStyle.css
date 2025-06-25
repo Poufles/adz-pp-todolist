@@ -1,0 +1,17 @@
+.button {
+    cursor: pointer;
+}
+
+.button.reset {
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+}
+
+.button.no-bg {
+    background-color: transparent;
+}
+
+.button.no-border {
+    border: 0;
+}
