@@ -145,8 +145,7 @@ const FormTerminal = function () {
      */
     const resetForm = () => {
         if (terminalFormStatus === 1) NewAccountForm();
-        else if (terminalFormStatus === 2) LoadAccountForm();
-        else if (terminalFormStatus === 3) SettingsForm()
+        else if (terminalFormStatus === 3) ResetSettingsToDefault();
         else LoginForm(preLoginAccount);
     };
 
@@ -154,12 +153,16 @@ const FormTerminal = function () {
      * Confirms the current form.
      */
     const confirmForm = () => {
-        const form = component.querySelector('form');
-
-        if (terminalFormStatus === 1) {
-            ValidateNewAccountForm(form);
-        };
+        if (terminalFormStatus === 1) ValidateNewAccountForm();
+        else if (terminalFormStatus === 3) ValidateSettingsForm();
+        else if (terminalFormStatus === 4) ValidateLoginForm(preLoginAccount);
     };
+
+    // LISTENERS //
+    const form = component.querySelector('form');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+    });
 
     return {
         component,
@@ -264,10 +267,6 @@ function NewAccountForm() {
     // add verification later for usernames
 
     // LISTENERS //
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-    });
-
     inputUsername.addEventListener('keydown', (e) => {
         if (inputUsername.value !== '' && !form.contains(inputPassword) && e.key === 'Enter') {
             form.appendChild(passwordBlock);
@@ -336,31 +335,26 @@ function NewAccountForm() {
 
     btnHidePass.addEventListener('click', (e) => {
         e.stopPropagation();
-
         HidePasswordToggle(btnHidePass, inputPassword);
     });
 
     btnHideConpass.addEventListener('click', (e) => {
         e.stopPropagation();
-
         HidePasswordToggle(btnHideConpass, inputConpass);
     });
 
     hintTextUsername.addEventListener('click', (e) => {
         e.stopPropagation();
-
         inputUsername.focus();
     });
 
     hintTextPassword.addEventListener('click', (e) => {
         e.stopPropagation();
-
         inputPassword.focus();
     });
 
     hintTextConpass.addEventListener('click', (e) => {
         e.stopPropagation();
-
         inputConpass.focus();
     });
 };
@@ -384,12 +378,13 @@ function HidePasswordToggle(button, input) {
 
 /**
  * Validates the new account form.
- * @param {HTMLFormElement} form 
  */
-function ValidateNewAccountForm(form) {
+function ValidateNewAccountForm() {
     // Load storage
     const localStore = StorageHandler.getLocalStorage();
     const accounts = localStore.app.accounts;
+
+    const form = FormTerminal.component.querySelector('form');
 
     // Load form blocks and validate
     const usernameBlock = form.querySelector('#username-block');
@@ -583,6 +578,42 @@ function LoginForm(userData) {
     btnHidePassword.addEventListener('click', (e) => {
         HidePasswordToggle(btnHidePassword, inputPassword);
     });
+
+    inputPassword.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            ValidateLoginForm(userData);
+        };
+    });
+};
+
+/**
+ * Validates user logging in.
+ * @param {Object} userData 
+ */
+function ValidateLoginForm(userData) {
+    const localStore = StorageHandler.getLocalStorage();
+    const accounts = localStore.app.accounts;
+
+    const form = FormTerminal.component.querySelector('form');
+    const inputPassword = form.querySelector('input');
+
+    for (let iter = 0; iter < accounts.length; iter++) {
+        const account = accounts[iter];
+
+        if (account.username === userData.username) {
+            if (account.password === inputPassword.value) {
+                // Add functionality and a component later
+                console.log('User logged in!');
+                return;
+            } else {
+                // Add functionality and a component later
+                console.error('Wrong password !');
+                return;
+            };
+        };
+    };
+
+    console.error('Account doesn\'t exist !');
 };
 
 function CancelLoginAppearanceReset() {
@@ -681,9 +712,6 @@ function SettingsForm() {
         inputDarkMode.checked = !inputDarkMode.checked;
         if (inputDarkMode.checked) btnDarkMode.textContent = '[yes]';
         else btnDarkMode.textContent = '[no]';
-
-        localSettings.darkmode = inputDarkMode.checked;
-        StorageHandler.updateLocalStorage();
     });
 
     btnClickSound.addEventListener('click', (e) => {
@@ -692,9 +720,6 @@ function SettingsForm() {
         inputClickSound.checked = !inputClickSound.checked;
         if (inputClickSound.checked) btnClickSound.textContent = '[yes]';
         else btnClickSound.textContent = '[no]';
-
-        localSettings.clicksounds = inputClickSound.checked;
-        StorageHandler.updateLocalStorage();
     });
 
     btnHoverSound.addEventListener('click', (e) => {
@@ -704,8 +729,6 @@ function SettingsForm() {
         if (inputHoverSound.checked) btnHoverSound.textContent = '[yes]';
         else btnHoverSound.textContent = '[no]';
 
-        localSettings.hoversounds = inputHoverSound.checked;
-        StorageHandler.updateLocalStorage();
     });
 
     btnAmbientSound.addEventListener('click', (e) => {
@@ -714,10 +737,77 @@ function SettingsForm() {
         inputAmbientSound.checked = !inputAmbientSound.checked;
         if (inputAmbientSound.checked) btnAmbientSound.textContent = '[yes]';
         else btnAmbientSound.textContent = '[no]';
-
-        localSettings.ambientsounds = inputAmbientSound.checked;
-        StorageHandler.updateLocalStorage();
     });
+};
+
+/**
+ * Validates the settings.
+ */
+function ValidateSettingsForm() {
+    const localStore = StorageHandler.getLocalStorage();
+    const localSettings = localStore.app.settings;
+
+    const form = FormTerminal.component.querySelector('form');
+    const darkModeBlock = form.querySelector('#dark-mode-block');
+    const clickBlock = form.querySelector('#click-block');
+    const hoverBlock = form.querySelector('#hover-block');
+    const ambientBlock = form.querySelector('#ambient-block');
+
+    const inputDarkMode = darkModeBlock.querySelector('input');
+    const inputClickSound = clickBlock.querySelector('input');
+    const inputHoverSound = hoverBlock.querySelector('input');
+    const inputAmbientSound = ambientBlock.querySelector('input');
+
+    localSettings.darkmode = inputDarkMode.checked;
+    localSettings.clicksounds = inputClickSound.checked;
+    localSettings.hoversounds = inputHoverSound.checked;
+    localSettings.ambientsounds = inputAmbientSound.checked;
+
+    StorageHandler.updateLocalStorage();
+
+    // Add a confirmation component later
+    console.log('Settings saved !');
+};
+
+/**
+ * Resets global settings to default.
+ */
+function ResetSettingsToDefault() {
+    const localStore = StorageHandler.getLocalStorage();
+    const localSettings = localStore.app.settings;
+
+    const form = FormTerminal.component.querySelector('form');
+    const darkModeBlock = form.querySelector('#dark-mode-block');
+    const clickBlock = form.querySelector('#click-block');
+    const hoverBlock = form.querySelector('#hover-block');
+    const ambientBlock = form.querySelector('#ambient-block');
+
+    const btnDarkMode = darkModeBlock.querySelector('button');
+    const btnClickSound = clickBlock.querySelector('button');
+    const btnHoverSound = hoverBlock.querySelector('button');
+    const btnAmbientSound = ambientBlock.querySelector('button');
+
+    const inputDarkMode = darkModeBlock.querySelector('input');
+    const inputClickSound = clickBlock.querySelector('input');
+    const inputHoverSound = hoverBlock.querySelector('input');
+    const inputAmbientSound = ambientBlock.querySelector('input');
+
+    inputDarkMode.checked = false;
+    inputClickSound.checked = true;
+    inputHoverSound.checked = true;
+    inputAmbientSound.checked = true;
+
+    btnDarkMode.textContent = '[no]';
+    btnClickSound.textContent = '[yes]';
+    btnHoverSound.textContent = '[yes]';
+    btnAmbientSound.textContent = '[yes]';
+
+    localSettings.darkmode = false;
+    localSettings.clicksounds = true;
+    localSettings.hoversounds = true;
+    localSettings.ambientsounds = true;
+
+    StorageHandler.updateLocalStorage();
 };
 
 function SetTerminalText(statusMsg, titleTipMsg, descTipMsg) {
